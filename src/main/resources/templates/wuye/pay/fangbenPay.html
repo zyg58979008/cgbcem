@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div id="exampleToolbar" role="group">
+						<div class="form-group">
+							<div class="input-group">
+								<input id="code" type="text" class="layui-input"
+									   placeholder="单据编号" style="width: 150px;float: left">
+								<input id="roomCode" type="text" class="layui-input"
+									   placeholder="房屋编号" style="width: 100px;float: left">
+								<input type="text" class="layui-input" id="startDate" placeholder="开始日期"style="width: 100px;float: left">
+								<input type="text" class="layui-input" id="endDate" placeholder="结束日期"style="width: 100px;float: left">
+								<select data-placeholder="--选择交来类型--" id="type" style="width: 150px;float: left"
+										class="layui-input chosen-select" tabindex="2" required>
+									<option value="">--选择交来类型--</option>
+									<option value="4">--维修基金--</option>
+									<option value="5">--交易费--</option>
+									<option value="6">--不动产证费--</option>
+									<option value="7">--契税--</option>
+									<option value="8">--代办费--</option>
+								</select>
+								<input type="hidden" id="shouType1">
+								<select data-placeholder="--选择收款方式--" name="shouType" id="shouType" style="width: 150px;float: left"
+										class="layui-input chosen-select" tabindex="2">
+									<option value="">--选择收款方式--</option>
+								</select>
+								<button class="btn btn-success"  onclick="reLoad()">查询</button><button class="btn btn-primary"  onclick="c()">清空</button>
+							</div>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false">
+					</table>
+				</div>
+			</div>
+		</div>
+		<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_chongxiao_h = 'hidden';
+				var s_print_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="wuye:fangbenPay:chongxiao">
+			<script type="text/javascript">
+				s_chongxiao_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="wuye:fangbenPay:print">
+			<script type="text/javascript">
+				var s_print_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script src="/js/lay/laydate/laydate.js"></script>
+	<script type="text/javascript" src="/js/appjs/wuye/pay/fangbenPay.js"></script>
+	<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+	<script>
+		laydate.render({
+			elem: '#startDate'
+			,format: 'yyyy-MM-dd'
+		});
+		laydate.render({
+			elem: '#endDate'
+			,format: 'yyyy-MM-dd'
+		});
+	</script>
+</body>
+
+</html>

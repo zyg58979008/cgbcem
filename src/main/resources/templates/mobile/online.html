@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/weui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/jquery-weui.css" rel="stylesheet">
+    <style>
+        .item{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >线上设备首次登记</strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="heading color-grey">
+        <div class="title" style="margin-top: 10px;"><strong>设备登记单</strong></div>
+    </div>
+    <div class="column " >
+        <div class="cell-8"  >
+            <div class="list "  id="list" style="width: 100%">
+
+            </div>
+        </div>
+
+        <form class="form-horizontal m-t" id="signupForm">
+        <div class="box">
+            <input id="unit" name="unit" hidden>
+            <div class="row">
+                <input id="deptId" name="deptId" class="hidden" th:value="${deptId}"  >
+                <input
+                    id="deptName" name="deptName" th:value="${deptName}" class="input rounded-lg" type="text"
+                    onclick="openDept()"
+                    placeholder="选择网点" readonly style="background-color: white">
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    设备编码：
+                </div>
+                <div class="cell">
+                    <input id="id" name="id" type="text" class="input rounded-lg" placeholder=""
+                           readonly style="background-color: white">
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    设备名称：
+                </div>
+                <div class="cell">
+                    <input id="name" name="name" type="text" class="input rounded-lg" placeholder=""
+                           readonly style="background-color: white">
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    设备分类：
+                </div>
+                <div class="cell">
+                    <input id="category" name="category" class="hidden" >
+                    <input id="categoryName" name="categoryName" type="text" class="input rounded-lg" placeholder=""
+                           readonly style="background-color: white">
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    设备品牌：
+                </div>
+                <div class="cell">
+                    <input id="brand" name="brand" class="hidden" >
+                    <input id="brandName" name="brandName" type="text" class="input rounded-lg" placeholder=""
+                           readonly style="background-color: white">
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    设备型号：
+                </div>
+                <div class="cell">
+                    <input id="model" name="model" type="text" class="input rounded-lg" placeholder=""
+                           readonly style="background-color: white">
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-4 cell-top">
+                    上线日期：
+                </div>
+                <div class="cell">
+                    <input id="createDate" name="createDate" type="text" class="weui-input input rounded-lg" />
+                </div>
+            </div>
+        <div class="cell-2">
+            <textarea id="remarks" name="remarks" class="textarea" name="remarks" id="remarks" rows="3" placeholder="备注"></textarea>
+        </div>
+        </div>
+        </form>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <!--<div class="title text-center" style="background-color: white;color: black" onclick="allCheck()">
+        <a><i class="icon-check-empty" id="check"></i></a>
+        全选
+    </div>-->
+    <!--<div class="title text-center" style="background-color: white;color: black" onclick="del()">
+        <a><i class="icon-trash"></i></a>
+        删除
+    </div>-->
+    <div class="title text-center" style="background-color: white;color: black" onclick="scan()">
+        <a>
+            <img src="/img/sao.png" style="width: 14px;height: 14px; padding: 0;margin: -1px 0 0 5px;">
+        </a>
+        扫码
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" onclick="save()">
+        <a><i class="icon-save"></i></a>
+        提交
+    </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/weixin/jweixin-1.2.0.js"></script>
+<script src="/js/plugins/weui/jquery-weui.js"></script>
+<script src="/js/plugins/weui/fastclick.js"></script>
+<script>
+    $("#createDate").calendar({
+        dateFormat: 'yyyy-mm-dd' // 自定义格式的时候，不能通过 input 的value属性赋值 '2016年12月12日' 来定义初始值，这样会导致无法解析初始值而报错。只能通过js中设置 value 的形式来赋值，并且需要按标准形式赋值（yyyy-mm-dd 或者时间戳)
+    });
+    $(document).ready(function(){
+        $.ajax({
+            type: "get",
+            url: "/mobile/getWechatConfig",
+            data: "url="+encodeURIComponent(location.href.split('#')[0]),
+            dataType:"json",
+            success: function(data){
+                if(data&&data.error=='no'){
+                    wx.config({
+                        debug : false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId : data.appId, // 必填，公众号的唯一标识
+                        timestamp : data.timestamp, // 必填，生成签名的时间戳
+                        nonceStr : data.nonceStr, // 必填，生成签名的随机串
+                        signature : data.signature,// 必填，签名，见附录1
+                        jsApiList : ["scanQRCode"]
+                    });
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    });
+    var num=0;
+    var is_all=false;
+    var equipments=[];
+    function allCheck() {
+        if(num>0){
+            if(!is_all){
+                $("input[name='equipment']").prop("checked", true);
+                is_all=true;
+                $("#check").removeClass("icon-check-empty");
+                $("#check").addClass("icon-sign-blank");
+            }else {
+                $("input[name='equipment']").prop("checked", false);
+                is_all=false;
+                $("#check").removeClass("icon-sign-blank");
+                $("#check").addClass("icon-check-empty");
+            }
+        }
+    }
+    function del() {
+        var length=$('input:checkbox[name="equipment"]:checked').length;
+        $("input[name='equipment']:checked").each(function() {
+            var id=$(this).attr('id');
+            $("#"+id).parent().remove();
+            var i=$(this).parent().attr('id');
+            removeByValue(equipments, i);
+
+        });
+        num-=length;
+    }
+    function scan() {
+        wx.scanQRCode({
+            desc: 'scanQRCode desc',
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var id = res.resultStr;// 当needResult 为 1 时，扫码返回的结果
+                var index = $.inArray(id, equipments);   //结果：index=1
+                if (index < 0) {
+                    $.ajax({
+                        type : "GET",
+                        url: "/mobile/getEquipmentForFirstOnline",
+                        data: "id="+id,
+                        dataType:"json",
+                        success : function(data) {
+                            if(data){
+                                if(data.type&&data.type=="4"){
+                                    alert('已上线设备不能再次上线！');
+                                    return;
+                                }
+                                if(data.type!="0"){
+                                    alert('已上线设备不能再次上线！');
+                                    return;
+                                }
+                               /* var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='"+id+"' onclick='choose(num)'>"+
+                                        "<input type='checkbox' name='equipment' id='checkbox"+num+"' style='margin-top: 12px'>"+
+                                        "                    <div class=\"content\">"+
+                                        "                        <div class=\"title\">"+data.categoryName+"-"+data.brandName+"-"+data.model+"</div>"+
+                                        "                        <div class=\"subtitle\">"+id+"</div>"+
+                                        "                    </div>"+
+                                        "                </div>";*/
+
+                                $("#id").val(data.id);
+                                $("#name").val(data.name);
+                                $("#category").val(data.category);
+                                $("#brand").val(data.brand);
+                                $("#categoryName").val(data.categoryName);
+                                $("#brandName").val(data.brandName);
+                                $("#model").val(data.model);
+                                $("#unit").val(data.unit);
+                            }
+                            else{
+                                alert('没有该设备信息！')
+                            }
+
+                        }
+                    });
+                }else{
+                    alert('该条码已扫描！')
+                }
+            }
+        });
+    }
+
+    function scan1() {
+                    $.ajax({
+                        type : "GET",
+                        url: "/mobile/getEquipmentForFirstOnline",
+                        data: "id="+"A02001001a0FZ4XXQ",
+                        dataType:"json",
+                        success : function(data) {
+                            if(data){
+                                if(data.type&&data.type=="4"){
+                                    alert('已上线设备不能再次上线！');
+                                    return;
+                                }
+                                /* var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='"+id+"' onclick='choose(num)'>"+
+                                 "<input type='checkbox' name='equipment' id='checkbox"+num+"' style='margin-top: 12px'>"+
+                                 "                    <div class=\"content\">"+
+                                 "                        <div class=\"title\">"+data.categoryName+"-"+data.brandName+"-"+data.model+"</div>"+
+                                 "                        <div class=\"subtitle\">"+id+"</div>"+
+                                 "                    </div>"+
+                                 "                </div>";*/
+
+                                $("#id").val(data.id);
+                                $("#name").val(data.name);
+                                $("#category").val(data.category);
+                                $("#brand").val(data.brand);
+                                $("#categoryName").val(data.categoryName);
+                                $("#brandName").val(data.brandName);
+                                $("#model").val(data.model);
+                                $("#unit").val(data.unit);
+                                /*   num++;
+                                 scan();*/
+                            }
+                            else{
+                                alert('没有该设备信息！')
+                            }
+
+                        }
+                    });
+    }
+
+    function save() {
+        var a =$("#deptId").val();
+        var b =$("#createDate").val();
+        if($("#id").val()!=null&&$("#id").val() != ""){
+        if($("#deptId").val() != null&&$("#deptId").val() != ""&&$("#createDate").val() != null&&$("#createDate").val() != ""){
+            var b =  $("#signupForm").serialize();
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : "/equipment/equipment/saveOnline",
+                /* data : $("#signupForm").serialize(),// 你的formid*/
+                data : b,// 你的formid
+                async : false,
+                error : function(request) {
+
+                },
+                success : function(data) {
+                    scan2();
+                }
+            });
+        }
+        else {
+            alert("网点和上线时间不能为空！")
+        }
+        }
+        else{
+            alert("请扫描需要的设备！")
+        }
+    }
+    function scan2(){
+        alert("保存成功！");
+                window.location.href="/mobile/online2?deptId="+$("#deptId").val();
+    }
+    function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+            if(arr[i] == val) {
+                arr.splice(i, 1);
+                break;
+            }
+        }
+    }
+    var openDept = function(){
+        layer.open({
+            type:2,
+            title:"选择网点",
+            area : [ '90%', '450px' ],
+            content: "/mobile" + '/treeViewByLevelForFirstOnline'
+        })
+    }
+    function loadDept( Id,name){
+        $("#deptId").val(Id);
+        $("#deptName").val(name);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm" autocomplete="off">
+						<input id="id" name="id" th:value="${id}"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">交房日期：</label>
+							<div class="col-sm-9">
+								<input type="text" class="layui-input"name="jiaofangDate"  id="jiaofangDate" placeholder="yyyy年MM月dd日">
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 40px;">
+							<button type="button" onclick="save()" style="margin-left: 280px;" class="btn btn-primary">确定</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" >
+	laydate.render({
+		elem: '#jiaofangDate'
+		,format: 'yyyy-MM-dd'
+	});
+	function save() {
+		var manage={};
+		manage.id=$("#id").val();
+		var jiaofangDate=$("#jiaofangDate").val();
+		if(!jiaofangDate||jiaofangDate==''){
+			layer.msg('请选择结束日期');
+			return;
+		}
+		manage.jiaofangDate=strToDate(jiaofangDate);
+		$.ajax({
+			cache : true,
+			type : "POST",
+			url : "/realty/contract/jiaofang",
+			data : {mydata:JSON.stringify(manage)},// 你的formid
+			async : false,
+			error : function(request) {
+				parent.layer.msg("Connection error");
+			},
+			success : function(data) {
+				if (data.code == 0) {
+					parent.layer.msg("操作成功");
+					parent.reLoad();
+					var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+					parent.layer.close(index);
+
+				} else {
+					parent.layer.msg(data.msg)
+				}
+
+			}
+		});
+	}
+	function strToDate(dateStr,separator){
+		var separator="-";
+		var dateArr = dateStr.split(separator);
+		var year = parseInt(dateArr[0]);
+		var month;
+		//处理月份为04这样的情况
+		if(dateArr[1].indexOf("0") == 0){
+			month = parseInt(dateArr[1].substring(1));
+		}else{
+			month = parseInt(dateArr[1]);
+		}
+		var day = parseInt(dateArr[2]);
+		var date = new Date(year,month -1,day);
+		return date;
+	}
+</script>
+</body>
+</html>

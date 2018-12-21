@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <div class="columns pull-left">
+                        <button  type="button" class="btn  btn-success" style="margin-top: 10px;"
+                                onclick="add()">
+                            <i class="fa fa-edit" aria-hidden="true"></i>批量导出
+                        </button>
+                    </div>
+                    <div class="columns pull-right">
+                        <button class="btn btn-success" onclick="reLoad()" style="margin-top: 10px;">查询</button>
+                    </div>
+                    <div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+                        <input type="text" class="laydate-icon layer-date form-control" id="endDate" name="endDate"  placeholder="请选择月份"
+                               onclick="laydate({istime: true, format: 'YYYY-MM'})" style="background-color: #fff;" readonly="readonly"/>
+                    </div>
+                    <div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+                        <input type="text" class=" form-control"  style="margin-top: 10px;"    placeholder="姓名或手机号"
+                               />
+                    </div>
+
+                <table id="exampleTable" data-mobile-responsive="true">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+        var s_resetPwd_h = 'hidden';
+    </script>
+    <style>
+        table tr td {
+            white-space:nowrap
+        }
+        .keep-open {
+            float: right !important;
+            right: 0;
+        }
+    </style>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/business/contract/contract1.js"></script>
+</body>
+</html>

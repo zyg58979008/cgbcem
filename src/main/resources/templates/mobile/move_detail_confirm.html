@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body class="with-heading-top with-heading-bottom" style="background-color: white">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="javascript:history.back(-1)"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >移库操作</strong></div>
+    <!--<nav class="nav">-->
+        <!--<a class="btn" data-display data-backdrop="true" data-target="#target2" data-trigger-method="toggle"-->
+           <!--data-placement="right"><i class="icon-bars" style="font-size: 15px;"></i></a>-->
+    <!--</nav>-->
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="heading color-grey">
+        <div class="title"><strong>选择：</strong>
+            <input id="info" class="rounded-lg" style="width: 250px" data-placement="bottom" placeholder="查询信息">
+           <!-- <div class="title bar6">
+                <div class="row">
+                    <input id="inAddress" class="form-control rounded-lg" data-display data-backdrop="true" style="width: 250px" data-target="#target4" data-placement="bottom" placeholder="选择网点">
+                    <input name="cname" placeholder="请输入设备名称" style="width: 44%;margin-left: 10px;float: right" type="text">
+                    <button style="margin-left: -2px;float: right" type="button"></button>
+                </div>
+            </div>-->
+            <div id="target5" class="affix dock-bottom modal hidden">
+                <div class="heading">
+                    <div class="title"><strong>选择人员</strong></div>
+                    <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+                </div>
+                <div class="content article box" style="height: 800px">
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content" style="margin-top: 8px">
+                                <span id="11" class="title text-black" data-dismiss="display" onclick="getPerson(11)" style="font-weight: bold;font-size: large;">张三</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content" style="margin-top: 8px">
+                                <span id="22" class="title text-black" data-dismiss="display" onclick="getPerson(22)" style="font-weight: bold;font-size: large;">李四</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="target4" class="affix dock-bottom modal hidden">
+                <div class="heading">
+                    <div class="title"><strong>选择地址</strong></div>
+                    <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+                </div>
+                <div class="content article box" style="height: 800px">
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="1" class="title text-black" onclick="getAddress(1)" data-dismiss="display" style="font-weight: bold;font-size: large;">平泉支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="2" class="title text-black" onclick="getAddress(2)" data-dismiss="display" style="font-weight: bold;font-size: large;">小寺沟支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="3" class="title text-black" onclick="getAddress('3')" data-dismiss="display" style="font-weight: bold;font-size: large;">南五十家子支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="4" class="title text-black" onclick="getAddress('4')" data-dismiss="display" style="font-weight: bold;font-size: large;">卧龙支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="5" class="title text-black" onclick="getAddress('5')" data-dismiss="display" style="font-weight: bold;font-size: large;">松树台支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="6" class="title text-black" onclick="getAddress('6')" data-dismiss="display" style="font-weight: bold;font-size: large;">黄土梁子支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list section">
+                        <div class="item with-avatar multi-lines">
+                            <a class="avatar circle" style="height: 40px;"><img src="/img/line.png" height="20px" alt=""></a>
+                            <div class="content">
+                                <span id="7" class="title text-black" onclick="getAddress('7')" style="font-weight: bold;font-size: large;">党坝支行</span>
+                                <div>
+                                    <small class="text-gray">地址：承德市平泉市平泉大街110号</small>&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="color-grey">
+        <div class="title"><strong>移库列表</strong>
+            <table class="table striped">
+            <thead>
+            <tr>
+                <th>设备名称</th>
+                <th>总数</th>
+                <th>日期</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td data-display data-backdrop="true" data-target="#d1" data-placement="bottom">打印机-佳能-..</td>
+                <td class="text-black"> 4 </td>
+                <td class="text-black"> 2018-04-30 </td>
+            </tr>
+            <tr>
+                <td>UPS电源-..</td>
+                <td class="text-black"> 1 </td>
+                <td class="text-black"> 2018-04-20 </td>
+            </tr>
+            <tr>
+                <td>打印机-惠普-..</td>
+                <td class="text-black"> 5 </td>
+                <td class="text-black"> 2018-04-10 </td>
+            </tr>
+            <tr>
+                <td>指纹仪-..</td>
+                <td class="text-black"> 4 </td>
+                <td class="text-black"> 2018-04-10 </td>
+            </tr>
+            <!--<tr>
+                <td>松树台支行</td>
+                <td class="text-black"> 5 </td>
+                <td class="text-black"> 2018-04-10 </td>
+            </tr>-->
+            </tbody>
+        </table>
+        </div>
+
+    </div>
+    <div id="d1" class="affix dock-bottom modal hidden">
+
+        <div class="heading">
+            <div class="title"><strong>设备详情</strong></div>
+            <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+        </div>
+
+        <div style="margin: 0 0 0 10px;">
+            <input type="checkbox" name="selectall" value=on onclick="selectAll()">
+            <label>全选</label>
+        </div>
+
+        <div class="list section with-divider">
+            <div class="item with-avatar multi-lines">
+                <input type="checkbox" style="margin-top: 15px;" id="a1" >
+                <a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" height="20px" alt=""></a>
+                <div class="content">
+                    <span class="title">打印机-佳能-LBP2900+</span>
+                    <div>
+                        <small class="muted">CD01201804135468</small>&nbsp;
+                        <p><small class="muted">2018年04月30日</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="item with-avatar multi-lines">
+                <input type="checkbox" style="margin-top: 15px;" id="a2" >
+                <a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" height="20px" alt=""></a>
+                <div class="content">
+                    <span class="title">打印机-佳能-LBP2900+</span>
+                    <div>
+                        <small class="muted">CD01201804135468</small>&nbsp;
+                        <p><small class="muted">2018年04月30日</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="item with-avatar multi-lines">
+                <input type="checkbox" style="margin-top: 15px;" id="a3" >
+                <a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" height="20px" alt=""></a>
+                <div class="content">
+                    <span class="title">打印机-佳能-LBP2900+</span>
+                    <div>
+                        <small class="muted">CD01201804135468</small>&nbsp;
+                        <p><small class="muted">2018年04月30日</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="item with-avatar multi-lines">
+                <input type="checkbox" style="margin-top: 15px;" id="a4" >
+                <a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" height="20px" alt=""></a>
+                    <div class="content">
+                        <span class="title">打印机-佳能-LBP2900+</span>
+                        <div>
+                            <small class="muted">CD01201804135468</small>&nbsp;
+                            <p><small class="muted">2018年04月30日</small></p>
+                        </div>
+                    </div>
+            </div>
+            <script>
+                function selectAll(form) {
+                    var obj = document.getElementsByName('selectall');
+                    var cks = document.getElementsByTagName("input");
+                    var ckslen = cks.length;
+                    for(var i=0;i<ckslen-1;i++) {
+                        if(cks[i].type == 'checkbox') {
+                            cks[i].checked = obj[0].checked;
+                        }
+                    }
+                }
+            </script>
+        </div>
+
+        <div class="heading dock-bottom">
+            <div class="title text-center" data-dismiss="display" style="background-color: white;color: black">
+                <a><i class="icon-check"></i></a>
+                <span style="font-size: 16px">确认完成</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="target2" class="layer hidden affix dock-right" style="min-width: 10rem">
+    <div class="list with-divider">
+        <a class="item with-avatar primary multi-lines">
+            <div class="content">
+                <div class="title">业务选择</div>
+            </div>
+        </a>
+        <div class="list with-divider" style="margin-left: -2px">
+            <div class="list" id="station" style="margin-left: -1px">
+                <div class="item">
+                    <div class="radio">
+                        <label style="font-weight: bold">巡检领用</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>人员选择:</label>
+                    <input id="inPerson" class="form-control rounded-lg" style="width: 100px" data-display data-backdrop="true" data-target="#target5" data-placement="bottom" placeholder="人员选择">
+                </div>
+            </div></div>
+        <div class="list with-divider" style="margin-left: -2px">
+            <div class="list" id="person" style="margin-left: -1px">
+                <div class="item">
+                    <div class="radio">
+                        <label style="font-weight: bold">备件移库</label>
+                    </div>
+                </div>
+                <div class="item">
+                    <label>站点选择:</label>
+                    <input id="inAddress" class="form-control rounded-lg" style="width: 100px" data-display data-backdrop="true" data-target="#target4" data-placement="bottom" placeholder="站点选择">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="list-item compact gray with-avatar dock dock-bottom">
+        <div class="avatar text-gray"><i class="icon icon-check"></i></div>
+        <div class="title" data-dismiss="display" onclick="choseready()">完成</div>
+        <div class="avatar text-gray"><i class="icon icon-times"></i></div>
+        <div class="title" onclick="chosereload()">重置</div>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <div class="title text-center" style="background-color: white;color: black" onclick="backFirst()">
+        <a><i class="icon-repeat"></i></a>
+        返回首页
+    </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<!--
+<script src="/js/plugins/layer/layer.js"></script>
+-->
+<script>
+    function choseready() {
+        var inPerson = $("#inPerson").val();
+        var inAddress = $("#inAddress").val();
+        if(inPerson != ""){
+            $("#info").attr("value",inPerson);
+        }
+        else if(inAddress != ""){
+            /*$("#info").attr("value",inAddress);*/
+            $("#info").attr("value",inAddress);
+        }
+    }
+    function getAddress(addressId){
+        var address = $("#"+addressId+"").text();
+        $("#inAddress").attr("value",address);
+    }
+    function getPerson(personId){
+        var person = $("#"+personId+"").text();
+        $("#inPerson").attr("value",person);
+    }
+   /* function getAddress(addressId){
+        var address = $("#"+addressId+"").text();
+        $("#inAddress").attr("value",address);
+    }*/
+    var num=0;
+    function backFirst() {
+        window.location.href="/mobile/first";
+    }
+</script>
+</body>
+</html>

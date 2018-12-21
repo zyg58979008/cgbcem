@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<style>
+	.control-label {
+		text-align: right;
+	}
+
+	.ibox {
+		margin-bottom: 0;
+	}
+
+	.form-control {
+		line-height: 40px;
+	}
+</style>
+<body class="gray-bg">
+<ul id="myTab" class="nav nav-tabs">
+	<li class="active">
+		<a href="#home" data-toggle="tab">
+			房屋信息
+		</a>
+	</li>
+	<!--<li><a href="#ios" data-toggle="tab">商户信息</a></li>-->
+	<li><a href="#pay" data-toggle="tab">缴费记录</a></li>
+	<li><a href="#log" data-toggle="tab">合同日志</a></li>
+</ul>
+<div id="myTabContent" class="tab-content" style="height: 100%;background: white;">
+	<div class="tab-pane fade in active" id="home" style="height: 100%">
+		<div class="wrapper wrapper-content" style="background: white;">
+			<!--<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-4 control-label">商铺编码：</label>
+								<div class="col-sm-8">
+									<input id="code" name="code" class="form-control"
+										   th:value="${shop?.code}" type="text" disabled>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-4 control-label">房屋类型：</label>
+								<div class="col-sm-8">
+									<input type="hidden" id="roomType1" th:value="${shop?.roomType}">
+									<input id="roomType" name="roomType" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group buildingDiv">
+								<label class="col-sm-4 control-label">楼层：</label>
+								<div class="col-sm-8">
+									<input id="floor" name="floor" th:value="${shop?.floor}" disabled
+										   class="form-control"
+										   type="number">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group buildingDiv">
+								<label class="col-sm-4 control-label">建筑面积：</label>
+								<div class="col-sm-8">
+									<input id="buildingArea" name="buildingArea" th:value="${shop?.buildingArea}" disabled
+										   class="form-control"
+										   type="number">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group buildingDiv">
+								<label class="col-sm-4 control-label">使用面积：</label>
+								<div class="col-sm-8">
+									<input id="floorArea" name="floorArea"
+										   th:value="${shop?.floorArea}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<div class="col-sm-12">
+				<div class="ibox">
+					<!-- <input id="shopId" hidden  th:value="${contractList.shopId}">-->
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="ios" style="height: 100%;background: white;">
+		<div class="wrapper wrapper-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">法人：</label>
+								<div class="col-sm-9">
+									<input id="juridicalPerson" name="juridicalPerson" th:value="${merchant?.juridicalPerson}"
+										   class="form-control" type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">品牌：</label>
+								<div class="col-sm-9">
+									<input id="brand" name="brand" th:value="${merchant?.brand}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">身份证号：</label>
+								<div class="col-sm-9">
+									<input id="idCard" name="idCard" th:value="${merchant?.idCard}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">联系电话：</label>
+								<div class="col-sm-9">
+									<input id="phone" name="phone" th:value="${merchant?.phone}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">住址：</label>
+								<div class="col-sm-9">
+									<input id="address" name="address" th:value="${merchant?.address}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">开户行：</label>
+								<div class="col-sm-9">
+									<input id="openingBank1" name="openingBank1" th:value="${merchant?.openingBank}"
+										   class="form-control" type="hidden">
+									<input id="openingBank" name="openingBank" class="form-control" th:value="${merchant?.openingBank}" type="text"
+										   disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">卡号：</label>
+								<div class="col-sm-9">
+									<input id="cardNo" name="cardNo" th:value="${merchant?.cardNo}" class="form-control"
+										   type="text" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="pay" style="height: 100%">
+		<div class="wrapper wrapper-content " style="padding: 20px 10px 10px;background: white;">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<table id="payTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="log" style="height: 100%;background: white;">
+		<div class="wrapper wrapper-content " style="padding: 20px 10px 10px;background: white;">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<table id="logTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/business/contract/info.js">
+</script>
+
+</body>
+</html>

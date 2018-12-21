@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm" autocomplete="off">
+						<input id="buildingId" name="buildingId"
+							   class="hidden">
+						<div class="card" id="card_1">
+							<label class="col-sm-3 control-label" class="cardLabel">1
+							</label>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">开始楼层：</label>
+								<div class="col-sm-3">
+									<input  class="form-control startFloor" type="number" >
+
+								</div>
+								<label class="col-sm-3 control-label" >结束楼层：</label>
+								<div class="col-sm-3">
+									<input  class="form-control endFloor"
+										   type="number">
+								</div>
+							</div>
+							<div class="form-group buildingDiv">
+								<label class="col-sm-3 control-label">房屋类型：</label>
+								<div class="col-sm-3">
+									<input type="hidden" class="roomType" id="roomType1">
+									<select data-placeholder="--选择房屋类型--"  id="roomType_1"
+											class="form-control chosen-select" tabindex="2">
+										<option value="">--选择房屋类型--</option>
+									</select>
+								</div>
+								<label class="col-sm-3 control-label">物业费：</label>
+								<div class="col-sm-3">
+									<input class="form-control wuyefei"
+										   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+								</div>
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 40px;">
+							<button type="button" onclick="add()" style="margin-left: 280px;" class="btn btn-primary">添加</button>
+							<button type="button" onclick="save()" style="margin-left: 40px;"  class="btn btn-success">提交</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/wuye/wuyefeiConfig/add.js">
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	.chosen-container{
+		float: left;
+	}
+	table tr td {
+		white-space:nowrap;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<input type="hidden" id="y" th:value="${findDate}">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="row" style="padding-left: 15px;">
+						<div class="input-group">
+							<div class="form-group">
+                                <button type="button" id="download" style="float: left;margin-right: 100px;" id="btn_download" class="btn btn-primary" onClick ="$('#exampleTable').tableExport({ type: 'excel', escape: 'false' ,fileName:'商户收缴率明细表'})">数据导出</button>
+								<input type="text" class="layui-input" id="findDate" placeholder="选择查询日期"style="width: 150px;float: left">
+								<input id="brand" type="text" class="layui-input" placeholder="品牌" style="width: 150px;float: left">
+								<input id="contractor" type="text" class="layui-input" placeholder="签约人" style="width: 150px;float: left">
+								<button class="btn btn-success"  onclick="reLoad()">查询</button>
+							</div>
+						</div>
+						<!--<form id="importForm" action='' method='post'/>
+
+						<div class="columns pull-left">
+							<button type="button" id="upload"
+									class="layui-btn" >
+								<i class="fa fa-cloud hidden" aria-hidden="true"></i>导入历史缴费数据
+							</button>
+							&lt;!&ndash; <button  shiro:hasPermission="business:contract:downloadall" type="button" class="btn  btn-success"
+                                      onclick="downloadall()">
+                                 <i class="fa fa-edit" aria-hidden="true"></i>批量导出
+                             </button>&ndash;&gt;
+							&lt;!&ndash;<button shiro:hasPermission="system:contract:batchRemove" type="button" class="btn  btn-danger"
+                                    onclick="batchRemove()">
+                                <i class="fa fa-trash" aria-hidden="true"></i>删除
+                            </button>&ndash;&gt;
+						</div>
+						</form>-->
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false" data-height="450">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/report/shopShoujiaolv.js?randomId=<%=Math.random()%>"></script>
+<script src="/js/plugins/bootstrap-table/tableExport.js"></script>
+<script src="/js/layui.js"></script>
+<script>
+	laydate.render({
+		elem: '#findDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+	laydate.render({
+		elem: '#endDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+	$("#findDate").val($("#y").val());
+	layui.use('upload', function () {
+		var upload = layui.upload;
+		//执行实例
+		var uploadInst = upload.render({
+			elem: '#upload', //绑定元素
+			url: '/business/contract/uploadForShoujiaolv', //上传接口
+			size: 1000,
+			accept: 'file',
+			done: function (r) {
+				layer.msg(r.msg);
+				$('#exampleTable').bootstrapTable('refresh');
+			},
+			error: function (r) {
+				layer.msg(r.msg);
+			}
+		});
+	});
+</script>
+</body>
+</html>

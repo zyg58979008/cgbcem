@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/bootstrap-editable.css"
+      rel="stylesheet">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<style>
+    .clearfix {
+        display: none;
+    }
+    .fixed-table-pagination{
+        display: none !important;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <h2 style="text-align: center">入库单</h2>
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">单据编号：</label>
+                            <div class="col-sm-4">
+                                <input id="code" readonly value="RK20180313000252" name="code" class="form-control" type="text">
+                            </div>
+                            <label class="col-sm-2 control-label">入库库房：</label>
+                            <div class="col-sm-4">
+                                <select data-placeholder="--入库库房--" name="storeroomId" id="storeroomId"
+                                        class="form-control chosen-select" tabindex="2" required>
+                                    <option value="">--入库库房--</option>
+                                    <option value="承德县库房备件一库">--承德县库房备件一库--</option>
+                                    <option value="承德县库房备件二库">--承德县库房备件二库--</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="addData" class="btn btn-primary">添加</button>
+                            <table id="exampleTable" data-mobile-responsive="true">
+                            </table>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注：</label>
+                            <div class="col-sm-10">
+                                <input id="remarks" name="remarks" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">入库日期：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="laydate-icon layer-date form-control" id="createDate" name="createDate" th:value="${createDate}==null?null:${#dates.format(createDate,'yyyy-MM-dd')}" placeholder="请选择入库日期"
+                                       onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+                            </div>
+                            <label class="col-sm-2 control-label">经手人：</label>
+                            <div class="col-sm-4">
+                                <select data-placeholder="--选择人员--" name="inboundBy" id="inboundBy"
+                                        class="form-control chosen-select" tabindex="2"  required>
+                                    <option value="">--选择人员--</option>
+                                    <option value="张三" selected>--张三--</option>
+                                    <option value="李四">--李四--</option>
+                                </select>
+                                <!--
+                                                                <input id="inboundBy" name="inboundBy" class="form-control" type="text">
+                                -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/stock/inbound/add.js">
+    </script>
+<!--<script type="text/javascript" src="/js/bootstrap-editable.min.js"></script>
+<script type="text/javascript" src="/js/plugins/bootstrap-table/bootstrap-table-editable.js"></script>
+<link href="/css/plugins/select/select2-bootstrap.css" rel="stylesheet" />
+<link href="/css/plugins/select/select2.min.css" rel="stylesheet" />
+<script src="/js/plugins/select2/select2.full.min.js"></script>-->
+</body>
+</html>

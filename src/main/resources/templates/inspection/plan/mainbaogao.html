@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 20px;font-weight: bold">巡检记录表</div>
+					<form class="form-horizontal m-t" id="signupForm">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">巡检网点：</label>
+							<div class="col-sm-4">
+								<input id="planArea" name="planArea" th:value="大滩支行" class="form-control" type="text"readonly>
+							</div>
+							<label class="col-sm-2 control-label">计划编号：</label>
+							<div class="col-sm-4">
+								<input id="planCode" name="planCode" th:value="201802010001" class="form-control" type="text"readonly>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label">计划巡检时间：</label>
+							<div class="col-sm-4">
+								<input id="planTime" name="planTime" th:value="2018-05-06" class="form-control" type="text"readonly>
+							</div>
+							<label class="col-sm-2 control-label">巡检时间：</label>
+							<div class="col-sm-4">
+								<input id="Time" name="Time" th:value="2018-02-13"  class="form-control" type="text"readonly>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">计划领取人：</label>
+							<div class="col-sm-4">
+								<input id="person" name="person" th:value="张三" class="form-control"type="text"readonly >
+							</div>
+							<label class="col-sm-2 control-label">巡检人：</label>
+							<div class="col-sm-4">
+								<input id="xjperson" name="xjperson" th:value="赵四" class="form-control" type="text"readonly>
+							</div>
+						</div>
+						<!--	<div class="form-group">
+                                <label class="col-sm-2 control-label">模板名称：</label>
+                                <div class="col-sm-4">
+                                    <input id="storeroomId" name="storeroomId" class="form-control" type="text">
+                                </div>
+                                <label class="col-sm-2 control-label">模板编号：</label>
+                                <div class="col-sm-4">
+                                    <input id="id" name="storeroomId" class="form-control"th:value="M123456" type="text"readonly>
+                                </div>
+
+                            </div>-->
+
+
+					</form>
+
+					<
+					<div class="text" style=" text-align:center;font-size: 17px;">柜面设备信息</div>
+					<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+						<tbody>
+						<tr>
+							<td align="center" height="31" width="16%">
+								<b><font size="3">序号</font></b></td>
+
+							<td align="center" height="31" width="17%">
+								<b><font size="3">设备名称</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">品牌</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">型号</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">数量</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">设备状态</font></b></td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">1</td>
+							<td align="center" height="31" width="16%">打印机</td>
+							<td align="center" height="31" width="17%">惠普</td>
+							<td align="center" height="31" width="17%">HP 1020plus</td>
+							<td align="center" height="31" width="17%">1</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">2</td>
+							<td align="center" height="31" width="16%">指纹仪</td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">CHD200GIC</td>
+							<td align="center" height="31" width="17%">2</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">3</td>
+							<td align="center" height="31" width="16%">业务终端</td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">P35C</td>
+							<td align="center" height="31" width="17%">2</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">4</td>
+							<td align="center" height="31" width="16%">读卡器</td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">SKRD-EM/W1</td>
+							<td align="center" height="31" width="17%">1</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">5</td>
+							<td align="center" height="31" width="16%">密码键盘</td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">MAX3420E</td>
+							<td align="center" height="31" width="17%">1</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">6</td>
+							<td align="center" height="31" width="16%">发电机</td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">OB3000I5</td>
+							<td align="center" height="31" width="17%">1</td>
+							<td align="center" height="31" width="17%">正常</td>
+						</tr>
+
+						</tbody>
+					</table>
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">柜面设备维修信息</div>
+					<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="102" width="100%">
+						<tbody>
+
+						<tr>
+							<td align="center" height="31" width="16%">
+								<b><font size="3">序号</font></b></td>
+
+							<td align="center" height="31" width="17%">
+								<b><font size="3">设备名称</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">序列号</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">已使用年限</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">处理方式</font></b></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">1</td>
+							<td align="center" height="31" width="16%">打印机</td>
+							<td align="center" height="31" width="17%">00256895636</td>
+							<td align="center" height="31" width="17%">3年</td>
+							<td align="center" height="31" width="17%">现场维修</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">2</td>
+							<td align="center" height="31" width="16%">业务终端</td>
+							<td align="center" height="31" width="17%">1257896633</td>
+							<td align="center" height="31" width="17%">2年</td>
+							<td align="center" height="31" width="17%">现场维修</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">3</td>
+							<td align="center" height="31" width="16%"></td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">现场维修/统一维修</td>
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">4</td>
+							<td align="center" height="31" width="16%"></td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%"></td>
+							<td align="center" height="31" width="17%">现场维修/统一维修</td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">发电机组检测</div>
+					<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0"  width="100%">
+						<tbody>
+
+						<tr>
+							<td align="center" height="31" width="16%">
+								<b><font size="3">检查项</font></b></td>
+
+							<td align="center" height="31" width="17%">
+								<b><font size="3">状态</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">处理方法</font></b></td>
+
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">机油检查</td>
+							<td align="center" height="31" width="16%">
+								<label class="radio-inline" > <input type="radio"
+																	 name="status1" value="1" checked="checked"/><div style="width:91px; height:91px; margin-top:7px; margin-left:5px; display:inline"  >正常</div>
+								</label> <label class="radio-inline"> <input type="radio"
+																			 name="status1" value="0" />不正常
+							</label>
+							</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">冷却系统检测</td>
+							<td align="center" height="31" width="16%">
+								<label class="radio-inline" > <input type="radio"
+																	 name="status2" value="1" checked="checked"/><div style="width:91px; height:91px; margin-top:7px; margin-left:5px; display:inline"  >正常</div>
+								</label> <label class="radio-inline"> <input type="radio"
+																			 name="status2" value="0" />不正常
+							</label>
+							</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">输出线接点检查</td>
+							<td align="center" height="31" width="16%">
+								<label class="radio-inline" > <input type="radio"
+																	 name="status3" value="1" checked="checked"/><div style="width:91px; height:91px; margin-top:7px; margin-left:5px; display:inline"  >正常</div>
+								</label> <label class="radio-inline"> <input type="radio"
+																			 name="status3" value="0" />不正常
+							</label>
+							</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">整机外观检查</td>
+							<td align="center" height="31" width="16%">
+								<label class="radio-inline" > <input type="radio"
+																	 name="status4" value="1"checked="checked" /><div style="width:91px; height:91px; margin-top:7px; margin-left:5px; display:inline"  >正常</div>
+								</label> <label class="radio-inline"> <input type="radio"
+																			 name="status4" value="0" />不正常
+							</label>
+							</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						</tbody>
+					</table>
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">UPS机头及电池检测</div>
+					<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0"  width="100%">
+						<tbody>
+
+						<tr>
+							<td align="center" height="31" width="16%">输入电压Vac</td>
+
+							<td align="center"style="margin-right: 3px" height="31" width="17%">380V</td>
+							<td align="center" height="31" width="17%">输出电压Vac</td>
+							<td align="center"style="margin-right: 10px" height="31" width="17%">380V</td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">输出负载</td>
+
+							<td align="center"style="margin-right: 10px" height="31" width="17%">20%</td>
+							<td align="center" height="31" width="17%">额定容量Kw</td>
+							<td align="center"style="margin-right: 10px" height="31" width="17%">200Kw</td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">输入频率Hz</td>
+
+							<td align="center"style="margin-right: 10px" height="31" width="17%">50Hz</td>
+							<td align="center" height="31" width="17%">输出频率Hz</td>
+							<td align="center"style="margin-right: 10px" height="31" width="17%">50Hz</td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">电池标称电压</td>
+
+							<td align="center"style="margin-right: 10px" height="31" width="17%">380V</td>
+							<td align="center" height="31" width="17%">风扇情况</td>
+							<td align="center"style="margin-right: 10px" height="31" width="17%">正常</td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">输入电压Vac</td>
+
+							<td align="center"style="margin-right: 10px" height="31" width="17%">380V</td>
+							<td align="center" height="31" width="17%">输出电压Vac</td>
+							<td align="center"style="margin-right: 10px" height="31" width="17%">380V</td>
+
+						</tr>
+						</tbody>
+					</table>
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">配电系统检查</div>
+					<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0"  width="100%">
+						<tbody>
+
+						<tr>
+							<td align="center" height="31" width="16%">
+								<b><font size="3">检查项目</font></b></td>
+
+							<td align="center" height="31" width="17%">
+								<b><font size="3">状态</font></b></td>
+							<td align="center" height="31" width="17%">
+								<b><font size="3">整改意见</font></b></td>
+
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">防雷系统</td>
+							<td align="center" height="31" width="16%">正常</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">输入输出端子紧固情况</td>
+							<td align="center" height="31" width="16%">正常</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">电气连接是否正常</td>
+							<td align="center" height="31" width="16%">正常</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						<tr>
+							<td align="center" height="31" width="16%">电气连接点有无变形、色变老化</td>
+							<td align="center" height="31" width="16%">无</td>
+							<td align="center" height="31" width="17%"></td>
+
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/inspection/template/edit.js">
+</script>
+</body>
+</html>

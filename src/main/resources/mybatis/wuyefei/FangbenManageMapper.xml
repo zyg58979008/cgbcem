@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wuye.dao.FangbenManageDao">
+
+    <select id="get" resultType="com.bootdo.wuye.domain.FangbenDO">
+		select `id`,`dept_id`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`building_id`,`room_id`,`pay_type`,`weixiu_unpay`,`weixiu_payer`,`weixiu_ying`,`jiaoyi_unpay`,`jiaoyi_payer`,`jiaoyi_ying`,`fangben_unpay`,`fangben_payer`,`fangben_ying`,`qishui_unpay`,`qishui_payer`,`qishui_ying`,`daiban_unpay`,`daiban_payer`,`daiban_ying`,`qk_jiaoyi`,`qk_fangben`,`qk_qishui`,`qk_daiban` from fangben where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.wuye.domain.FangbenDO">
+        SELECT
+        f.id,
+        f.dept_id,
+        f.create_by,
+        f.create_date,
+        f.update_by,
+        f.update_date,
+        f.del_flag,
+        f.building_id,
+        f.room_id,
+        f.weixiu_unpay,
+        f.weixiu_payer,
+        f.weixiu_ying,
+        f.jiaoyi_unpay,
+        f.jiaoyi_payer,
+        f.jiaoyi_ying,
+        f.fangben_unpay,
+        f.fangben_payer,
+        f.fangben_ying,
+        f.qishui_unpay,
+        f.qishui_payer,
+        f.qishui_ying,
+        f.daiban_unpay,
+        f.daiban_payer,
+        f.daiban_ying,
+        f.qk_jiaoyi,
+        f.qk_fangben,
+        f.qk_qishui,
+        f.qk_daiban,
+        rc.name,
+        rc.id_card AS idCard,
+        rc.phone AS phone,
+        rc.total_price AS totalPrice,
+        rc.yishou AS yishou,
+        rc.weishou AS weishou,
+        r.code AS CODE,
+        r.unit AS unit,
+        r.floor AS FLOOR,
+        r.building_area AS buildingArea,
+        (SELECT
+        sd3.name
+        FROM
+        sys_dict sd3
+        WHERE rc.pay_type = sd3.value
+        AND sd3.type = 'pay_type') AS payTypeName,
+        (SELECT
+        sd1.name
+        FROM
+        sys_dict sd1
+        WHERE r.room_type = sd1.value
+        AND sd1.type = 'room_type') AS roomTypeName,
+        rc.price AS price,
+        (SELECT
+        b.name
+        FROM
+        building b
+        WHERE b.id = r.building_id
+        AND b.del_flag = '0') AS buildingName
+        FROM
+        fangben f,room r,room_contract rc
+
+        WHERE f.room_id = r.id AND  rc.room_id = r.id AND f.`room_id`=rc.`room_id` AND rc.state IN ('0', '1')
+            <if test="id != null and id != ''">and f.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and f.dept_id = #{deptId}</if>
+            <if test="createBy != null and createBy != ''">and f.create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and f.create_date = #{createDate}</if>
+            <if test="updateBy != null and updateBy != ''">and f.update_by = #{updateBy}</if>
+            <if test="updateDate != null and updateDate != ''">and f.update_date = #{updateDate}</if>
+            <if test="delFlag != null and delFlag != ''">and f.del_flag = #{delFlag}</if>
+            <if test="buildingId != null and buildingId != ''">and r.building_id=#{buildingId}
+            </if>
+            <if test="roomId != null and roomId != ''">and f.room_id = #{roomId}</if>
+            <if test="weixiuUnpay != null and weixiuUnpay != ''">and f.weixiu_unpay = #{weixiuUnpay}</if>
+            <if test="weixiuPayer != null and weixiuPayer != ''">and f.weixiu_payer = #{weixiuPayer}</if>
+            <if test="weixiuYing != null and weixiuYing != ''">and f.weixiu_ying = #{weixiuYing}</if>
+            <if test="jiaoyiUnpay != null and jiaoyiUnpay != ''">and f.jiaoyi_unpay = #{jiaoyiUnpay}</if>
+            <if test="jiaoyiPayer != null and jiaoyiPayer != ''">and f.jiaoyi_payer = #{jiaoyiPayer}</if>
+            <if test="jiaoyiYing != null and jiaoyiYing != ''">and f.jiaoyi_ying = #{jiaoyiYing}</if>
+            <if test="fangbenUnpay != null and fangbenUnpay != ''">and f.fangben_unpay = #{fangbenUnpay}</if>
+            <if test="fangbenPayer != null and fangbenPayer != ''">and f.fangben_payer = #{fangbenPayer}</if>
+            <if test="fangbenYing != null and fangbenYing != ''">and f.fangben_ying = #{fangbenYing}</if>
+            <if test="qishuiUnpay != null and qishuiUnpay != ''">and f.qishui_unpay = #{qishuiUnpay}</if>
+            <if test="qishuiPayer != null and qishuiPayer != ''">and f.qishui_payer = #{qishuiPayer}</if>
+            <if test="qishuiYing != null and qishuiYing != ''">and f.qishui_ying = #{qishuiYing}</if>
+            <if test="daibanUnpay != null and daibanUnpay != ''">and f.daiban_unpay = #{daibanUnpay}</if>
+            <if test="daibanPayer != null and daibanPayer != ''">and f.daiban_payer = #{daibanPayer}</if>
+            <if test="daibanYing != null and daibanYing != ''">and f.daiban_ying = #{daibanYing}</if>
+            <if test="code != null and code != ''">and r.code like CONCAT('%',#{code},'%')</if>
+            <if test="name != null and name != ''">and rc.name like CONCAT('%',#{name},'%')</if>
+            <if test="roomType != null and roomType != ''">and r.room_type = #{roomType}</if>
+            <if test="payType != null and payType != ''">and f.pay_type = #{payType}</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by r.floor,r.CODE desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <select id="listPay" resultType="com.bootdo.wuye.domain.FangbenDO">
+        SELECT
+        f.id,
+        f.dept_id,
+        f.create_by,
+        f.create_date,
+        f.update_by,
+        f.update_date,
+        f.del_flag,
+        f.building_id,
+        f.room_id,
+        f.weixiu_unpay,
+        f.weixiu_payer,
+        f.weixiu_ying,
+        f.jiaoyi_unpay,
+        f.jiaoyi_payer,
+        f.jiaoyi_ying,
+        f.fangben_unpay,
+        f.fangben_payer,
+        f.fangben_ying,
+        f.qishui_unpay,
+        f.qishui_payer,
+        f.qishui_ying,
+        f.daiban_unpay,
+        f.daiban_payer,
+        f.daiban_ying,
+        f.qk_jiaoyi,
+        f.qk_fangben,
+        f.qk_qishui,
+        f.qk_daiban,
+        rc.name,
+        rc.id_card AS idCard,
+        rc.phone AS phone,
+        rc.total_price AS totalPrice,
+        rc.yishou AS yishou,
+        rc.weishou AS weishou,
+        r.code AS CODE,
+        r.unit AS unit,
+        r.floor AS FLOOR,
+        r.building_area AS buildingArea,
+        (SELECT
+        sd3.name
+        FROM
+        sys_dict sd3
+        WHERE rc.pay_type = sd3.value
+        AND sd3.type = 'pay_type') AS payTypeName,
+        (SELECT
+        sd1.name
+        FROM
+        sys_dict sd1
+        WHERE r.room_type = sd1.value
+        AND sd1.type = 'room_type') AS roomTypeName,
+        rc.price AS price,
+        (SELECT
+        b.name
+        FROM
+        building b
+        WHERE b.id = r.building_id
+        AND b.del_flag = '0') AS buildingName
+        FROM
+        fangben f,room r,room_contract rc
+
+        WHERE f.room_id = r.id AND  rc.room_id = r.id AND f.`room_id`=rc.`room_id` AND rc.state IN ('0', '1') and (f.weixiu_unpay+f.jiaoyi_unpay+f.fangben_unpay+f.qishui_unpay+f.daiban_unpay)>0
+            <if test="id != null and id != ''">and f.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and f.dept_id = #{deptId}</if>
+            <if test="createBy != null and createBy != ''">and f.create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and f.create_date = #{createDate}</if>
+            <if test="updateBy != null and updateBy != ''">and f.update_by = #{updateBy}</if>
+            <if test="updateDate != null and updateDate != ''">and f.update_date = #{updateDate}</if>
+            <if test="delFlag != null and delFlag != ''">and f.del_flag = #{delFlag}</if>
+            <if test="buildingId != null and buildingId != ''">and r.building_id =#{buildingId}
+            </if>
+            <if test="roomId != null and roomId != ''">and f.room_id = #{roomId}</if>
+            <if test="weixiuUnpay != null and weixiuUnpay != ''">and f.weixiu_unpay = #{weixiuUnpay}</if>
+            <if test="weixiuPayer != null and weixiuPayer != ''">and f.weixiu_payer = #{weixiuPayer}</if>
+            <if test="weixiuYing != null and weixiuYing != ''">and f.weixiu_ying = #{weixiuYing}</if>
+            <if test="jiaoyiUnpay != null and jiaoyiUnpay != ''">and f.jiaoyi_unpay = #{jiaoyiUnpay}</if>
+            <if test="jiaoyiPayer != null and jiaoyiPayer != ''">and f.jiaoyi_payer = #{jiaoyiPayer}</if>
+            <if test="jiaoyiYing != null and jiaoyiYing != ''">and f.jiaoyi_ying = #{jiaoyiYing}</if>
+            <if test="fangbenUnpay != null and fangbenUnpay != ''">and f.fangben_unpay = #{fangbenUnpay}</if>
+            <if test="fangbenPayer != null and fangbenPayer != ''">and f.fangben_payer = #{fangbenPayer}</if>
+            <if test="fangbenYing != null and fangbenYing != ''">and f.fangben_ying = #{fangbenYing}</if>
+            <if test="qishuiUnpay != null and qishuiUnpay != ''">and f.qishui_unpay = #{qishuiUnpay}</if>
+            <if test="qishuiPayer != null and qishuiPayer != ''">and f.qishui_payer = #{qishuiPayer}</if>
+            <if test="qishuiYing != null and qishuiYing != ''">and f.qishui_ying = #{qishuiYing}</if>
+            <if test="daibanUnpay != null and daibanUnpay != ''">and f.daiban_unpay = #{daibanUnpay}</if>
+            <if test="daibanPayer != null and daibanPayer != ''">and f.daiban_payer = #{daibanPayer}</if>
+            <if test="daibanYing != null and daibanYing != ''">and f.daiban_ying = #{daibanYing}</if>
+            <if test="code != null and code != ''">and r.code like CONCAT('%',#{code},'%')</if>
+            <if test="name != null and name != ''">and rc.name like CONCAT('%',#{name},'%')</if>
+            <if test="roomType != null and roomType != ''">and r.room_type = #{roomType}</if>
+            <if test="payType != null and payType != ''">and f.pay_type = #{payType}</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by r.floor,r.CODE desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <select id="count" resultType="int">
+        select
+        count(*)
+        FROM
+        fangben f,room r,room_contract rc
+        WHERE f.room_id = r.id AND  rc.room_id = r.id AND f.`room_id`=rc.`room_id` AND rc.state IN ('0', '1')
+            <if test="id != null and id != ''">and f.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and f.dept_id = #{deptId}</if>
+            <if test="createBy != null and createBy != ''">and f.create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and f.create_date = #{createDate}</if>
+            <if test="updateBy != null and updateBy != ''">and f.update_by = #{updateBy}</if>
+            <if test="updateDate != null and updateDate != ''">and f.update_date = #{updateDate}</if>
+            <if test="delFlag != null and delFlag != ''">and f.del_flag = #{delFlag}</if>
+            <if test="buildingId != null and buildingId != ''">and r.building_id =#{buildingId}
+            </if>
+            <if test="roomId != null and roomId != ''">and f.room_id = #{roomId}</if>
+            <if test="weixiuUnpay != null and weixiuUnpay != ''">and f.weixiu_unpay = #{weixiuUnpay}</if>
+            <if test="weixiuPayer != null and weixiuPayer != ''">and f.weixiu_payer = #{weixiuPayer}</if>
+            <if test="weixiuYing != null and weixiuYing != ''">and f.weixiu_ying = #{weixiuYing}</if>
+            <if test="jiaoyiUnpay != null and jiaoyiUnpay != ''">and f.jiaoyi_unpay = #{jiaoyiUnpay}</if>
+            <if test="jiaoyiPayer != null and jiaoyiPayer != ''">and f.jiaoyi_payer = #{jiaoyiPayer}</if>
+            <if test="jiaoyiYing != null and jiaoyiYing != ''">and f.jiaoyi_ying = #{jiaoyiYing}</if>
+            <if test="fangbenUnpay != null and fangbenUnpay != ''">and f.fangben_unpay = #{fangbenUnpay}</if>
+            <if test="fangbenPayer != null and fangbenPayer != ''">and f.fangben_payer = #{fangbenPayer}</if>
+            <if test="fangbenYing != null and fangbenYing != ''">and f.fangben_ying = #{fangbenYing}</if>
+            <if test="qishuiUnpay != null and qishuiUnpay != ''">and f.qishui_unpay = #{qishuiUnpay}</if>
+            <if test="qishuiPayer != null and qishuiPayer != ''">and f.qishui_payer = #{qishuiPayer}</if>
+            <if test="qishuiYing != null and qishuiYing != ''">and f.qishui_ying = #{qishuiYing}</if>
+            <if test="daibanUnpay != null and daibanUnpay != ''">and f.daiban_unpay = #{daibanUnpay}</if>
+            <if test="daibanPayer != null and daibanPayer != ''">and f.daiban_payer = #{daibanPayer}</if>
+            <if test="daibanYing != null and daibanYing != ''">and f.daiban_ying = #{daibanYing}</if>
+            <if test="code != null and code != ''">and r.code like CONCAT('%',#{code},'%')</if>
+            <if test="name != null and name != ''">and rc.name like CONCAT('%',#{name},'%')</if>
+            <if test="roomType != null and roomType != ''">and r.room_type = #{roomType}</if>
+            <if test="payType != null and payType != ''">and f.pay_type = #{payType}</if>
+    </select>
+    <select id="countPay" resultType="int">
+        select
+        count(*)
+        FROM
+        fangben f,room r,room_contract rc
+        WHERE f.room_id = r.id AND  rc.room_id = r.id AND f.`room_id`=rc.`room_id` AND rc.state IN ('0', '1') and (f.weixiu_unpay+f.jiaoyi_unpay+f.fangben_unpay+f.qishui_unpay+f.daiban_unpay)>0
+        <if test="id != null and id != ''">and f.id = #{id}</if>
+        <if test="deptId != null and deptId != ''">and f.dept_id = #{deptId}</if>
+        <if test="createBy != null and createBy != ''">and f.create_by = #{createBy}</if>
+        <if test="createDate != null and createDate != ''">and f.create_date = #{createDate}</if>
+        <if test="updateBy != null and updateBy != ''">and f.update_by = #{updateBy}</if>
+        <if test="updateDate != null and updateDate != ''">and f.update_date = #{updateDate}</if>
+        <if test="delFlag != null and delFlag != ''">and f.del_flag = #{delFlag}</if>
+        <if test="buildingId != null and buildingId != ''">and r.building_id=#{buildingId}
+        </if>
+        <if test="roomId != null and roomId != ''">and f.room_id = #{roomId}</if>
+        <if test="weixiuUnpay != null and weixiuUnpay != ''">and f.weixiu_unpay = #{weixiuUnpay}</if>
+        <if test="weixiuPayer != null and weixiuPayer != ''">and f.weixiu_payer = #{weixiuPayer}</if>
+        <if test="weixiuYing != null and weixiuYing != ''">and f.weixiu_ying = #{weixiuYing}</if>
+        <if test="jiaoyiUnpay != null and jiaoyiUnpay != ''">and f.jiaoyi_unpay = #{jiaoyiUnpay}</if>
+        <if test="jiaoyiPayer != null and jiaoyiPayer != ''">and f.jiaoyi_payer = #{jiaoyiPayer}</if>
+        <if test="jiaoyiYing != null and jiaoyiYing != ''">and f.jiaoyi_ying = #{jiaoyiYing}</if>
+        <if test="fangbenUnpay != null and fangbenUnpay != ''">and f.fangben_unpay = #{fangbenUnpay}</if>
+        <if test="fangbenPayer != null and fangbenPayer != ''">and f.fangben_payer = #{fangbenPayer}</if>
+        <if test="fangbenYing != null and fangbenYing != ''">and f.fangben_ying = #{fangbenYing}</if>
+        <if test="qishuiUnpay != null and qishuiUnpay != ''">and f.qishui_unpay = #{qishuiUnpay}</if>
+        <if test="qishuiPayer != null and qishuiPayer != ''">and f.qishui_payer = #{qishuiPayer}</if>
+        <if test="qishuiYing != null and qishuiYing != ''">and f.qishui_ying = #{qishuiYing}</if>
+        <if test="daibanUnpay != null and daibanUnpay != ''">and f.daiban_unpay = #{daibanUnpay}</if>
+        <if test="daibanPayer != null and daibanPayer != ''">and f.daiban_payer = #{daibanPayer}</if>
+        <if test="daibanYing != null and daibanYing != ''">and f.daiban_ying = #{daibanYing}</if>
+        <if test="code != null and code != ''">and r.code like CONCAT('%',#{code},'%')</if>
+        <if test="name != null and name != ''">and rc.name like CONCAT('%',#{name},'%')</if>
+        <if test="roomType != null and roomType != ''">and r.room_type = #{roomType}</if>
+        <if test="payType != null and payType != ''">and f.pay_type = #{payType}</if>
+    </select>
+    <select id="pay" resultType="com.bootdo.common.domain.PayListDO">
+        select p.id,p.remark,p.dept_id,p.dept_name,p.name,p.state,p.create_by,p.create_date,p.building_id,p.building_name,p.room_id,p.room_code,p.unit,p.floor,p.type,p.s_type,p.s_type_name,p.code,p.price,p.pay_type,p.receipt_by,p.pay_by,p.brand_receipt_by,p.card_no,p.bank,p.chongxiao_code,p.area,p.yewu_id,p.brand,p.type_name,p.print,p.date,p.pay_date
+        <if test = 'types== "wuye"'>
+            ,(SELECT w.name FROM wuyefei w WHERE w.id=(SELECT wd.`wuyefei_id` FROM wuyefei_detail wd WHERE wd.id=p.yewu_id)) as title
+        </if>
+        <if test = 'types== "qunuan"'>
+            ,(SELECT q.name FROM qunuanfei q WHERE q.id=(SELECT qd.`qunuanfei_id` FROM qunuanfei_detail qd WHERE qd.id=p.yewu_id)) as title
+        </if>
+        from pay_wuye_list p
+        <where>
+            <if test="id != null and id != ''"> and p.id = #{id} </if>
+            <if test="deptId != null and deptId != ''"> and p.dept_id = #{deptId} </if>
+            <if test="deptName != null and deptName != ''"> and p.dept_name = #{deptName} </if>
+            <if test="state != null and state != ''"> and p.state = #{state} </if>
+            <if test="createBy != null and createBy != ''"> and p.create_by = #{createBy} </if>
+            <if test="createDate != null and createDate != ''"> and p.create_date = #{createDate} </if>
+            <if test="buildingId != null and buildingId != ''"> and
+                p.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''"> and p.building_name = #{buildingName} </if>
+            <if test="roomId != null and roomId != ''"> and p.room_id = #{roomId} </if>
+            <if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+            <if test="unit != null and unit != ''"> and p.unit = #{unit} </if>
+            <if test="floor != null and floor != ''"> and p.floor = #{floor} </if>
+            <if test="type != null and type != ''"> and p.type = #{type} </if>
+            <if test="sType != null and sType != ''"> and p.s_type = #{sType} </if>
+            <if test="sTypeName != null and sTypeName != ''"> and p.s_type_name = #{sTypeName} </if>
+            <if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+            <if test="price != null and price != ''"> and p.price = #{price} </if>
+            <if test="payType != null and payType != ''"> and p.pay_type = #{payType} </if>
+            <if test="receiptBy != null and receiptBy != ''"> and p.receipt_by = #{receiptBy} </if>
+            <if test="payBy != null and payBy != ''"> and p.pay_by = #{payBy} </if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''"> and p.brand_receipt_by = #{brandReceiptBy} </if>
+            <if test="cardNo != null and cardNo != ''"> and p.card_no = #{cardNo} </if>
+            <if test="bank != null and bank != ''"> and p.bank = #{bank} </if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''"> and p.chongxiao_code = #{chongxiaoCode} </if>
+            <if test="area != null and area != ''"> and p.area = #{area} </if>
+            <if test="yewuId != null and yewuId != ''"> and p.yewu_id = #{yewuId} </if>
+            <if test="brand != null and brand != ''"> and p.brand = #{brand} </if>
+            <if test="typeName != null and typeName != ''"> and p.type_name = #{typeName} </if>
+            <if test="print != null and print != ''"> and p.print = #{print} </if>
+            <if test="name != null and name != ''"> and p.name like CONCAT('%',#{name},'%') </if>
+            <if test="startDate != null and startDate != ''"> and
+                DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+            </if>
+            <if test = 'types== "wuye"'>
+                and p.s_type ='1'
+            </if>
+            <if test = 'types== "qunuan"'>
+                and p.s_type in ('2','3')
+            </if>
+            <if test = 'types== "fangben"'>
+                and p.s_type in ('4','5','6','7','8')
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by p.pay_date desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <select id="countPayList" resultType="int">
+        select count(*) from pay_wuye_list
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+            <if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+            <if test="state != null and state != ''"> and state = #{state} </if>
+            <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+            <if test="buildingId != null and buildingId != ''"> and
+                building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+            <if test="roomId != null and roomId != ''"> and room_id = #{roomId} </if>
+            <if test="roomCode != null and roomCode != ''">and room_code like CONCAT('%',#{roomCode},'%')</if>            <if test="unit != null and unit != ''"> and unit = #{unit} </if>
+            <if test="floor != null and floor != ''"> and floor = #{floor} </if>
+            <if test="type != null and type != ''"> and type = #{type} </if>
+            <if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+            <if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+            <if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+            <if test="price != null and price != ''"> and price = #{price} </if>
+            <if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+            <if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+            <if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+            <if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+            <if test="bank != null and bank != ''"> and bank = #{bank} </if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+            <if test="area != null and area != ''"> and area = #{area} </if>
+            <if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%') </if>
+            <if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+            <if test="brand != null and brand != ''"> and brand = #{brand} </if>
+            <if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+            <if test="print != null and print != ''"> and print = #{print} </if>
+            <if test="startDate != null and startDate != ''"> and
+                DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+            </if>
+            <if test = 'types== "wuye"'>
+                and s_type ='1'
+            </if>
+            <if test = 'types== "qunuan"'>
+                and s_type in ('2','3')
+            </if>
+            <if test = 'types== "fangben"'>
+                and s_type in ('4','5','6','7','8')
+            </if>
+        </where>
+    </select>
+    <insert id="save" parameterType="com.bootdo.wuye.domain.FangbenDO" useGeneratedKeys="true" keyProperty="id">
+		insert into fangben
+		select
+		null,
+        #{deptId},
+        #{createBy},
+        #{createDate},
+        #{updateBy},
+        #{updateDate},
+        #{delFlag},
+        r.building_id,
+        r.id,
+        rc.pay_type,
+        CONVERT(r.building_area*r.weixiu,DECIMAL(10,2)),
+        '0',
+        CONVERT(r.building_area*r.weixiu,DECIMAL(10,2)),
+        if(rc.pay_type=1,"0",r.jiaoyifei),
+        '0',
+        if(rc.pay_type=1,"0",r.jiaoyifei),
+        if(rc.pay_type=1,"0",r.fangchanzheng),
+        '0',
+        if(rc.pay_type=1,"0",r.fangchanzheng),
+        if(rc.pay_type=1,"0",CONVERT(r.qishui*rc.total_price,DECIMAL(10,2))),
+        '0',
+        if(rc.pay_type=1,"0",CONVERT(r.qishui*rc.total_price,DECIMAL(10,2))),
+        if(rc.pay_type=1,"0",r.daibanfei),
+        '0',
+        if(rc.pay_type=1,"0",r.daibanfei),
+        r.jiaoyifei,
+        r.fangchanzheng,
+        CONVERT(r.qishui*rc.total_price,DECIMAL(10,2)),
+        r.daibanfei
+        from room_contract rc left join room r on r.id=rc.room_id and rc.del_flag='0'
+        where r.building_id in
+        (select b.id from building b where b.dept_id=#{deptId} and b.del_flag='0')
+        AND r.id NOT IN (SELECT d.id FROM (SELECT f.room_id AS id FROM fangben f
+        WHERE (f.weixiu_payer+f.jiaoyi_payer+f.fangben_payer+f.qishui_payer+f.daiban_payer)>0
+        and f.dept_id=#{deptId}) d)
+         and rc.sell_type not in ('4','6')
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.wuye.domain.FangbenDO">
+        update fangben
+        <set>
+            <if test="deptId != null">`dept_id` = #{deptId},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="createDate != null">`create_date` = #{createDate},</if>
+            <if test="updateBy != null">`update_by` = #{updateBy},</if>
+            <if test="updateDate != null">`update_date` = #{updateDate},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="buildingId != null">`building_id` = #{buildingId},</if>
+            <if test="roomId != null">`room_id` = #{roomId},</if>
+            <if test="weixiuUnpay != null">`weixiu_unpay` = #{weixiuUnpay},</if>
+            <if test="weixiuPayer != null">`weixiu_payer` = #{weixiuPayer},</if>
+            <if test="weixiuYing != null">`weixiu_ying` = #{weixiuYing},</if>
+            <if test="jiaoyiUnpay != null">`jiaoyi_unpay` = #{jiaoyiUnpay},</if>
+            <if test="jiaoyiPayer != null">`jiaoyi_payer` = #{jiaoyiPayer},</if>
+            <if test="jiaoyiYing != null">`jiaoyi_ying` = #{jiaoyiYing},</if>
+            <if test="fangbenUnpay != null">`fangben_unpay` = #{fangbenUnpay},</if>
+            <if test="fangbenPayer != null">`fangben_payer` = #{fangbenPayer},</if>
+            <if test="fangbenYing != null">`fangben_ying` = #{fangbenYing},</if>
+            <if test="qishuiUnpay != null">`qishui_unpay` = #{qishuiUnpay},</if>
+            <if test="qishuiPayer != null">`qishui_payer` = #{qishuiPayer},</if>
+            <if test="qishuiYing != null">`qishui_ying` = #{qishuiYing},</if>
+            <if test="daibanUnpay != null">`daiban_unpay` = #{daibanUnpay},</if>
+            <if test="daibanPayer != null">`daiban_payer` = #{daibanPayer},</if>
+            <if test="daibanYing != null">`daiban_ying` = #{daibanYing}, </if>
+            <if test="qkjiaoyi != null">`qk_jiaoyi` = #{qkjiaoyi}, </if>
+            <if test="qkFangben != null">`qk_fangben` = #{qkFangben}, </if>
+            <if test="qkQishui != null">`qk_qishui` = #{qkQishui}, </if>
+            <if test="qkDaiban != null">`qk_daiban` = #{qkDaiban}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from fangben where id = #{value}
+	</delete>
+    <delete id="removeNotPay">
+        delete from fangben
+        where (weixiu_payer+jiaoyi_payer+fangben_payer+qishui_payer+daiban_payer)=0
+        and dept_id=#{deptId}
+    </delete>
+    <delete id="batchRemove">
+        delete from fangben where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

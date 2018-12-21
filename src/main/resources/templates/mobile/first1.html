@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>设备管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link href="/css/amazeui.min.css" rel="stylesheet">
+</head>
+<body>
+<style>
+
+    .table>tbody>tr:hover {
+        background-color: #fff;
+    }
+
+</style>
+<div style="height: 18rem;background-image: url(/img/aa.jpg);">
+
+   <!-- <div align="center" >
+
+            <img src="/img/beiwang.png" alt="">
+
+        <h4 class="lead text-shadow-black">设备管理系统</h4>
+    </div>-->
+</div>
+<div style="background-color: #e8edf1;height: 25px;"><a style="color: black;margin-left: 10px;margin-top: 10px">设备查询</a></div>
+<div class="has-padding"style="margin-top: 20px">
+    <div class="row"align="center">
+        <div class="column  bordered" onclick="xunjian3()">
+                <img src="/img/kucunchaxun.png"style="width: 40px;height: 40px">
+            <p style="font-size: 12px;margin-top: 5px">库存</p>
+        </div>
+        <div class="column  bordered" onclick="movedetail()">
+                <img src="/img/yikuchaxun.png" style="width: 40px;height: 40px">
+            <p style="font-size: 12px;margin-top: 5px" >移库</p>
+        </div>
+
+        <div class="column  bordered "onclick="repair1()">
+            <div class="avatar avatar-xl  space-sm">
+
+            </div>
+            <p style="font-size: 12px"></p>
+        </div>
+       <div class="column  bordered ">
+            <div class="avatar avatar-xl  space-sm">
+
+            </div>
+            <p style="font-size: 12px"></p>
+        </div>
+      <!--  <div class="column  bordered ">
+            <div class="avatar avatar-xl  space-sm">
+                <img src="/img/pin.png" style="height: 50px;width: 50px">
+            </div>
+            <p style="font-size: 12px">备用</p>
+        </div>-->
+    </div>
+
+</div>
+
+
+<div style="   height: 5px;background-color: #e8edf1"></div>
+<table class="table bordered">
+
+    <tbody>
+    <tr>
+        <td colspan="4"align="center">设备管理</td>
+
+    </tr>
+    <tr>
+        <td style="width: 25%"onclick="out()"><p style="font-size: 13px">设备出库</p>
+            <img align="right" src="/img/truck.png"style="height: 60px;width:60px" >
+        </td>
+        <td style="width: 25%"onclick="move()"><p style="font-size: 13px">设备移库</p>
+            <img align="right" src="/img/yiku.png"style="height: 60px;width:60px" >
+        </td>
+
+        <td style="width: 25%"onclick="back()"><p style="font-size: 13px">设备退库</p>
+            <img align="right" src="/img/monitor.png"style="height: 60px;width:60px" >
+        </td>
+        </td>
+        <td style="width: 25%"onclick="check()"><p style="font-size: 13px">设备盘库</p>
+            <img align="right" src="/img/panku.png"style="height: 60px;width:60px" >
+        </td>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 25%"onclick="movedetailconfirm()"><p style="font-size: 13px">网点移库确认</p>
+            <img align="right" src="/img/todo.png"style="height: 60px;width:60px" >
+        </td>
+        <td style="width: 25%"><p style="font-size: 13px"></p>
+
+        </td>
+
+        <td style="width: 25%"><p style="font-size: 13px"></p>
+
+        </td>
+        </td>
+        <td style="width: 25%"><p style="font-size: 13px"></p>
+
+        </td>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+<div style="   height: 5px;background-color: #e8edf1"></div>
+<table class="table bordered">
+
+    <tbody>
+    <tr>
+        <td colspan="3"align="center">设备维护</td>
+
+    </tr>
+    <tr>
+        <td style="width: 30%"onclick="index()"><p style="font-size: 13px;margin-left: 5px">巡检作业</p>
+            <img align="right" src="/img/textedit.png"style="height: 60px;width:60px;margin-left: 5px" >
+        </td>
+        <td style="width: 30%"onclick="maintenance()"><p style="font-size: 13px;margin-left: 5px">设备报修</p>
+            <img align="right" src="/img/baoxiu.png"style="height: 60px;width:60px;margin-left: 5px" >
+        </td>
+
+
+        <td style="width: 30%"><p style="font-size: 13px"></p>
+
+        </td>
+    </tr>
+   <!-- <tr>
+        <td style="width: 30%"><p style="font-size: 13px">备用</p>
+            <img align="right" src="/img/cashbox.png"style="height: 60px;width:60px" >
+        </td>
+        <td style="width: 30%"><p style="font-size: 13px">备用</p>
+            <img align="right" src="/img/monitor.png"style="height: 60px;width:60px" >
+        </td>
+
+        <td style="width: 30%"><p style="font-size: 13px">备用</p>
+            <img align="right" src="/img/cashbox.png"style="height: 60px;width:60px" >
+        </td>
+    </tr>-->
+    </tbody>
+
+</table>
+<div style="background-color: #e8edf1;height: 25px;"align="center"><a style="color: black;font-size: 15px">Copyright © 承德北网通信工程有限公司</a></div>
+</body>
+</html>
+
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script src="/js/amazeui.min.js"></script>
+<script>
+
+
+    function xunjian3() {
+        window.location.href="/mobile/xunjian3";
+    }
+    function movedetail() {
+        window.location.href="/mobile/move_detail";
+    }
+    function repair1() {
+        window.location.href="/mobile/repair1";
+    }
+    function maintenance() {
+        window.location.href="/mobile/maintenance";
+    }
+    function out() {
+        window.location.href="/mobile/out";
+    }
+    function move() {
+        window.location.href="/mobile/move";
+    }
+    function back() {
+        window.location.href="/mobile/back";
+    }
+    function check() {
+        window.location.href="/mobile/check";
+    }
+    function index() {
+        window.location.href="/mobile/index";
+    }
+    function movedetailconfirm() {
+        window.location.href="/mobile/move_detail_confirm";
+    }
+</script>
+</body>
+</html>

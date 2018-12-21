@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >在线设备盘点</strong></div>
+    <div class="title text-right" id="num"><strong></strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <input type="hidden" id="id" th:value="${id}">
+    <div class="heading color-grey">
+        <div class="title" >
+            <div class="cell-4 cell-top">
+                选择网点：
+            </div>
+            <div class="cell">
+                <input id="deptId" name="deptId" class="hidden"   >
+                <input
+                        id="deptName" name="deptName"  class="input rounded-lg" type="text"
+                        onclick="openDept()"
+                        placeholder="选择网点" readonly style="background-color: white">
+            </div>
+        </div>
+    </div>
+    <div class="list "  id="list" style="width: 100%">
+
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <div class="title text-center" style="background-color: white;color: black" onclick="scan()">
+        <a>
+            <img src="/img/sao.png" style="width: 14px;height: 14px; padding: 0;margin: -1px 0 0 5px;">
+        </a>
+        扫码
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" onclick="save()">
+        <a><i class="icon-save"></i></a>
+        提交
+    </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/weixin/jweixin-1.2.0.js"></script>
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<script>
+    var id;
+    $(document).ready(function(){
+        id=$("#id").val();
+        $.ajax({
+            type: "get",
+            url: "/mobile/getWechatConfig",
+            data: "url="+encodeURIComponent(location.href.split('#')[0]),
+            dataType:"json",
+            success: function(data){
+                if(data&&data.error=='no'){
+                    wx.config({
+                        debug : false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId : data.appId, // 必填，公众号的唯一标识
+                        timestamp : data.timestamp, // 必填，生成签名的时间戳
+                        nonceStr : data.nonceStr, // 必填，生成签名的随机串
+                        signature : data.signature,// 必填，签名，见附录1
+                        jsApiList : ["scanQRCode"]
+                    });
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    });
+    var equipments=[];
+    var list=[];
+    var equipments1=[];
+    var num=0;
+    //扫描第一个设备
+    function add(data) {
+        if(!listContainObj(data.name,data.brand,data.category,data.model)){
+            var obj={};
+            obj.name=data.name;
+            obj.brand=data.brand;
+            obj.category=data.category;
+            obj.model=data.model;
+            obj.child=[];
+            obj.child.push(data);
+            list.push(obj);
+            var obj1={};
+            obj1.id=id;
+            obj1.equipmentId=data.id;
+            obj1.name=data.name;
+            obj1.category=data.category;
+            equipments.push(data);
+            equipments1.push(obj1);
+            var index=objIndex("1",list,data.id,data.name,data.brand,data.category,data.model);
+            var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='list"+index+"' >"+
+                    "                        <div class=\"title\">"+data.name+"</div>"+
+                    "                        <div class=\"label primary\" id='num"+index+"'>已扫码"+obj.child.length+"台设备</div>"+
+                    "                </div>";
+            $("#list").append(html);
+            num++;
+        }
+        else{
+            var index=objIndex("1",list,data.id,data.name,data.brand,data.category,data.model);
+            list[index].child.push(data);
+            var obj1={};
+            obj1.id=id;
+            obj1.equipmentId=data.id;
+            obj1.name=data.name;
+            obj1.category=data.category;
+            equipments.push(data);
+            equipments1.push(obj1);
+            $("#num"+index).text("已扫码"+list[index].child.length+"台设备");
+            num++;
+        }
+    }
+    function scan() {
+        wx.scanQRCode({
+            desc: 'scanQRCode desc',
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var id = res.resultStr;// 当needResult 为 1 时，扫码返回的结果
+                var index = objIndex( "2",equipments,id);   //结果：index=1
+                if (index < 0) {
+                    $.ajax({
+                        type : "GET",
+                        url: "/mobile/getEquipmentById",
+                        data: "id="+id,
+                        dataType:"json",
+                        success : function(data) {
+                            if(data){
+                                if(data.type=="0"){
+                                    alert('该设备还未入库！');
+                                    return;
+                                }
+                                add(data);
+                                scan();
+                            }
+                            else{
+                                alert('没有该设备信息！')
+                            }
+
+                        }
+                    });
+                }else{
+                    alert('该条码已扫描！')
+                }
+            }
+        });
+    }
+    function b() {
+        var aa;
+        if(num==0){
+            aa="A1";
+        }else {
+            aa="A2";
+        }
+        $.ajax({
+            type : "GET",
+            url: "/mobile/getEquipmentById",
+            data: "id="+aa,
+            dataType:"json",
+            success : function(data) {
+                if(data){
+                    for(var i=0;i<300;i++)
+                        add(data);
+                    //scan();
+                }
+                else{
+                    alert('没有该设备信息！')
+                }
+
+            }
+        });
+
+    }
+    function listContainObj(n,b,c,m) {
+        var state=false;
+        for(var i=0;i<list.length;i++){
+            if(list[i].name==n&&list[i].brand==b&&list[i].category==c&&list[i].model==m){
+                state=true;
+                break;
+            }
+        }
+        return state;
+    }
+    //获取list指定名称的对象索引
+    function objIndex(type,obj,id,n,b,c,m){
+        var i=-1;
+        $.each(obj,function(z,value) {
+            if(type=="1"){
+                if (value.name==n&&value.brand==b&&value.category==c&&value.model==m)
+                {
+                    i=z;
+                }
+            }
+            if(type=="2"){
+                if (value.id==id)
+                {
+                    i=z;
+                }
+            }
+        })
+        return i;
+    }
+    //删除list指定名称的对象
+    function delObj(a){
+
+        $.each(obj,function(n,value) {
+            if (value.name==a)
+            {
+                obj.splice(n,1);
+            }
+        })
+    }
+    function save() {
+        if(equipments.length==0){
+            alert("未扫描设备！")
+            return;
+        }
+        if(!$("#deptId").val()||$("#deptId").val()==''){
+            alert("请选择盘点的网点！")
+            return;
+        }
+        var a=JSON.stringify(equipments1);
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/equipment/equipmentCount/save",
+            data: {id:id,equipmentIds:a,deptId:$("#deptId").val()},
+            dataType: 'json',
+            traditional:true,
+            async : false,
+            error : function(request) {
+
+            },
+            success : function(data) {
+                alert("保存成功!");
+                window.location.href="/mobile/first";
+            }
+        });
+    }
+    var openDept = function(){
+        layer.open({
+            type:2,
+            title:"选择网点",
+            area : [ '90%', '450px' ],
+            content: "/mobile" + '/treeViewByLevelForFirstOnline'
+        })
+    }
+    function loadDept( Id,name){
+        $("#deptId").val(Id);
+        $("#deptName").val(name);
+    }
+</script>
+</body>
+</html>

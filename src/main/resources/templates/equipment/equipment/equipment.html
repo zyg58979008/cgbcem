@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-3">
+			<input id="deptId" hidden  th:value="${deptId}">
+			<div class="ibox ibox-body" style="height: 800px;overflow: scroll">
+				<div class="ibox-title">
+					<h5>选择机构</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree_demo_div"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<!--<button shiro:hasPermission="stock:equipment:add" type="button" class="btn  btn-primary" onclick="add()">
+								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							</button>-->
+							<!--<button shiro:hasPermission="stock:equipment:batchRemove" type="button" class="btn  btn-danger"
+								onclick="batchRemove()">
+								<i class="fa fa-trash" aria-hidden="true"></i>删除
+							</button>-->
+						</div>
+
+						<div class="columns pull-right">
+
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding">
+							<input id="searchName" type="text" class="form-control"
+								placeholder="设备名称">
+						</div>
+						<div class="columns pull-right col-md-2 nopadding"style="margin-right: 10px">
+							<select data-placeholder="--选择设备品牌--" name="brandChose" id="brandChose"
+									readonly="readonly" class="form-control chosen-select" tabindex="2" required>
+								<option value="" readonly="readonly" >--选择设备品牌--</option>
+							</select>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding"style="margin-right: 10px">
+							<input id="category" name="category" class="hidden" ><input
+								id="categoryname" name="categoryname" class="form-control" type="text"
+								style="cursor: pointer;" onclick="openCategory()"
+								placeholder="设备分类">
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:equipment:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:equipment:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/equipment/equipment/equipment.js"></script>
+</body>
+</html>

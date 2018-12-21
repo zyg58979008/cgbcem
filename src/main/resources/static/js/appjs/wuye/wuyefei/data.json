@@ -1,0 +1,13 @@
+[{
+	"buildingId": "001",
+	"xiangmu": "锦绣城",
+	"zu": "1区",
+	"buildingName": "1号楼",
+	"num": "3/6"
+}, {
+	"buildingId": "002",
+	"xiangmu": "锦绣城",
+	"zu": "2区",
+	"buildingName": "2号楼",
+	"num": "5/6"
+}]

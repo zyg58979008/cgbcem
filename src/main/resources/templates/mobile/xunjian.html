@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data;  charset=utf-8" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <!-- 引入 MZUI 的 JS 文件 -->
+    <script src="/js/mzui.min.js"></script>
+    <script src="/js/plugins/raty/jquery.raty.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/css/application.css">
+    <script src="/js/plugins/weixin/jweixin-1.2.0.js"></script>
+    <style>
+        .container {
+            padding: 0;
+        }
+        .title-text {
+            margin-top: 10px;
+        }
+        .box {
+            padding: .5rem 0;
+        }
+    </style>
+    <style>
+        img {
+            clear;
+        }
+
+        .z_photo {
+            width: 96%;
+            height: auto;
+            padding: 5px;
+            overflow: auto;
+            clear: both;
+            margin: 1rem auto;
+            border: 1px solid #555;
+        }
+
+        .z_photo img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .z_addImg {
+            width: 80px;
+            height: 80px;
+            float: left;
+            margin: 6px;
+        }
+
+        .z_file {
+            width: 80px;
+            height: 80px;
+            background: url(/img/z_add.png) no-repeat;
+            background-size: 100% 100%;
+            float: left;
+            margin: 6px;
+        }
+
+        .z_file input::-webkit-file-upload-button {
+            width: 80px;
+            height: 80px;
+            border: none;
+            position: absolute;
+            outline: 0;
+            opacity: 0;
+        }
+
+        .z_file input#file {
+            display: block;
+            width: auto;
+            border: 0;
+            vertical-align: middle;
+        }
+
+        /*遮罩层*/
+
+        .z_mask {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            display: none;
+        }
+
+        .z_alert {
+            width: 10rem;
+            height: 4rem;
+            border-radius: .2rem;
+            background: #fff;
+            font-size: 0.6rem;
+            text-align: center;
+            position: absolute;
+            left: 35%;
+            top: 50%;
+            margin-left: -1.5rem;
+            margin-top: -2rem;
+        }
+
+        .z_alert p:nth-child(1) {
+            line-height: 1.5rem;
+        }
+
+        .z_alert p:nth-child(2) span {
+            display: inline-block;
+            width: 49%;
+            height: 2rem;
+            line-height: 2rem;
+            float: left;
+            border-top: 1px solid #ddd;
+        }
+
+        .z_cancel {
+            border-right: 1px solid #ddd;
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function() {
+            $.fn.raty.defaults.path = '/img/img';
+            $('#default-demo').raty();
+            $('#score-demo').raty({
+                score: 3
+            });
+            $('#number-demo').raty({
+                number: 10
+            });
+            $('#numberMax-demo').raty({
+                numberMax: 5,
+                number: 500
+            });
+            $('#number-callback-demo').raty({
+                number: function() {
+                    return $(this).attr('data-number')
+                }
+            });
+            $('#scoreName-demo').raty({
+                scoreName: 'entity[score]'
+            });
+            $('#readOnly-demo').raty({
+                readOnly: true,
+                score: 3
+            });
+            $('#readOnly-callback-demo').raty({
+                readOnly: function() {
+                    return 'true becomes readOnly' == 'true becomes readOnly'
+                }
+            });
+            $('#noRatedMsg-demo').raty({
+                readOnly: true,
+                noRatedMsg: "I'am readOnly and I haven't rated yet!"
+            });
+            $('#score-callback-demo').raty({
+                score: function() {
+                    return $(this).attr('data-score')
+                }
+            });
+            $('#halfShow-true-demo').raty({
+                score: 3.26
+            });
+            $('#halfShow-false-demo').raty({
+                halfShow: false,
+                score: 3.26
+            });
+            $('#half-demo').raty({
+                half: true
+            });
+            $('#starHalf-demo').raty({
+                path: '/img/img',
+                half: true,
+                starOff: 'cookie-off.png',
+                starOn: 'cookie-on.png',
+                starHalf: 'cookie-half.png'
+            });
+            $('#round-demo').raty({
+                round: {
+                    down: .26,
+                    full: .6,
+                    up: .76
+                },
+                score: 3.26
+            });
+            $('#click-demo').raty({
+                click: function(score, evt) {
+                    alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type)
+                }
+            });
+            $('#hints-demo').raty({
+                hints: ['a', null, '', undefined, '*_*']
+            });
+            $('#cancel-demo').raty({
+                cancel: true
+            });
+            $('#cancelHint-demo').raty({
+                cancel: true,
+                cancelHint: 'My cancel hint!'
+            });
+            $('#cancelPlace-demo').raty({
+                cancel: true,
+                cancelPlace: 'right'
+            });
+            $('#star-off-and-star-on-demo').raty({
+                path: '/img/img',
+                starOff: 'off.png',
+                starOn: 'on.png'
+            });
+            $('#cancel-off-and-cancel-on-demo').raty({
+                path: null,
+                cancel: true,
+                cancelOff: '/img/img/cancel-custom-off.png',
+                cancelOn: '/img/img/cancel-custom-on.png',
+                starOn: '/img/img/star-on.png',
+                starOff: '/img/img/star-off.png'
+            });
+            $('#iconRange-demo').raty({
+                path: '/img/img',
+                iconRange: [{
+                    range: 1,
+                    on: '1.png',
+                    off: '0.png'
+                }, {
+                    range: 2,
+                    on: '2.png',
+                    off: '0.png'
+                }, {
+                    range: 3,
+                    on: '3.png',
+                    off: '0.png'
+                }, {
+                    range: 4,
+                    on: '4.png',
+                    off: '0.png'
+                }, {
+                    range: 5,
+                    on: '5.png',
+                    off: '0.png'
+                }]
+            });
+            $('#size-demo').raty({
+                path: '/img/img',
+                cancel: true,
+                cancelOff: 'cancel-off-big.png',
+                cancelOn: 'cancel-on-big.png',
+                half: true,
+                size: 24,
+                starHalf: 'star-half-big.png',
+                starOff: 'star-off-big.png',
+                starOn: 'star-on-big.png'
+            });
+            $('#width-demo').raty({
+                width: 150
+            });
+            $('#target-div-demo').raty({
+                cancel: true,
+                target: '#target-div-hint'
+            });
+            $('#target-text-demo').raty({
+                cancel: true,
+                target: '#target-text-hint'
+            });
+            $('#target-textarea-demo').raty({
+                cancel: true,
+                target: '#target-textarea-hint'
+            });
+            $('#target-select-demo').raty({
+                cancel: true,
+                target: '#target-select-hint'
+            });
+            $('#targetType-demo').raty({
+                cancel: true,
+                target: '#targetType-hint',
+                targetType: 'score'
+            });
+            $('#targetKeep-demo').raty({
+                cancel: true,
+                target: '#targetKeep-hint',
+                targetKeep: true
+            });
+            $('#targetText-demo').raty({
+                target: '#targetText-hint',
+                targetText: '--'
+            });
+            $('#targetFormat-demo').raty({
+                target: '#targetFormat-hint',
+                targetFormat: 'Rating: {score}'
+            });
+            $('#mouseover-demo').raty({
+                mouseover: function(score, evt) {
+                    alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type)
+                }
+            });
+            $('#mouseout-demo').raty({
+                mouseout: function(score, evt) {
+                    alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type)
+                }
+            });
+            $('#precision-demo').raty({
+                path: '/img/img',
+                cancelOff: 'cancel-off-big.png',
+                cancelOn: 'cancel-on-big.png',
+                size: 24,
+                starHalf: 'star-half-big.png',
+                starOff: 'star-off-big.png',
+                starOn: 'star-on-big.png',
+                target: '#precision-hint',
+                cancel: true,
+                targetKeep: true,
+                precision: true
+            });
+            $('#space-demo').raty({
+                space: false
+            });
+            $('#single-demo').raty({
+                single: true
+            });
+            $('#function-demo').raty({
+                path: '/img/img',
+                cancelOff: 'cancel-off-big.png',
+                cancelOn: 'cancel-on-big.png',
+                size: 24,
+                starHalf: 'star-half-big.png',
+                starOff: 'star-off-big.png',
+                starOn: 'star-on-big.png',
+                target: '#function-hint',
+                cancel: true,
+                targetKeep: true,
+                precision: true,
+                click: function(score, evt) {
+                    alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type)
+                }
+            });
+            $('#score-action').on('click', function() {
+                $('#function-demo').raty('score', $('#score-function-demo').val())
+            });
+            $('#click-action').on('click', function() {
+                $('#function-demo').raty('click', $('#click-function-demo').val())
+            });
+            $('#readOnly-action').on('click', function() {
+                var isReadOnly = $('#readOnly-function-demo').val() === 'true' ? true : false;
+                $('#function-demo').raty('readOnly', isReadOnly)
+            });
+            $('#cancel-action').on('click', function() {
+                var isTrigger = $('#cancel-function-trigger-demo').val() === 'true' ? true : false;
+                $('#function-demo').raty('cancel', isTrigger)
+            });
+            $('#reload-action').on('click', function() {
+                $('#function-demo').raty('reload')
+            });
+            $('#score-get-action').on('click', function() {
+                alert('score: ' + $('#function-demo').raty('score'))
+            });
+            $('#score-set-action').on('click', function() {
+                var score = $('#score-set-function-demo').val();
+                $('#function-demo').raty('score', score)
+            });
+            $('#set-action').on('click', function() {
+                var options = $('#set-function-demo').val(),
+                        command = "$('#function-demo').raty('set', " + options + ");";
+                eval(command)
+            });
+            $('#destroy-action').on('click', function() {
+                $('#function-demo').raty('destroy')
+            })
+        });
+
+
+
+
+
+    </script>
+</head>
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+   <!-- <div class="avatar"><a href="/mobile/index"><i class="icon-arrow-left"></i></a></div>-->
+    <div class="title"><strong>巡检作业</strong></div>
+    <nav class="nav">
+        <!--
+            <a><i class="icon-camera"></i></a>
+        -->
+        <!--<a class="btn" onclick="jia()"><i class="icon-camera"></i></a>-->
+        <a class="btn" id="menu"data-display data-backdrop="true" data-target="#target2" data-trigger-method="toggle"
+           data-placement="right"><i class="icon-bars"></i></a>
+    </nav>
+</header>
+<div class="section container " id="a0">
+    <div class="heading color-grey">
+        <div class="title title-text"><strong>柜面设备信息</strong></div>
+    </div>
+    <input type="hidden" id="id" th:value="${id}">
+    <div class="box">
+        <div class="list with-divider"id="list">
+            <input type="hidden" id="equipmentDO" th:value="${equipmentDO}">
+            <script>
+                var equipments=eval("("+$("#equipmentDO").val()+")");
+
+                for(var i=0;i<equipments.length;i++) {
+                    var html = ' <div class="item shadow-3 rounded-lg">' +
+                            '      <div class="list"  style="width: 100%"id="'+equipments[i].id+'">' +
+                            '          <div class="item">' +
+                            '             <div class="heading">' +
+                            '                <div class="title">' + equipments[i].name + '-' + equipments[i].brandName + '-' + equipments[i].model + '</div>' +
+                            '             </div>' +
+                            '          </div>' +
+                            '          <div class="item"style="margin-left: 8px">' +
+                            '                <div class="title">设备编码：' + equipments[i].id + '</div>' +
+                            '          </div>' +
+                            '             <div class="item">' +
+                            '                <div class="row">' +
+                            '                 <div class="cell-4" style="margin:2px 0 0 3px">设备状态：</div>' +
+                            '                    <div class="cell">' +
+                            '                      <div class="select" style="width: 150px;">' +
+                            '                         <select name="packageType" onchange="change(\''+equipments[i].id+'\')" id="state'+equipments[i].id+'">' +
+                            '                           <option value="0"selected="selected">正常</option>' +
+                            '                           <option value="1">维修</option>' +
+                            '                           <option value="2">更换</option>' +
+                            '                         </select>' +
+                            '                       </div>' +
+                            '                     </div>' +
+                            '                    </div>' +
+                            '                 </div>' +
+                            '           </div>' +
+                            '         </div>';
+                    $("#list").append(html);
+                }
+                var repair;
+                function change(index) {
+                    var html11 = ' <div class="item" id="repair' + index + '">' +
+                            '                        <div class="row">' +
+                            '                            <div class="cell">' +
+                            '                                <label style="line-height: 30px;margin-left: 2px;margin-right: 15px">处理方式：</label>' +
+                            '                                <div class="radio inline-block"  style="margin-right: 10px">' +
+                            '                                    <input type="radio" name="fangshi'+index+'"value="0"checked="checked">' +
+                            '                                    <label for="payment">现场维修</label>' +
+                            '                                </div>' +
+                            '                                <div class="radio inline-block">' +
+                            '                                    <input type="radio" name="fangshi'+index+'"value="1">' +
+                            '                                    <label for="payment">统一维修</label>' +
+                            '                                </div>' +
+                            '                            </div>' +
+                            '                        </div>' +
+                            '                    </div>';
+                   var state = $("#state" + index).val();
+                    if (state == "1"&&$("#repair" + index).length == 0) {
+                        $("#"+ index ).append(html11);
+                    }else{
+                        $("#repair"+ index).remove();
+
+                    }
+
+                };
+
+            </script>
+        </div>
+    </div>
+    <div class="box">
+        <div class="heading flex-center">
+            <a href="javascript:;" onclick="saveoline()" class="btn primary  flex-center">保存</a>
+        </div>
+        <script>
+            var equipments=eval("("+$("#equipmentDO").val()+")");
+            var onlinestate = [];
+            var online = {};
+            function saveoline() {
+                var plan_id =$("#id").val();
+                for(var i=0;i<equipments.length;i++) {
+                    var selected_val= $("#state"+ equipments[i].id ).val();
+                    var equipment_id=equipments[i].id;
+                    var equipment_name=equipments[i].name;
+                    var brand=equipments[i].brand;
+                    var category=equipments[i].category;
+                    var model=equipments[i].model;
+                    var deptId=equipments[i].deptId;
+                    if(selected_val==1) {
+                        var fangshi = $('input[name="fangshi' + equipments[i].id + '"]:checked').val();
+                    }else{
+                        var fangshi="-";
+                    }
+                    var online = {id:plan_id,equipmentId:equipment_id,state:selected_val,name:equipment_name,brand:brand,category:category,model:model,deptId:deptId,mode:fangshi}
+                    onlinestate.push(online);
+                    var jsonStr = JSON.stringify(onlinestate);
+
+                }
+                $.ajax({
+                    cache : true,
+                    type : "POST",
+                    url : "/mobile/saveoline",
+                    data :{mydata:jsonStr},// 你的formid
+                    dataType:"json",
+                    async : false,
+                    success : function(data) {
+                        if (data.code == 0) {
+
+                            $(window).scrollTop(0);
+                            $("#a" + 0).addClass("hidden");
+                            $("#a" + 1).removeClass("hidden");
+                        }
+
+                    }
+                });
+
+            }
+        </script>
+    </div>
+</div>
+<div class="section container hidden" id="a11">
+    <div class="heading color-grey">
+        <div class="title  title-text"><strong>柜面设备信息</strong></div>
+        <button type="button" onclick="add()" class="btn primary">添加</button>
+    </div>
+    <div class="box">
+        <div id="info" class="list with-divider">
+
+        </div>
+    </div>
+
+
+</div>
+<div class="section container " id="a1">
+    <div class="heading color-grey">
+        <div class="title  title-text"><strong>发电机组检测</strong></div>
+    </div>
+    <div class="box">
+        <div class="list with-divider"id="fadian">
+            <input type="hidden" id="projectId1" th:value="${projectId1}">
+            <script>
+            var projectId1=eval("("+$("#projectId1").val()+")");
+            for(var i=0;i<projectId1.length;i++) {
+                var type=projectId1[i].type;
+               if(type==0){
+                   var html = ' <div class="item shadow-3 rounded-lg">' +
+                           '      <div class="list"  style="width: 100%">' +
+                           '          <div class="item" style="width: 100%">' +
+                           '<div class="row">'+
+                           '            <div class="cell-4">' +
+                           '              <label style="line-height: 30px;margin-left: 5px">' + projectId1[i].name + ':</label>' +
+                           '            </div>' +
+                           '            <div class="cell-8">' +
+                           '<div class="radio inline-block" style="margin-right: 10px"id="'+projectId1[i].id+'">' +
+                           ' <input type="radio" name="'+projectId1[i].id+'"value="正常"checked="checked">' +
+                           ' <label for="payment">正常</label>' +
+                           ' </div>' +
+                           ' <div class="radio inline-block">' +
+                           ' <input type="radio" name="'+projectId1[i].id+'"value="不正常">' +
+                           '  <label for="payment">不正常</label>' +
+                           ' </div>' +
+                           '            </div>' +
+                           '          </div>' +
+                           '            </div>' +
+                           '                         <div class="item" style="width: 100%">' +
+                           '                       <input name="brand" type="text" class="input"id="' + projectId1[i].name + '"placeholder="处理方法">' +
+                           '                     </div>' +
+                           '                    </div>' +
+                           '         </div>';
+
+               }
+                if(type==1){
+                    var html = ' <div class="item shadow-3 rounded-lg">' +
+                            '      <div class="list"  style="width: 100%">' +
+                            '          <div class="item" style="width: 100%">' +
+                            '<div class="row">'+
+                            '            <div class="cell-4">' +
+                            '              <label style="line-height: 30px;margin-left: 5px">' + projectId1[i].name + ':</label>' +
+                            '            </div>' +
+                            '            <div class="cell-8">' +
+                            '              <input name="brand" type="text" class="input"id="' + projectId1[i].id + '">' +
+                            '            </div>' +
+                            '          </div>' +
+                            '  </div>' +
+                            '                         <div class="item" style="width: 100%">' +
+                            '                       <input name="brand" type="text" class="input"id="' + projectId1[i].name + '"placeholder="处理方法">' +
+                            '                     </div>' +
+                            '                    </div>' +
+                            '         </div>';
+
+                }
+                if(type==2){
+                    var html = ' <div class="item shadow-3 rounded-lg">' +
+                            '      <div class="list"  style="width: 100%">' +
+                            '          <div class="item" style="width: 100%">' +
+                            '<div class="row">'+
+                            '            <div class="cell-4">' +
+                            '              <label style="line-height: 30px;margin-left: 5px">' + projectId1[i].name + '-' + projectId1[i].unit + ':</label>' +
+                            '            </div>' +
+                            '            <div class="cell-8">' +
+                            '              <input name="brand" type="text" class="input"id="' + projectId1[i].id + '" >' +
+                            '            </div>' +
+                            '          </div>' +
+                            '          </div>' +
+                            '                         <div class="item" style="width: 100%">' +
+                            '                       <input name="brand" type="text" class="input"id="' + projectId1[i].name + '"placeholder="处理方法">' +
+                            '                     </div>' +
+                            '                    </div>' +
+                            '         </div>';
+                }
+                $("#fadian").append(html);
+            }
+            var fadians = [];
+            var fadianinfos = {};
+            function savefadian() {
+                var plan_id =$("#id").val();
+                for(var i=0;i<projectId1.length;i++) {
+                    if(projectId1[i].type==0){
+                        var result = $('input[name="'+projectId1[i].id+'"]:checked').val();
+                    }else{
+                        var result = $("#" + projectId1[i].id).val();
+                    }
+                    var projectId = projectId1[i].id;
+                    var advice = $("#" + projectId1[i].name).val();
+                    var name= projectId1[i].name;
+                    var projectClassId=projectId1[i].projectClassId;
+                    var unit=projectId1[i].unit;
+                    var type=projectId1[i].type;
+                    var fadianinfos = {
+                        id: plan_id,
+                        projectId: projectId,
+                        name:name,
+                        projectClassId:projectClassId,
+                        unit:unit,
+                        type:type,
+                        result: result,
+                        advice: advice
+                    }
+                    fadians.push(fadianinfos);
+                    var jsonStr = JSON.stringify(fadians);
+
+                }
+                $.ajax({
+                    cache : true,
+                    type : "POST",
+                    url : "/mobile/savefadian",
+                    data :{mydata1:jsonStr},// 你的formid
+                    dataType:"json",
+                    async : false,
+                    success : function(data) {
+                        if (data.code == 0) {
+                            $(window).scrollTop(0);
+                            $("#a" + 1).addClass("hidden");
+                            $("#a" + 2).removeClass("hidden");
+
+                        }
+
+                    }
+                });
+
+            }
+
+            </script>
+        </div>
+    </div>
+  <!--  <div class="box">
+        &lt;!&ndash;    照片添加    &ndash;&gt;
+        <div class="z_photo" id="z_photo">
+            <div class="z_file">
+                <input class="huodong-msg" multiple="multiple" type="file" name="file" id="file" value=""
+                       accept="image/jpg,image/jpeg,image/png" onchange="imgChange('z_photo','z_file');"/>
+            </div>
+        </div>
+
+        &lt;!&ndash;遮罩层&ndash;&gt;
+        <div class="z_mask">
+            &lt;!&ndash;弹出框&ndash;&gt;
+            <div class="z_alert">
+                <p>确定要删除这张图片吗？</p>
+                <p>
+                    <span class="z_cancel">取消</span>
+                    <span class="z_sure">确定</span>
+                </p>
+            </div>
+        </div>
+    </div>-->
+    <div class="box">
+        <div class="heading flex-center">
+            <a href="javascript:;" onclick="savefadian()" class="btn primary  flex-center">保存</a>
+        </div>
+    </div>
+</div>
+<div class="section container " id="a2">
+    <div class="heading color-grey">
+        <div class="title  title-text"><strong>UPS机头及电池检测</strong></div>
+    </div>
+
+
+    <div class="box" >
+        <input type="hidden" id="projectId2" th:value="${projectId2}">
+        <div class="list with-divider"id="jiance">
+        </div>
+    </div>
+    <div class="box">
+        <div class="heading flex-center">
+            <a href="javascript:;" onclick="saveJiance()" class="btn primary  flex-center">保存</a>
+        </div>
+    </div>
+    <script>
+
+        var projectId2=eval("("+$("#projectId2").val()+")");
+        for(var i=0;i<projectId2.length;i++) {
+            var type2=projectId2[i].type;
+            if(type2==1) {
+                var html = ' <div class="item shadow-3 rounded-lg">' +
+                        '      <div class="list"  style="width: 100%">' +
+                        '          <div class="item" style="width: 100%">' +
+                        '            <div class="row">' +
+                        '            <div class="cell-5">' +
+                        '              <label style="line-height: 30px;margin-left: 5px">' + projectId2[i].name + ':</label>' +
+                        '            </div>' +
+                        '            <div class="cell-7">' +
+                        '              <input name="brand" type="text" class="input"id="' + projectId2[i].id + '" placeholder="' + projectId2[i].name + '">' +
+                        '            </div>' +
+                        '          </div>' +
+                        '          </div>' +
+                        '                         <div class="item" style="width: 100%">' +
+                        '                       <input name="brand" type="text" class="input"id="' + projectId2[i].name + '"placeholder="处理方法">' +
+                        '                     </div>' +
+                        '                    </div>' +
+                        '         </div>';
+
+            }
+            if(type2==0) {
+                var html = ' <div class="item shadow-3 rounded-lg">' +
+                        '      <div class="list"  style="width: 100%">' +
+                        '          <div class="item" style="width: 100%">' +
+                        '          </div>' +
+                        '            <div class="cell-4">' +
+                        '              <label style="line-height: 30px;margin-left: 5px">' + projectId2[i].name + ':</label>' +
+                        '            </div>' +
+                        '            <div class="cell-8">' +
+                        '<div class="radio inline-block" style="margin-right: 10px"id="'+projectId2[i].id+'">' +
+                        ' <input type="radio" name="'+projectId2[i].id+'"value="正常"checked="checked">' +
+                        ' <label for="payment">正常</label>' +
+                        ' </div>' +
+                        ' <div class="radio inline-block">' +
+                        ' <input type="radio" name="'+projectId2[i].id+'"value="不正常">' +
+                        '  <label for="payment">不正常</label>' +
+                        ' </div>' +
+                        '            </div>' +
+                        '          </div>' +
+                        '          </div>' +
+                        '                         <div class="item" style="width: 100%">' +
+                        '                       <input name="brand" type="text" class="input"id="' + projectId2[i].name + '"placeholder="处理方法">' +
+                        '                     </div>' +
+                        '                    </div>' +
+                        '         </div>';
+
+            }
+            if(type2==2) {
+                var html = ' <div class="item shadow-3 rounded-lg">' +
+                        '      <div class="list"  style="width: 100%">' +
+                        '          <div class="item" style="width: 100%">' +
+                        '            <div class="row">' +
+                        '            <div class="cell-5">' +
+                        '              <label style="line-height: 30px;margin-left: 5px">' + projectId2[i].name + '-' + projectId2[i].unit + ':</label>' +
+                        '            </div>' +
+                        '            <div class="cell-7">' +
+                        '              <input name="brand" type="text" class="input"id="' + projectId2[i].id + '" placeholder="' + projectId2[i].name + '">' +
+                        '            </div>' +
+                        '          </div>' +
+                        '          </div>' +
+                        '                         <div class="item" style="width: 100%">' +
+                        '                       <input name="brand" type="text" class="input"id="' + projectId2[i].name + '"placeholder="处理方法">' +
+                        '                     </div>' +
+                        '                    </div>' +
+                        '         </div>';
+            }
+            $("#jiance").append(html);
+        }
+
+         var jiances = [];
+         var infos = {};
+         function saveJiance() {
+             var plan_id =$("#id").val();
+             for(var i=0;i<projectId2.length;i++) {
+                 if(projectId2[i].type==0){
+                     var result = $('input[name="'+projectId2[i].id+'"]:checked').val();
+                 }else{
+                     var result = $("#" + projectId2[i].id).val();
+                 }
+                 var projectId = projectId2[i].id;
+                 var advice = $("#" + projectId2[i].name).val();
+                 var name= projectId2[i].name;
+                 var projectClassId=projectId2[i].projectClassId;
+                 var unit=projectId2[i].unit;
+                 var type=projectId2[i].type;
+                 var infos = {
+                     id: plan_id,
+                     projectId: projectId,
+                     name:name,
+                     projectClassId:projectClassId,
+                     unit:unit,
+                     type:type,
+                     result: result,
+                     advice: advice
+                 }
+                 jiances.push(infos);
+                 var jsonStr = JSON.stringify(jiances);
+
+             }
+             $.ajax({
+                 cache : true,
+                 type : "POST",
+                 url : "/mobile/savejiance",
+                 data :{mydata2:jsonStr},// 你的formid
+                 dataType:"json",
+                 async : false,
+                 success : function(data) {
+                     if (data.code == 0) {
+                         $(window).scrollTop(0);
+                         $("#a" + 2).addClass("hidden");
+                         $("#a" + 3).removeClass("hidden");
+
+                     }
+
+                 }
+             });
+
+         }
+    </script>
+
+    </div>
+<div class="section container " id="a3">
+    <div class="heading color-grey">
+        <div class="title title-text"><strong>配电系统检查</strong></div>
+    </div>
+    <div class="box">
+        <div class="list with-divider" id="peidian">
+            <input type="hidden" id="projectId3" th:value="${projectId3}">
+            <script>
+                var projectId3=eval("("+$("#projectId3").val()+")");
+                for(var i=0;i<projectId3.length;i++) {
+                    var type3=projectId3[i].type;
+                    if(type3==1){
+                        var html = ' <div class="item shadow-3  rounded-lg">'+
+                                '<div class="list" style="width: 100%">'+
+                                '<div class="item" >'+
+                                '<div class="heading">'+
+                                '<div class="title">检查项：'+projectId3[i].name+'</div>'+
+                                ' </div>'+
+                                ' </div>'+
+                                ' <div class="item"style="width: 100%">'+
+                                '<div class="row">'+
+                                '<div class="cell-3">'+
+                                ' <label style="line-height: 30px;margin-left: 5px">状态：</label>'+
+                                '</div>'+
+                                '<div class="cell-9">'+
+                                ' <input name="brand" type="text" class="input" id="'+projectId3[i].id+'">'+
+
+                                '</div>'+
+                                ' </div>'+
+                                '</div>'+
+                                ' <div class="item" style="width: 100%;margin-left: 5px">'+
+                                ' <input name="brand" type="text" class="input" id="'+projectId3[i].name+'"placeholder="整改建议">'+
+                                '</div>'+
+                                ' </div>'+
+                                '</div>';
+                    }
+                    if(type3==0){
+                        var html = ' <div class="item shadow-3  rounded-lg">' +
+                                '<div class="list" style="width: 100%">' +
+                                '<div class="item" >' +
+                                '<div class="heading">' +
+                                '<div class="title">检查项：' + projectId3[i].name + '</div>' +
+                                ' </div>' +
+                                ' </div>' +
+                                ' <div class="item">' +
+                                '<div class="row">' +
+                                '<div class="cell-2">' +
+                                ' <label style="line-height: 30px">状态：</label>' +
+                                ' </div>' +
+                                '<div class="cell-10">' +
+                                '<div class="radio inline-block" style="margin-right: 10px"id="'+projectId3[i].id+'">' +
+                                ' <input type="radio" name="'+projectId3[i].id+'"value="正常"checked="checked">' +
+                                ' <label for="payment">正常</label>' +
+                                ' </div>' +
+                                ' <div class="radio inline-block">' +
+                                ' <input type="radio" name="'+projectId3[i].id+'"value="不正常">' +
+                                '  <label for="payment">不正常</label>' +
+                                ' </div>' +
+                                '</div>' +
+                                ' </div>' +
+                                '</div>' +
+                                ' <div class="item" style="width: 100%">' +
+                                ' <input name="brand" type="text" class="input" id="'+projectId3[i].name+'"placeholder="整改建议">' +
+                                '</div>' +
+                                ' </div>' +
+                                '</div>';
+                    }
+                    if(type3==2){
+                        var html = ' <div class="item shadow-3  rounded-lg">'+
+                                '<div class="list" style="width: 100%">'+
+                                '<div class="item" >'+
+                                '<div class="heading">'+
+                                '<div class="title">检查项：'+projectId3[i].name+'</div>'+
+                                ' </div>'+
+                                ' </div>'+
+                                ' <div class="item">'+
+                                '<div class="row">'+
+                                '<div class="cell-3">'+
+                                ' <label style="line-height: 30px;margin-left: 5px">状态：</label>'+
+                                '</div>'+
+                                '<div class="cell-9">'+
+                                ' <input name="brand" type="text" class="input"id="'+projectId3[i].id+'" placeholder="'+projectId3[i].unit+'">'+
+
+                                '</div>'+
+                                ' </div>'+
+                                '</div>'+
+                                ' <div class="item" style="width: 100%">'+
+                                ' <input name="brand" type="text" class="input" id="'+projectId3[i].name+'"placeholder="整改建议">'+
+                                '</div>'+
+                                ' </div>'+
+                                '</div>';
+                    }
+                    $("#peidian").append(html);
+            }
+            </script>
+        </div>
+    </div>
+    <div class="box">
+        <div class="heading flex-center">
+            <a href="javascript:;" onclick="savePeidian()" class="btn primary  flex-center">保存</a>
+        </div>
+        <script>
+
+            var peidians = [];
+            var info = {};
+            var projectId3=eval("("+$("#projectId3").val()+")");
+             function savePeidian() {
+                 var plan_id =$("#id").val();
+                 for(var i=0;i<projectId3.length;i++) {
+                     if(projectId3[i].type==0){
+                     var result = $('input[name="'+projectId3[i].id+'"]:checked').val();
+                     }else{
+                         var result = $("#" + projectId3[i].id).val();
+                     }
+                     var projectId = projectId3[i].id;
+                     var advice = $("#" + projectId3[i].name).val();
+                     var name= projectId3[i].name;
+                     var projectClassId=projectId3[i].projectClassId;
+                     var unit=projectId3[i].unit;
+                     var type=projectId3[i].type;
+                     var info = {
+                         id: plan_id,
+                         projectId: projectId,
+                         name:name,
+                         projectClassId:projectClassId,
+                         unit:unit,
+                         type:type,
+                         result: result,
+                         advice: advice
+                     }
+                     peidians.push(info);
+                     var jsonStr = JSON.stringify(peidians);
+
+                 }
+                     $.ajax({
+                         cache : true,
+                         type : "POST",
+                         url : "/mobile/savepeidian",
+                         data :{mydata3:jsonStr},// 你的formid
+                         dataType:"json",
+                         async : false,
+                         success : function(data) {
+                             if (data.code == 0) {
+                                 $(window).scrollTop(0);
+                                 $("#a" + 3).addClass("hidden");
+                                 $("#a" + 4).removeClass("hidden");
+                             }
+
+                         }
+                     });
+
+}
+
+        </script>
+    </div>
+</div>
+<div id="target4" class="affix dock-bottom modal hidden">
+    <div class="heading">
+        <div class="title"><strong>设备维修单</strong></div>
+        <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+    </div>
+    <div class="content article box">
+        <div class="list">
+            <div class="item">
+                上线设备：
+            </div>
+            <div class="item">
+                <div class="row">
+                    <div class="cell">
+                        <input name="username" type="text" class="input" placeholder="">
+                    </div>
+                    <div class="cell-1">
+                        <a>
+                            <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: 1px 0 0 5px;">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell-3">
+                上线设备：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input" placeholder="">
+            </div>
+            <div class="cell-1">
+                <a>
+                    <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: 1px 0 0 5px;">
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-3">
+                故障描述：
+            </div>
+            <div class="cell-8">
+                <textarea class="textarea" name="desc" id="miaoshu" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-3">
+                处理结果：
+            </div>
+            <div class="cell-8">
+                <textarea class="textarea" name="desc" id="jieguo" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="heading flex-center">
+            <a href="javascript:;" onclick="queding('weixiu')" class="btn primary  flex-center">确定</a>
+        </div>
+    </div>
+</div>
+<div class="section container hidden" id="a22">
+    <div class="heading color-grey">
+        <div class="title"><strong>设备维修单</strong></div>
+        <a id="weixiu" data-display data-backdrop="false" data-target="#target4" data-placement="center"
+           class="btn primary">添加</a>
+
+    </div>
+    <div class="box">
+        <div class="list with-divider">
+            <div class="item">
+                <div class="content">
+                    <div class="title">惠普服务器</div>
+                    <div class="subtitle">1522903749122</div>
+                </div>
+                <a class="btn primary">编辑</a>
+                <a class="btn primary">删除</a>
+            </div>
+            <div class="item">
+                <div class="content">
+                    <div class="title">思科路由器</div>
+                    <div class="subtitle">1523323082602</div>
+                </div>
+                <a class="btn primary">编辑</a>
+                <a class="btn primary">删除</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="section container " id="a4">
+    <div class="heading color-grey">
+        <div class="title"><strong>上传巡检图片：</strong></div>
+    </div>
+    <div class="box shadow-3  rounded-lg" style="margin: 10px 5px;">
+    <!--    照片添加    -->
+    <div class="z_photo" id="z_photo">
+        <div class="z_file">
+            <input class="huodong-msg" type="file"multiple="multiple"  name="file" id="file" value=""capture="camera" accept="image/jpg,image/jpeg,image/png" onchange="imgChange('z_photo','z_file');" />
+        </div>
+    </div>
+
+    <!--遮罩层-->
+    <div class="z_mask">
+        <!--弹出框-->
+        <div class="z_alert">
+            <p>确定要删除这张图片吗？</p>
+            <p>
+                <span class="z_cancel">取消</span>
+                <span class="z_sure"id="delpic">确定</span>
+            </p>
+        </div>
+    </div>
+    <div class="heading flex-center">
+        <a href="javascript:;"id="end" onclick="endxj()" class="btn primary  flex-center">完成巡检</a>
+    </div>
+</div>
+
+</div>
+<div id="target2" class="layer hidden affix dock-right" style="min-width: 10rem">
+
+    <div class="list with-divider">
+        <a class="item with-avatar primary multi-lines">
+            <div class="content">
+                <div class="title">巡检员</div>
+                <div class="subtitle">在线</div>
+
+            </div>
+        </a>
+        <a class="item" onclick="a(0)">柜面设备信息</a>
+        <a class="item" onclick="a(1)">发电机组检测</a>
+        <a class="item" onclick="a(2)">UPS机头及电池检测</a>
+        <a class="item" onclick="a(3)">配电系统检查</a>
+        <a class="item" onclick="a(4)">上传图片</a>
+        <a class="item" onclick="reback()">返回巡检首页</a>
+    </div>
+    <div class="list-item compact gray with-avatar dock dock-bottom">
+
+        <div class="avatar text-gray"><i class="icon icon-signout"></i></div>
+        <div class="title" onclick="over()">完成巡检</div>
+         </div>
+</div>
+<!-- 对话框触发按钮 -->
+
+
+
+
+<script src="/js/plugins/layer/layer.js"></script>
+
+<script>
+    function reback() {
+        layer.confirm('确定返回巡检作业首页吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            window.location.href = "/mobile/index";
+        }, function(){
+            layer.close();
+        });
+    }
+ /*   var plateform = Zepto.device.os;
+    if(plateform == "android"){
+        $("selector").find("input[type='file']").attr("capture","camera");
+    }else if(plateform=="ios"){
+        $("selector").find("input[type='file']").removeAttr("capture");
+    }*/
+/*
+ $("#file").on("change", function (){
+     var plan_id =$("#id").val();
+     var wenjian  = document.getElementById("file");
+     var  files=wenjian.files;
+     alert(files.length)
+     for(var i = 0; i < files.length; i++){
+         var formData = new FormData();
+         formData.append('file', wenjian.files[i]);
+         formData.append('id', plan_id);
+         $.ajax({
+             cache: true,
+             type: "POST",
+             url: "/mobile/saveImg",
+             data: formData,//
+             async: false,
+             contentType:false,
+             processData:false,//processData用于对data参数进行序列化处理，默认值是true
+             success: function (data) {
+
+             },
+             error: function(data) {
+                 alert("上传失败，请检查网络后重试");
+             }
+
+         });
+     }
+ })
+*/
+
+
+ function endxj() {
+        var planId=$("#id").val();
+        if(confirm("确定完成巡检作业，提交吗？")) {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: "/mobile/ifsave",
+                data: {planId: planId},// 你的formid
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.code == 0) {
+                        document.getElementById("end").setAttribute("disabled", true);
+                        var img  = document.getElementById("file").files;
+                        if(img.length>0){
+
+                           saveImg();
+                        }
+                        window.location.href = "/mobile/index";
+                    }else{
+
+                        alert("还有未完成的巡检任务！")
+
+                    }
+
+                }
+            });
+        }
+
+    }
+
+
+    function over() {
+        var planId=$("#id").val();
+        if(confirm("确定完成巡检作业，提交吗？")) {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: "/mobile/ifsave",
+                data: {planId: planId},// 你的formid
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.code == 0) {
+                        window.location.href = "/mobile/index";
+                    }else{
+                        alert("还有未完成的巡检任务！")
+                    }
+
+                }
+            });
+        }
+
+    }
+    var states = false;
+    for (var num = 1; num < 6; num++) {
+        $("#a" + num).addClass("hidden");
+    }
+    a = function (index) {
+        for (var num = 0; num < 6; num++) {
+            $("#a" + num).addClass("hidden");
+        }
+        $("#a" + index).removeClass("hidden");
+        var myDisplay = $('#menu').data('mzui.display');
+        myDisplay.hide()
+    }
+    save = function (index) {
+        var num = index - 1;
+        $("#a" + num).addClass("hidden");
+        $("#a" + index).removeClass("hidden");
+    }
+    function hide(name) {
+        $('#target4').addClass('hidden');
+    }
+    $(".icon-remove").click(function () {
+        $('#target4').addClass('hidden');
+    })
+    function queding() {
+        if (!states) {
+            var html = '<div class="item" id="repair_dan">' +
+                    '                    <div class="title">设备维修单</div>' +
+                    '                <a onclick="show()" class="btn primary">编辑</a>' +
+                    '            </div>';
+            $('#shebei1').append(html)
+            states = true;
+        }
+    }
+    function show() {
+        openRepair();
+
+    }
+</script>
+<script type="text/javascript">
+    function saveImg() {
+        //alert("正在上传图片，请等待！")
+       //parent.layer.msg("请等待");
+        var plan_id =$("#id").val();
+        var wenjian  = document.getElementById("file");
+        var  files=wenjian.files;
+        var length = files.length;
+       // formData.append('file[]', wenjian.files[0]);
+        //formData.append('file', $('#file')[0].files[0]);
+       // alert(files.length)
+        for(var i = 0; i < files.length; i++){
+            var formData = new FormData();
+            formData.append('file', wenjian.files[i]);
+            formData.append('id', plan_id);
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: "/mobile/saveImg",
+                data: formData,//
+                async: false,
+                contentType:false,
+                processData:false,//processData用于对data参数进行序列化处理，默认值是true
+                success: function (data) {
+
+                },
+                error: function(data) {
+                    alert("上传失败，请检查网络后重试");
+                }
+
+            });
+        }
+
+       /* $.ajax({
+            url: '/mobile/saveImg',
+            type: 'POST',
+            cache: false,
+            dataType: 'json',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function(res) {
+        }).fail(function(res) {});*/
+        /* var oFiles = document.querySelector("#file")
+// 实例化一个表单数据对象
+        var formData = new FormData();
+// 遍历图片文件列表，插入到表单数据中
+        for (var i = 0, file; file = oFiles[i]; i++) {
+            // 文件名称，文件对象
+            formData.append(file.name , file);
+
+        }
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/mobile/saveImg",
+            data: formData,//
+            async: false,
+            contentType:false,
+            processData:false,//processData用于对data参数进行序列化处理，默认值是true
+            success: function (data) {
+                if (data.code == 0) {
+                    alert("的巡检任务！")
+
+                }else{
+                    alert("还有未完成的巡检任务！")
+                }
+
+            }
+        });*/
+    }
+
+    function imgChange(obj1, obj2) {
+       /* wx.chooseImage({
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success: function (res) {
+                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            }
+        });*/
+        var fileNum1 = 0;
+        var fileNum2 = event.target.files.length;
+        var a = document.getElementById("z_photo"),
+                b = a.getElementsByTagName("div");
+        fileNum1 = b.length;
+        var j = fileNum1 + fileNum2 - 1;
+        //上传图片个数限制
+        if(fileNum1 > 5 || j > 5) {
+            alert("最多只能上传5张图片！");
+            return;
+        }
+        //获取点击的文本框
+        var file = document.getElementById("file");
+        //存放图片的父级元素
+        var imgContainer = document.getElementsByClassName(obj1)[0];
+        //获取的图片文件
+        var fileList = file.files;
+
+        //文本框的父级元素
+        var input = document.getElementsByClassName(obj2)[0];
+        var imgArr = [];
+        //遍历获取到得图片文件
+        for(var i = 0; i < fileList.length; i++) {
+            parent.layer.msg("正在上传，请等待....");
+            var imgUrl = window.URL.createObjectURL(file.files[i]);
+            var yuanlai=file.files[i].name;
+            imgArr.push(imgUrl);
+            var img = document.createElement("img");
+            img.setAttribute("src", imgArr[i]);
+            var imgAdd = document.createElement("div");
+            var imgAddInput = document.createElement("input");
+            imgAddInput.setAttribute("type", "hidden");
+            imgAddInput.setAttribute("value", imgArr[i]);
+            imgAdd.appendChild(imgAddInput);
+            imgAdd.setAttribute("class", "z_addImg");
+            imgAdd.setAttribute("id", yuanlai);
+            imgAdd.appendChild(img);
+            imgContainer.appendChild(imgAdd);
+            parent.layer.msg("请等待");
+        };
+        saveImg();
+        file.classList.add("z_cl");
+        imgRemove();
+    };
+
+    //删除图片
+    function imgRemove() {
+        var imgList = document.getElementsByClassName("z_addImg");
+        var mask = document.getElementsByClassName("z_mask")[0];
+        var cancel = document.getElementsByClassName("z_cancel")[0];
+        var sure = document.getElementsByClassName("z_sure")[0];
+        var file = document.getElementById("file");
+        for(var j = 0; j < imgList.length; j++) {
+            imgList[j].index = j;
+            var nn=imgList[j].id;
+            imgList[j].onclick = function() {
+                             var t = this;
+                mask.style.display = "block";
+                cancel.onclick = function() {
+                    mask.style.display = "none";
+                };
+                sure.onclick = function() {
+                    mask.style.display = "none";
+                    delpic(nn);
+                    if(file.classList.contains("z_cl")) {
+                        file.outerHTML = file.outerHTML;
+                    }
+                    t.parentNode.removeChild(t);
+                    file.classList.remove("z_cl");
+
+                };
+
+            }
+        };
+    };
+    function delpic(nn) {
+        var plan_id =$("#id").val();
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/mobile/delpic",
+            data :{plan_id:plan_id,pic:nn},// 你的formid
+            async : false,
+            success : function(data) {
+                if (data.code == 0) {
+                    parent.layer.msg("删除成功！");
+                }
+
+            }
+        });
+    }
+</script>
+<script>
+    var info_num = 0;
+    function add() {
+        if (info_num == 0) {
+            var html = '<div class="box" id="save">' +
+                    '<div class="heading flex-center">' +
+                    '<a href="javascript:;" onclick="save(2)" class="btn primary  flex-center">保存</a>' +
+                    '</div>' +
+                    '</div>';
+            $("#a1").append(html);
+        }
+        var h = '<div class="item" id="item_' + info_num + '">' +
+                '                <div class="list">' +
+                '                    <div class="item">' +
+                '                        <div class="row">' +
+                '                            <div class="cell-6">' +
+                '                                <input name="username" type="text" class="input" placeholder="设备名称">' +
+                '                            </div>' +
+                '                            <div class="cell-6">' +
+                '                                <input name="brand" type="text" class="input" placeholder="序列号">' +
+                '                            </div>' +
+                '                        </div>' +
+                '                    </div>' +
+                '                    <div class="item">' +
+                '                        <div class="row">' +
+                '                            <div class="cell">' +
+                '                                <label style="line-height: 30px">处理方式：</label>' +
+                '                                <div class="radio inline-block"  style="margin-right: 10px">' +
+                '                                    <input type="radio" name="payment">' +
+                '                                    <label for="payment">现场维修</label>' +
+                '                                </div>' +
+                '                                <div class="radio inline-block">' +
+                '                                    <input type="radio" name="payment">' +
+                '                                    <label for="payment">统一维修</label>' +
+                '                                </div>' +
+                '                            </div>' +
+                '                        </div>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>';
+        $("#info").append(h);
+        info_num++;
+    }
+    function del(index) {
+        $("#item_" + index).remove();
+        info_num--;
+        if (info_num == 0) {
+            $("#save").remove();
+        }
+
+    }
+    function jia() {
+        openDept();
+    }
+    function close() {
+        layer.close(index);
+    }
+    var index;
+    var openDept = function(){
+         index = layer.open({
+            type:2,
+            title:"线上设备添加",
+            area : [ '300px', '450px' ],
+            content:"/mobile/add",
+            maxmin: true
+        })
+        layer.full(index);
+    }
+</script>
+
+</body>
+</html>

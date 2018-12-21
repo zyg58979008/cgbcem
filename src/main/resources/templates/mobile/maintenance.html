@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/index"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >设备维修更换管理</strong></div>
+    <nav class="nav">
+        <a id="search"  data-display data-backdrop="clean" data-target="#target3" data-target-dismiss="true" data-placement="beside-bottom-start"><i class="icon-search"></i></a>
+    </nav>
+</header>
+<div class="section container " style="margin-top: 10px;">
+    <div class="list with-divider">
+        <div class="item  shadow-2 rounded-lg">
+            <div class="content">
+                <div class="title">设备维修单-WX2018041200001</div>
+                <div class="subtitle">2018-04-12</div>
+            </div>
+            <span class="label success rounded">已申请</span>
+            <a href="/mobile/repair1" class="btn success rounded">编辑</a>
+        </div>
+        <div class="item  shadow-2 rounded-lg">
+            <div class="content">
+                <div class="title">设备更换单-GH2018040900231</div>
+                <div class="subtitle">2018-04-09</div>
+            </div>
+            <span class="label primary rounded">完成</span>
+
+            <a href="/mobile/change1" class="btn primary rounded">确认</a>
+        </div>
+        <div class="item  shadow-2 rounded-lg">
+            <div class="content">
+                <div class="title">设备更换单-GH2018041100213</div>
+                <div class="subtitle">2018-04-11</div>
+            </div>
+            <span class="label yellow rounded">已确认</span>
+            <a href="/mobile/change2" class="btn info rounded">查看</a>
+        </div>
+    </div>
+</div>
+
+<div id="target3" class="layer hidden">
+    <div class="list" style="min-width: 6rem">
+        <a class="item">全部</a>
+        <a class="item">已申请</a>
+        <a class="item">完成</a>
+        <a class="item">网点确认</a>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <div class="title text-center" onclick="aa(1)"><strong >申请维修</strong></div>
+    <div class="title text-center" onclick="aa(2)"><strong >申请更换</strong></div>
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script>
+    function aa(i) {
+        if(i==1){
+            window.location.href="/mobile/repair";
+        }
+        else{
+            window.location.href="/mobile/change";
+        }
+    }
+</script>
+</body>
+</html>

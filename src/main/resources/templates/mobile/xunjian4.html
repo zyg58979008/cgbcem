@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta charset="utf-8">
+    <title>库存查询-耗材</title>
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/plugins/category/select.css" rel="stylesheet">
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/plugins/category/font-awesome.4.6.0.css">
+    <link rel="stylesheet" href="/css/plugins/category/swiper-3.2.5.min.css" />
+    <link rel="stylesheet" href="/css/plugins/category/ectouch.css" />
+    <link rel="stylesheet" href="/css/plugins/category/search.css" />
+    <style>
+        /*修改提示文字的颜色*/
+        input::-webkit-input-placeholder { /* WebKit browsers */
+            /* WebKit browsers */ font-size:13px;
+        }
+        input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            /* Mozilla Firefox 4 to 18 */ font-size:13px;
+        }
+        input::-moz-placeholder { /* Mozilla Firefox 19+ */
+            /* Mozilla Firefox 19+ */ font-size:13px;
+        }
+        input:-ms-input-placeholder { /* Internet Explorer 10+ */
+            color: red;
+        }
+    </style>
+</head>
+
+<body style="max-width:640px;font-size: 14px;" >
+
+<header class="heading affix dock-top primary" style="height: 40px;">
+    <div class="avatar" style="margin: 0 5px;"><a  href="javascript:history.back(-1)" style="color: white;"><i class="icon-arrow-left" style="font-size: 15px;"></i></a></div>
+    <div class="title"style="font-size: 18px;"><strong>库存查询-耗材</strong></div>
+    <nav class="nav">
+        <a class="btn" style="margin: 5px 5px;" data-display data-backdrop="true" data-target="#target2" data-trigger-method="toggle"
+           data-placement="right"><i class="icon-bars" style="font-size: 15px;"></i></a>
+    </nav>
+</header>
+<div id="loading"><img src="images/loading.gif" /></div>
+<div class="con">
+    <div class="category-top">
+        <header>
+            <section class="search">
+                <div class="text-all dis-box j-text-all">
+                    <div class="box-flex input-text" style="font-size: 18px;">
+                        <input type="text" placeholder="品名搜索" />
+                        <i class="iconfont icon-guanbi is-null j-is-null"></i> </div>
+                </div>
+            </section>
+        </header>
+    </div>
+    <aside>
+        <div class="menu-left scrollbar-none" id="sidebar">
+            <ul>
+                <li  class="active">墨盒</li>
+                <li >硒鼓</li>
+                <li >色带</li>
+                <li >打印纸</li>
+                <li >复印纸</li>
+                <li >墨水</li>
+                <li >数据线</li>
+                <li >网线</li>
+                <li >键盘</li>
+                <li >鼠标</li>
+               <!-- <li >计算器</li>
+                <li >母婴用品</li>
+                <li >全新整车/车品</li>-->
+            </ul>
+        </div>
+    </aside>
+    <section class="menu-right padding-all j-content" style="margin-top: 95px">
+        <ul>
+            <div class="list with-divider">
+                <div class="item with-avatar multi-lines">
+                    <!--<a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" width="100" height="100" alt=""></a>-->
+                    <div class="content">
+                        <span class="title">惠普</span>
+                        <div>
+                            <small class="muted">HP 802s(CH561ZZ)</small>&nbsp;
+                        </div>
+                    </div>
+                    <div>5200 个</div>
+                </div>
+                <div class="item with-avatar multi-lines">
+                    <!--<a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" width="100" height="100" alt=""></a>-->
+                    <div class="content">
+                        <span class="title">佳能</span>
+                        <div>
+                            <small class="muted">PG-815</small>&nbsp;
+                        </div>
+                    </div>
+                    <div>3500 个</div>
+                </div>
+                <div class="item with-avatar multi-lines">
+                    <!--<a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" width="100" height="100" alt=""></a>-->
+                    <div class="content">
+                        <span class="title">爱普生</span>
+                        <div>
+                            <small class="muted">T6721 墨仓式打印机墨水</small>&nbsp;
+                        </div>
+                    </div>
+                    <div>3600 个</div>
+                </div>
+                <div class="item with-avatar multi-lines">
+                    <!--<a class="avatar circle" style="height: 40px;"><img src="/img/category/dayinji.jpg" width="100" height="100" alt=""></a>-->
+                    <div class="content">
+                        <span class="title">兄弟</span>
+                        <div>
+                            <small class="muted">LC990BK</small>&nbsp;
+                        </div>
+                    </div>
+                    <div>1300 个</div>
+                </div>
+            </div>
+            <!--<div class="M-main-list">
+                <div class="M-main-A left">
+                    <div class="M-main-A-a">
+                        <a><img src="/img/category/dayinji.jpg" width="100" height="100" alt="asd" /></a>
+                    </div>
+                    <div class="M-main-A-b">
+                        <h3><a style="color: black;">打印机-佳能-LBP2900+</a><em class="baseBg ico1"></em></h3>
+                        <p>型号 白色 聚酯 05-00-55</p>
+                    </div>
+
+                </div>
+                <div class="M-main-C left">
+
+                </div>
+                <div class="M-main-F left">
+                    <p>数量<span>8700</span>个</p>
+                </div>
+            </div>
+            <div class="M-main-list">
+                <div class="M-main-A left">
+                    <div class="M-main-A-a">
+                        <a><img src="/img/category/dayinji.jpg" width="100" height="100" alt="asd" /></a>
+                    </div>
+                    <div class="M-main-A-b">
+                        <h3><a style="color: black;">彩涂板卷(镀铝锌基板)</a><em class="baseBg ico1"></em></h3>
+                        <p>型号 白色 聚酯 05-00-55</p>
+                    </div>
+
+                </div>
+                <div class="M-main-C left">
+
+                </div>
+                <div class="M-main-F left">
+                    <p>数量<span>8700</span>个</p>
+                </div>
+            </div>
+            <div class="M-main-list">
+                <div class="M-main-A left">
+                    <div class="M-main-A-a">
+                        <a><img src="/img/category/dayinji.jpg" width="100" height="100" alt="asd" /></a>
+                    </div>
+                    <div class="M-main-A-b">
+                        <h3><a style="color: black;">彩涂板卷(镀铝锌基板)</a><em class="baseBg ico1"></em></h3>
+                        <p>型号 白色 聚酯 05-00-55</p>
+                    </div>
+
+                </div>
+                <div class="M-main-C left">
+
+                </div>
+                <div class="M-main-F left">
+                    <p>数量<span>8700</span>个</p>
+                </div>
+            </div>
+            <div class="M-main-list">
+                <div class="M-main-A left">
+                    <div class="M-main-A-a">
+                        <a><img src="/img/category/dayinji.jpg" width="100" height="100" alt="asd" /></a>
+                    </div>
+                    <div class="M-main-A-b">
+                        <h3><a style="color: black;">彩涂板卷(镀铝锌基板)</a><em class="baseBg ico1"></em></h3>
+                        <p>型号 白色 聚酯 05-00-55</p>
+                    </div>
+
+                </div>
+                <div class="M-main-C left">
+
+                </div>
+                <div class="M-main-F left">
+                    <p>数量<span>8700</span>个</p>
+                </div>
+            </div>
+            <div class="M-main-list">
+                <div class="M-main-A left">
+                    <div class="M-main-A-a">
+                        <a><img src="/img/category/dayinji.jpg" width="100" height="100" alt="asd" /></a>
+                    </div>
+                    <div class="M-main-A-b">
+                        <h3><a style="color: black;">彩涂板卷(镀铝锌基板)</a><em class="baseBg ico1"></em></h3>
+                        <p>型号 白色 聚酯 05-00-55</p>
+                    </div>
+
+                </div>
+                <div class="M-main-C left">
+
+                </div>
+                <div class="M-main-F left">
+                    <p>数量<span>8700</span>个</p>
+                </div>
+            </div>-->
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none; margin-top: 95px">
+        <ul>
+            <!--<li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>珠宝</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>饰品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>黄金</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>手链</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>钻石</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>项链</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>珍珠</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>手镯</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>翡翠</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>发饰</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>彩宝</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>项坠</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>玉石</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>戒指</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>铂金</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>耳饰</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>男表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>太阳镜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>女表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>炫彩反光</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>情侣表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>近视墨镜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>防水表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>蛤蟆镜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>机械表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>框架眼镜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>运动表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>ZIPPO</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>时装表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>打火机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>陶瓷表</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>瑞士军刀</span></li>-->
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none; margin-top: 95px">
+        <ul>
+            <!--<li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>官方直售</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>护肤套装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>面膜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>乳液面霜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>身体护理</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>化妆水</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>防晒</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>洁面</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>精油芳疗</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>面部精华</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>眼霜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>男士护理</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>卸妆</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>时尚彩妆</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>BB霜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>香水</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>隔离霜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>睫毛膏</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>唇膏口红</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>粉饼</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>美容工具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>洗发护发</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>沐浴露</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>假发</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>染发烫发</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>卫生巾</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>牙膏</span></li>-->
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none; margin-top: 95px">
+        <ul>
+           <!-- <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>天猫分期</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>冰箱</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>空调</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>洗衣机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>平板电视</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>热水器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>家庭影院</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>消毒柜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>烟灶套装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电风扇</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>榨汁机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>空调扇</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>料理机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>豆浆机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电压力锅</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电烤箱</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电饭煲</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>挂烫机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电热水壶</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>净水器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>剃须刀</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>扫地机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电吹风</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>吸尘器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>家用氧吧</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>空气净化</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>按摩椅</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>除湿器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>按摩靠垫</span></li>-->
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none; margin-top: 95px">
+        <ul>
+           <!-- <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>炒锅</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>置物架</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>杯子</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>瓷器套装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>紫砂壶</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>刀具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>保鲜盒</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>收纳</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>拖把</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>衣架</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>晾衣架</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>垃圾桶</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>梳子</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>防蚊贴</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>降温神器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>晴雨伞</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>灭蚊灯</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>创意礼品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>缝纫机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>钟</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>狗狗主粮</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>纸巾</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>水族世界</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>洗衣液</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>宠物用品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>清洁剂</span></li>-->
+        </ul>
+    </section>
+    <!--<section class="menu-right padding-all j-content" style="display:none">
+        <h5>家具建材</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>灯具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>柜类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>卫浴</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>沙发</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>开关插座</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>床类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>壁纸</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>桌类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>地板</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>坐具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>厨房</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>0元分期</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>架类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>门类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>书房</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>浴霸</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>几类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>安防监控</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>案台</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>五金工具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>玄关</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>瓷砖</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>办公家具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>集成吊顶</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>户外家具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>油漆</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>成套家具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>镜子类</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>装修</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>设计</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>食品/医药保健</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>肠胃用药</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>肝胆用药</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>腰腿疼痛</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>狐臭腋臭</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>心脑血管</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>生发脱发</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>皮肤用药</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>脚气脚臭</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>减肥瘦身</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>补肾壮阳</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>补气补血</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>免疫调节</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>补益安神</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>调养脾胃</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>滋补养生</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>美容养颜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>成人用品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>隐形眼镜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>男用延时</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>血压计</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>女用情趣</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>血糖仪</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>按摩器材</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>保健理疗</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>图书音像</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>小说</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>文学</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>言情</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>科幻</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>悬疑</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>传记</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>历史</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>动漫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>童书</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>育儿</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>绘本</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>孕期</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>生活</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>旅行</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>美食</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>社科</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>哲学</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>经济</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>财经</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>管理</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>励志</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>考试</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>音像</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>杂志</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>马尔克斯</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>手机/数码</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>天猫分期</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>三星盖世</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>大屏手机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>华为荣耀</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>热卖新机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>酷派大神</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>4G手机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>双卡双待</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>DIY电脑</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>笔记本</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>显示器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>平板电脑</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电教文具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>路由器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>投影仪</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>打印机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>电脑硬件</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>自拍神器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>U盘</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>单反</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>高清盒子</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>苹果配件</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>tf卡</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>移动电源</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>耳机耳麦</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>移动硬盘</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>音箱音响</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>小米手机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>iPhone</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>女装</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>真丝裙</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>休闲裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>蕾丝衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>热裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>休闲套装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>衬衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>半身裙</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>七分裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>牛仔裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>雪纺裙裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>商场同款</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>文胸</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>夏季睡衣</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>内裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>连衣裙</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>T恤</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>男装</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>男装集结</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>百搭T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>牛仔裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>条纹T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>亚麻T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>印花T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>丝光棉T</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>休闲裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>棉麻裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>七分裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>九分裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>新POLO</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>短袖衬衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>亚麻衬衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>格纹衬衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>牛仔衬衫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>背心</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>运动鞋</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>运动服</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>帆布鞋</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>跑步鞋</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>运动T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>运动短裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>垂钓用品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>户外服装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>健身用品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>骑行运动</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>登山包</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>母婴用品</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>孕妇装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>孕妇洗护</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>防辐射</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>产后用品</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>内衣裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>奶粉</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>辅食</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>纸尿裤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>凉席睡袋</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>奶瓶奶嘴</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>喂养小电</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>澡盆洗护</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>婴儿床</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>安全座椅</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>玩具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>婴儿玩具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>幼儿玩具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>早教益智</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>男孩玩具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>女孩玩具</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>童车学步</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>潮流动漫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>婴幼儿服</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>儿童内衣</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>童装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>童鞋</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>T恤</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>连衣裙</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>亲子装</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>凉鞋</span></li>
+        </ul>
+    </section>
+    <section class="menu-right padding-all j-content" style="display:none">
+        <h5>全新整车/车品</h5>
+        <ul>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>汽车节</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>日系新车</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>法系新车</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>自主品牌</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>德系新车</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>美系新车</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>夏季座垫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>脚垫</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>座套</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>0元分期</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>洗车机</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>贴膜</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>车蜡</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>儿童座椅</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>dvd导航</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>安全预警</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>净化器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>行车记录</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>胎压监测</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>充气泵</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>车载冰箱</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>机油</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>滤芯器</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>火花塞</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>升级灯泡</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>轮胎</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>刹车片</span></li>
+            <li class="w-3"><a href="#"></a> <img src="images/tp.png" /><span>雨刮</span></li>
+        </ul>
+    </section>-->
+</div>
+<!--<div class="search-div j-search-div ts-3">
+    <section class="search">
+        <form action="index.php?m=default&c=category&a=index&u=0" method="post">
+            <div class="text-all dis-box j-text-all">
+                <div class="box-flex input-texts">
+                    <input class="j-input-text" type="text" name="keywords" placeholder="请输入搜索关键词！" />
+                    <i class="iconfont icon-guanbi is-null j-is-null"></i> </div>
+                <button type="submit" class="btn-submit">搜索</button>
+            </div>
+        </form>
+    </section>
+    <section class="search-con">
+        <div class="swiper-scroll history-search">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <p>
+                        <label class="fl">常用设备</label>
+                    </p>
+                    <ul class="hot-search a-text-more">
+                        <li class="w-3"><a href="#"><span>打印机</span></a></li>
+                        <li class="w-3"><a href="#"><span>UPS电源</span></a></li>
+                    </ul>
+                    <p class="hos-search">
+                        <label class="fl">最近搜索</label>
+                        <span class="fr" onclick="javascript:clearHistroy();"><i class="fr"></i></span> </p>
+                    <ul class="hot-search a-text-more a-text-one" id="search_histroy">
+                    </ul>
+                </div>
+            </div>
+            <div class="swiper-scrollbar"></div>
+        </div>
+    </section>
+    <footer class="close-search j-close-search"> 点击关闭 </footer>
+</div>-->
+<div id="target2" class="layer hidden affix dock-right" style="min-width: 15rem">
+    <div class="list with-divider">
+        <a class="item with-avatar primary multi-lines">
+            <div class="content">
+                <div class="title">巡检员</div>
+                <div class="subtitle">在线</div>
+            </div>
+        </a>
+        <a class="item" onclick="a(0)">库房查询-备件</a>
+        <a class="item" onclick="a(1)">库房查询-耗材</a>
+    </div>
+   <!-- <div class="list-item compact gray with-avatar dock dock-bottom">
+        <div class="avatar text-gray"><i class="icon icon-signout"></i></div>
+    </div>-->
+</div>
+<script type="text/javascript">
+    //设置cookie
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+    function clearHistroy(){
+        setCookie('ECS[keywords]', '', -1);
+        document.getElementById("search_histroy").style.visibility = "hidden";
+    }
+    function a(index) {
+        if(index == '1'){
+            window.location.reload();
+        }
+        if(index == '0'){
+            window.location.href="/mobile/xunjian3";
+        }
+    }
+</script>
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/plugins/category/swiper-3.2.5.min.js"></script>
+<script src="/js/plugins/category/ectouch.js"></script>
+<script src="/js/plugins/category/jquery.json.js"></script>
+<script src="/js/plugins/category/common.js"></script>
+<script src="/js/plugins/category/jQuery-shopping.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/raty/jquery.raty.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/css/application.css">
+<script type="text/javascript">
+    $(function($){
+        $('#sidebar ul li').click(function(){
+            $(this).addClass('active').siblings('li').removeClass('active');
+            var index = $(this).index();
+            $('.j-content').eq(index).show().siblings('.j-content').hide();
+        })
+    })
+</script>
+
+<!--<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+    <p>适用浏览器：360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗. 不支持IE8及以下浏览器。</p>
+    &lt;!&ndash;<p>来源：<a href="http://www.lanrenzhijia.com/" target="_blank">懒人素材</a></p>&ndash;&gt;
+</div>-->
+</body>
+</html>

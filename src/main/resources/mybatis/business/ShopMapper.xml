@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.ShopDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.ShopDO">
+		select `id`,`building_id`,`code`,`floor`,`room_type`,`dept_id`,`building_area`,`floor_area`,`del_flag` from shop where id = #{value}
+	</select>
+
+	<select id="getArea" resultType="com.bootdo.business.domain.ShopDO">
+		SELECT (SELECT SUM(building_area) FROM shop WHERE building_id = '13' AND dept_id = #{deptId}) AS buildingAreaA,
+(SELECT SUM(floor_area) FROM shop WHERE building_id = '13' AND dept_id = #{deptId}) AS floorAreaA,
+(SELECT SUM(building_area) FROM shop WHERE building_id = '14' AND dept_id = #{deptId}) AS buildingAreaB,
+(SELECT SUM(floor_area) FROM shop WHERE building_id = '14' AND dept_id = #{deptId}) AS floorAreaB
+	</select>
+
+	<select id="getCode" resultType="com.bootdo.business.domain.ShopDO">
+		select `id`,`building_id`,`code`,`floor`,`room_type`,`dept_id`,`building_area`,`floor_area`,`del_flag` from shop where code = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.ShopDO">
+		select `id`,`building_id`,`code`,`floor`,`room_type`,`dept_id`,`building_area`,
+		(select d.name from sys_dict d where d.value=room_type and d.type='room_type') as roomTypeName,`floor_area`,`del_flag` from shop
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				building_id in (select b.id from business_building b  where FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>		  		  <if test="code != null and code != ''"> and code LIKE CONCAT('%',#{code},'%')</if>
+		  		  <if test="floor != null and floor != ''"> and floor = #{floor} </if>
+		  		  <if test="roomType != null and roomType != ''"> and room_type = #{roomType} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="buildingArea != null and buildingArea != ''"> and building_area = #{buildingArea} </if>
+		  		  <if test="floorArea != null and floorArea != ''"> and floor_area = #{floorArea} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by CODE
+            </when>
+			<otherwise>
+                order by floor,code
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from shop
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+			 <if test="buildingId != null and buildingId != ''"> and
+				 building_id in (select b.id from business_building b  where FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			 </if>
+			 	   <if test="code != null and code != ''"> and code = #{code} </if>
+		  		  <if test="floor != null and floor != ''"> and floor = #{floor} </if>
+		  		  <if test="roomType != null and roomType != ''"> and room_type = #{roomType} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="buildingArea != null and buildingArea != ''"> and building_area = #{buildingArea} </if>
+		  		  <if test="floorArea != null and floorArea != ''"> and floor_area = #{floorArea} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		</where>
+	</select>
+	<select id="checkShopContract" resultType="int">
+		select count(*) from shop_to_contract sc where
+		sc.state in ('0','1') and sc.del_flag='0'
+		<if test="mergeIds != null and mergeIds != ''">
+			and sc.shop_id IN
+			<foreach item="i" collection="mergeIds" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+	</select>
+	<select id="checkCode" resultType="int">
+		select count(*) from shop
+		<where>
+			<if test="id != null and id != ''"> and id != #{id} </if>
+			<if test="buildingId != null and buildingId != ''"> and building_id = #{buildingId} </if>
+			<if test="code != null and code != ''"> and code = #{code} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+			<if test="codes != null and codes != ''">
+				and code in <foreach item="c" collection="codes" open="(" separator="," close=")">
+				#{c}
+			</foreach> </if>
+			<if test="mergeIds != null and mergeIds != ''">
+				and id not in <foreach item="id" collection="mergeIds" open="(" separator="," close=")">
+				#{id}
+			</foreach> </if>
+
+		</where>
+	</select>
+	<insert id="save" parameterType="com.bootdo.business.domain.ShopDO" useGeneratedKeys="true" keyProperty="id">
+		insert into shop
+		(
+			`building_id`, 
+			`code`, 
+			`floor`,
+			`room_type`, 
+			`dept_id`, 
+			`building_area`, 
+			`floor_area`, 
+			`del_flag`
+		)
+		values
+		(
+			#{buildingId}, 
+			#{code}, 
+			#{floor},
+			#{roomType}, 
+			#{deptId}, 
+			#{buildingArea}, 
+			#{floorArea}, 
+			'0'
+		)
+	</insert>
+	<insert id="batchInsert" >
+		insert into room_copy
+		(
+		`building_id`,
+		`code`,
+		`floor`,
+		`room_type`,
+		`dept_id`,
+		`building_area`,
+		`floor_area`,
+		`del_flag`,
+		`order_id`
+		)
+		values
+		<foreach collection ="shopDOList" item="room" separator =",">
+			(
+			#{room.buildingId},
+			#{room.code},
+			#{room.floor},
+			#{room.roomType},
+			#{room.deptId},
+			#{room.buildingArea},
+			#{room.floorArea},
+			'0',
+			#{room.orderId}
+			)
+		</foreach >
+	</insert>
+	<insert id="synchronization" >
+		insert into shop
+		select
+		null,
+		`building_id`,
+		`code`,
+		`floor`,
+		room_type,
+		`dept_id`,
+		`building_area`,
+		`floor_area`,
+		`del_flag`,
+		 `order_id` from room_copy r where r.order_id=#{orderId} and r.del_flag='0'
+	</insert>
+	<update id="update" parameterType="com.bootdo.business.domain.ShopDO">
+		update shop
+		<set>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="roomType != null">`room_type` = #{roomType}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="buildingArea != null">`building_area` = #{buildingArea}, </if>
+			<if test="floorArea != null">`floor_area` = #{floorArea}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		update shop set del_flag='1' where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		update shop set del_flag='1' where id in
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<delete id="duplicate">
+		DELETE
+		FROM
+		  room_copy
+		WHERE id IN
+		  (SELECT
+			a.id
+		  FROM
+			(SELECT
+			  c.id AS id
+			FROM
+			  shop r,
+			  room_copy c
+			WHERE r.building_id = c.building_id
+			  AND r.code = c.code
+			  AND r.del_flag = '0'
+			  AND c.`order_id` =#{orderId}) a)
+	</delete>
+</mapper>

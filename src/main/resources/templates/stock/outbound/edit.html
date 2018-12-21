@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${outbound.id}"  type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">库房ID：</label>
+								<div class="col-sm-8">
+									<input id="storeroom" name="storeroom" th:value="${outbound.storeroom}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remarks" name="remarks" th:value="${outbound.remarks}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建者：</label>
+								<div class="col-sm-8">
+									<input id="createBy" name="createBy" th:value="${outbound.createBy}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建时间：</label>
+								<div class="col-sm-8">
+									<input id="createDate" name="createDate" th:value="${outbound.createDate}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新者：</label>
+								<div class="col-sm-8">
+									<input id="updateBy" name="updateBy" th:value="${outbound.updateBy}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新时间：</label>
+								<div class="col-sm-8">
+									<input id="updateDate" name="updateDate" th:value="${outbound.updateDate}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">删除标记：</label>
+								<div class="col-sm-8">
+									<input id="delFlag" name="delFlag" th:value="${outbound.delFlag}" class="form-control" type="text">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/stock/outbound/edit.js">
+	</script>
+</body>
+</html>

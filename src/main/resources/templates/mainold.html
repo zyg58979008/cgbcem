@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>欢迎页</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+   <!-- <link rel="stylesheet" href="css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="css/layui.css"  media="all">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>百度ECHarts</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+   <link rel="shortcut icon" href="favicon.ico"> <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+<style type="text/css">
+
+</style>
+</head>
+<body class="gray-bg">
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row"style="height: auto">
+
+    <div style="float: left;width: 75%" >
+        <div class="ibox float-e-margins">
+           <!-- <div class="ibox-title">
+                <h5>巡检网点</h5>
+
+            </div>-->
+            <div class="ibox-content">
+                <fieldset class="demo_content">
+                        <div style="min-height: 950px; width: 100%;" id="map">
+                        </div>
+                        <script type="text/javascript">
+                            var markerArr = [
+                                { title: "网点：双塔山支行", point: "117.812787,40.965231", address: "承德市双滦区", tel: "2018-01-12",plan:"2018-05-06" },
+                                { title: "网点：山庄支行", point: "117.949521,40.987272", address: "承德市双桥区避暑山庄 ", tel: "2018-04-02",plan:"2018-07-06" },
+                                { title: "网点：世纪城支行", point: "117.966671,40.962431", address: "承德市双桥区", tel: "2018-04-10",plan:"2018-05-025" },
+                                { title: "网点：单塔子支行", point: "117.827554,41.017798", address: "承德市双滦区单塔子", tel: "2018-01-12" ,plan:"2018-05-06"},
+                                { title: "网点：狮子园支行", point: "117.912369,41.020085", address: "承德市双桥区", tel: "2018-03-30" ,plan:"2018-06-07"},
+                                { title: "网点：下店子支行", point: "117.856501,40.988617", address: "承德市双桥区", tel: "2018-03-29",plan:"2018-07-22"},
+                                { title: "网点：大滩支行", point: "116.023256,41.586461", address: "承德市丰宁县", tel: "2018-03-29",plan:"2018-07-22"},
+                                { title: "网点：土城子支行", point: "116.618734,41.322407", address: "承德市丰宁县", tel: "2018-03-29",plan:"2018-07-22"},
+                                { title: "网点：西地支行", point: "117.710565,40.958696", address: "承德市双滦区西地", tel: "2018-03-12" ,plan:"2018-05-06"}
+                            ];
+
+                            function map_init() {
+                                var map = new BMap.Map("map"); // 创建Map实例
+                                var point = new BMap.Point(117.933822456,40.9925210525); //地图中心点，广州市
+                                map.centerAndZoom(point, 13); // 初始化地图,设置中心点坐标和地图级别。
+                                map.enableScrollWheelZoom(true); //启用滚轮放大缩小
+                                //地图、卫星、混合模式切换
+                                map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP]}));
+                                //向地图中添加缩放控件
+                                var ctrlNav = new window.BMap.NavigationControl({
+                                    anchor: BMAP_ANCHOR_TOP_LEFT,
+                                    type: BMAP_NAVIGATION_CONTROL_LARGE
+                                });
+                                map.addControl(ctrlNav);
+                                //向地图中添加缩略图控件
+                                var ctrlOve = new window.BMap.OverviewMapControl({
+                                    anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+                                    isOpen: 1
+                                });
+                                map.addControl(ctrlOve);
+                                //向地图中添加比例尺控件
+                                var ctrlSca = new window.BMap.ScaleControl({
+                                    anchor: BMAP_ANCHOR_BOTTOM_LEFT
+                                });
+                                map.addControl(ctrlSca);
+
+                                var point = new Array(); //存放标注点经纬信息的数组
+                                var marker = new Array(); //存放标注点对象的数组
+                                var info = new Array(); //存放提示信息窗口对象的数组
+                                var infoWindow =new Array();//存放检索信息窗口对象的数组
+                                var marker1= new Array(); //存放标注点对象的数组
+
+                                //alert(markerArr.length);
+                                for (var i = 0; i < markerArr.length; i++) {
+
+                                    var iconImg =new BMap.Icon('../../img/img/green.png', new BMap.Size(60, 60), { anchor: new BMap.Size(20, 20) });
+                                    var iconImgred = new BMap.Icon('../../img/img/red.png', new BMap.Size(60, 60), { anchor: new BMap.Size(20, 20) });
+
+                                    var p0 = markerArr[i].point.split(",")[0]; //
+                                    var p1 = markerArr[i].point.split(",")[1]; //按照原数组的point格式将地图点坐标的经纬度分别提出来
+                                    point[i] = new BMap.Point(p0, p1); //循环生成新的地图点
+                                    if (markerArr[i].address=="承德市双桥区")
+                                    {
+                                    marker[i] = new BMap.Marker(point[i],{icon:iconImg}); //按照地图点坐标生成标记
+                                    }
+                                    else
+                                    {
+
+                                        marker[i] = new BMap.Marker(point[i],{icon:iconImgred}); //按照地图点坐标生成标记
+                                    }
+                                    map.addOverlay(marker[i]);
+
+                                    var label =  new window.BMap.Label(markerArr[i].title, { offset: new window.BMap.Size(20, -10) });
+
+                                    marker[i].setLabel(label);
+
+                                    // 创建信息窗口对象
+                                    info[i] = "<p style=’font-size:12px;lineheight:1.8em;’>" + "</br>" + markerArr[i].title+"</br>地址：" + markerArr[i].address +"</br> 最近巡检时间：" +
+                                            markerArr[i].tel +"</br>计划巡检时间：" + markerArr[i].plan +"</br></p>";
+                                    var EditHtml = [];
+                                      EditHtml.push('<div align="right">');
+                                    EditHtml.push('          <input type="button" name="btnOK" class="className" style="width:90px;height:34px;" onclick="fnOK()" value="查看巡检报告">&nbsp;&nbsp;');
+
+                                    EditHtml.push('</div>');
+                                    EditHtml.push('<div  class="table-scrollable"><br/>');
+
+                                    EditHtml.push('<table class="table table-bordered table-hover" style="width: 100px" >');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <th align="center" class="common1" ">设备名称</th>');
+                                    EditHtml.push('  <th align="center" class="common1">型号</th>  ');
+                                    EditHtml.push('	     <th align="center" class="common1" ">状态</th>');
+                                    EditHtml.push('	     <th align="center" class="common1"">已使用年限</th>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common ">打印机</td>');
+                                    EditHtml.push('     <td  >HP 1020plus</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >2年3个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common1">读卡器</td>');
+                                    EditHtml.push('     <td  >SKRD-EM/W1</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >3年2个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common1">业务终端</td>');
+                                    EditHtml.push('     <td  >P35C</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >5年6个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common1" >指纹仪</td>');
+                                    EditHtml.push('     <td  >CHD200GIC</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >5年7个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common1">发电机</td>');
+                                    EditHtml.push('     <td  >OB3000I5</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >5年7个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('  <tr>');
+                                    EditHtml.push('      <td align="left" class="common1">密码键盘</td>');
+                                    EditHtml.push('     <td  >MAX3420E</td>');
+                                    EditHtml.push('	     <td >正常</td>');
+                                    EditHtml.push('	     <td >5年8个月</td>');
+                                    EditHtml.push('  </tr>');
+                                    EditHtml.push('</table>');
+                                    EditHtml.push('</div>');
+                                    var opts = {
+                                        width : 320,     // 信息窗口宽度
+                                        height: 420,     // 信息窗口高度
+                                        panel  : "panel",         //检索结果面板
+                                        enableAutoPan : true,     //自动平移
+                                        title : info[i]  // 信息窗口标题
+                                    }
+
+
+
+
+                                    infoWindow[i]= new BMap.InfoWindow( EditHtml.join(""), opts);  // 创建信息窗口对象
+
+
+                                    //添加点击事件
+                                    marker[i].addEventListener("click",
+                                            (function(k){
+                                                // js 闭包
+                                                return function(){
+                                                    //将被点击marker置为中心
+                                                    //map.centerAndZoom(point[k], 18);
+                                                    //在marker上打开检索信息窗口
+                                                    //searchInfoWindow[k].open(marker[k]);
+
+                                                    map.openInfoWindow(infoWindow[k], point[k]);      // 打开信息窗口
+                                                }
+                                            })(i)
+                                    );
+                                }
+                            }
+
+
+
+
+
+
+
+                            //异步调用百度js
+                            function map_load() {
+                                var load = document.createElement("script");
+                                load.src = "http://api.map.baidu.com/api?v=2.0&ak=i0pSF5a29dpE3H33wN6E3jmC&callback=map_init";
+                                document.body.appendChild(load);
+                            }
+                            window.onload = map_load;
+                            //查看巡检报告
+                            function fnOK() {
+                                window.open ("/inspection/plan/maininfo", "newwindow", "height=500, width=800, top=200, left=500, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no")
+
+                            }
+                        </script>
+                    </fieldset>
+            </div>
+        </div>
+    </div>
+
+
+        <div class="row"style="float: right;width: 25%;margin-right: 3px">
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption"style="font-size: 16px">设备状态信息（实时） </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-hover"id="1">
+                            <thead>
+                            <tr>
+                                <th style="width: 25%"> 设备 </th>
+                                <th> 入库</th>
+                                <th> 出库 </th>
+                                <th> 库存 </th>
+                                <th> 报修 </th>
+                                <th> 报废 </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="active">
+                                <td style="width: 25%"> 打印机 </td>
+                                <td> 1 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td>4 </td>
+                            </tr>
+                            <tr class="success">
+                                <td style="width: 25%"> 业务终端 </td>
+                                <td> 4 </td>
+                                <td> 1 </td>
+                                <td> 3 </td>
+                                <td> 0 </td>
+                                <td> 1 </td>
+                            </tr>
+                            <tr class="warning">
+                                <td style="width: 25%"> 指纹仪 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 4 </td>
+                                <td> 1 </td>
+                            </tr>
+                            <tr class="danger">
+                                <td style="width: 25%"> 发电机 </td>
+                                <td> 1 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 1 </td>
+                                <td> 0 </td>
+                            </tr>
+                            <tr class="active">
+                                <td style="width: 25%"> 读卡器 </td>
+                                <td> 1 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td>4 </td>
+                            </tr>
+                            <tr class="success">
+                                <td style="width: 25%"> 密码键盘 </td>
+                                <td> 4 </td>
+                                <td> 1 </td>
+                                <td> 3 </td>
+                                <td> 0 </td>
+                                <td> 1 </td>
+                            </tr>
+                            <tr class="warning">
+                                <td style="width: 25%"> UPS机头 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 4 </td>
+                                <td> 1 </td>
+                            </tr>
+                            <tr class="danger">
+                                <td style="width: 25%"> 防雷 </td>
+                                <td> 1 </td>
+                                <td> 2 </td>
+                                <td> 3 </td>
+                                <td> 1 </td>
+                                <td> 0 </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            <div class="ibox float-e-margins">
+                <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject font-green bold uppercase">承德市各县巡检信息</span>
+                    </div>
+
+                </div>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th> 区县 </th>
+                                <th> 已巡检 </th>
+                                <th> 待巡检 </th>
+                                <th> 超期 </th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td> 双桥区 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 0 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 双滦区 </td>
+                                <td> 0 </td>
+                                <td> 1 </td>
+                                <td> 0 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 营子区 </td>
+                                <td> 1 </td>
+                                <td> 2 </td>
+                                <td> 3</td>
+
+                            </tr>
+                            <tr>
+                                <td> 承德县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 平泉县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 丰宁县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 隆化县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 围场县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 兴隆县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 宽城县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            <tr>
+                                <td> 滦平县 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+                                <td> 3 </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/js/layui.js?v=3.3.6"></script>
+<!-- ECharts -->
+<script src="/js/plugins/echarts/echarts-all.js"></script>
+
+<!-- 自定义js -->
+<script src="/js/content.js?v=1.0.0"></script>
+
+
+<!-- ECharts demo data -->
+<script src="/js/appjs/sys/echarts.js"></script>
+
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+</body>
+
+
+</html>

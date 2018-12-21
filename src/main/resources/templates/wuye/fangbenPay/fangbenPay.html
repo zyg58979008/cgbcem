@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="row" style="padding-left: 15px;">
+						<div class="input-group">
+							<div class="form-group">
+								<input id="name" type="text" class="layui-input"
+									   placeholder="姓名" style="width: 100px;float: left">
+								<input id="code" type="text" class="layui-input"
+									   placeholder="房屋编码" style="width: 100px;float: left">
+								<select data-placeholder="--选择付款方式--" id="payType" style="width: 150px;float: left"
+										class="layui-input chosen-select" tabindex="2" required>
+									<option value="">--选择付款方式--</option>
+									<option value="1">--全款--</option>
+									<option value="2">--贷款--</option>
+								</select>
+								<button class="btn btn-success"  onclick="reLoad()">查询</button>
+								<button class="btn btn-primary"  onclick="c()">清空</button>
+							</div>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_add_h = 'hidden';
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+	</script>
+</div>
+<div shiro:hasPermission="wuye:fangbenManage:pay">
+	<script type="text/javascript">
+		s_edit_h = '';
+	</script>
+</div>
+
+<div th:include="include :: footer"></div>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/wuye/fangbenPay/pay.js"></script>
+</body>
+</html>

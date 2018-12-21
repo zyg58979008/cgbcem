@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<style>
+    .ibox-content{
+        background-color: #ffffff;
+        color: inherit;
+        padding: 15px 20px 20px 20px;
+        margin-bottom: 40px;
+        border-color: #e7eaec;
+        -webkit-border-image: none;
+        -o-border-image: none;
+        border-image: none;
+        border-style: solid solid none;
+        border-width: 1px 0px;
+    }
+</style>
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-3" style="text-align:center;padding-top: 40px ">
+            <button class="btn btn-primary" onclick="printme()">打印标签</button>
+        </div>
+        <div class="col-sm-12">
+            <br class="ibox float-e-margins">
+            <div id="printArea"style="width: 400px;margin-left: auto;margin-right: auto">
+
+                <!--<div id="qr_container" style="display: none">
+
+                </div>
+                <div id="imgDiv" style="width: 50px;height: 50px;float: left"></div>
+                <div style="float: left;padding-left: 2px">
+                    <table border="1" cellpadding="0" cellspacing="0"  style="width:94px;height: 120px" bordercolor="#000000">
+                        <tbody>
+                        <tr>
+                            <td align="center" height="12" width="32">
+                                <font size="2" color="black">编号</font>
+                            </td>
+                            <td id="code" width="50">
+                                <div size="2" color="black"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" height="12" >
+                                <font size="2" color="black">名称</font>
+                            </td>
+                            <td id="name">
+                                <div size="2" color="black"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" height="12" >
+                                <font size="2" color="black">品牌</font>
+                            </td>
+                            <td id="brand">
+                                <div size="2" color="black"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" height="12" >
+                                <font size="2" color="black">型号</font>
+                            </td>
+                            <td id="model">
+                                <div size="2" color="black"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include::footer"></div>
+
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/jquery.qrcode.min.js"></script>
+<script type="text/javascript">
+    var putNum;
+    var id;
+    var name;
+    var model;
+    var brand;
+    var remarks;
+    var printId;
+    $(document).ready(function(){
+        // 点击生成二维码
+        //$('#qr_btn').click(function(){
+        /*如果已生成过二维码，则删除二维码img图片和canvas，重新生成；反之，则直接生成二维码*/
+        //if($('#imgDiv:has(img)').length!=0){
+        /*$('#imgDiv img').remove();
+         $('canvas').remove();*/
+        printId=parent.$('#printId').val();
+        id=parent.$('#idd').val();
+        putNum = parent.$('#putNum').val();
+        name = parent.$('#name').val();
+        model = parent.$('#model').val();
+        brand = parent.$('#brandname').val();
+        remarks = parent.$('#remarks').val();
+        getAllElement();
+    });
+    function getAllElement()
+    {
+        $.ajax({
+            type : "get",
+            data :{
+                id : id,
+                printId : printId
+            },
+            url : "/equipment/print" + '/getNewCode',
+            success : function(data) {
+                for(var i=0;i<data.length;i++){
+                    $('canvas').remove();
+                    var codeNew = data[i].code;
+                    createQr(codeNew,i);
+                }
+            }
+        });
+    }
+    //}else{
+    //createQr();
+    // }
+    // });
+    // 生成二维码
+    function createQr(data,i){
+        var html = "";
+        html+='<div class="ibox-content" style="width: 400px;height:150px;margin-left: 5px;margin-right: auto;margin-top: -10px">' +
+                '<div id="qr_container' +i+'" style="display: none">' +
+                '</div><div id="imgDiv' +i+'" style="width: 130px;height: 130px;float: left"></div>' +
+                '<div style="float: left;padding-left: 2px">' +
+                '<table border="1" cellpadding="0" cellspacing="0"  style="width:120px;height: 130px;margin-left: 5px;" bordercolor="#000000">' +
+                '<tbody> <tr> <td align="center" height="30" width="160">' +
+                '<font size="2" color="black">编号</font> </td>' +
+                '<td id="code' +i+'" width="50">' +
+                '<div size="2" color="black"></div> </td> </tr> ' +
+                '<tr> <td align="center" height="30" > ' +
+                '<font size="2" color="black">名称</font> </td> ' +
+                '<td id="name' +i+'"> <div size="2" color="black"></div> </td> </tr> ' +
+                '<tr> <td align="center" height="30" > ' +
+                '<font size="2" color="black">品牌</font> </td> ' +
+                '<td id="brand' +i+'"> <div size="2" color="black"></div> </td> </tr> ' +
+                '<tr> <td align="center" height="30" > <font size="2" color="black">型号</font> </td> ' +
+                '<td id="model' +i+'"><div size="2" color="black">' +
+                '</div> </td> </tr> </tbody> </table> </div></div>';
+        $("#printArea").append(html);
+        $('#imgDiv'+i+' img').remove();
+        document.createElement('canvas').getContext('2d');
+        var codeNew = data;
+        var valText = codeNew; //****扫码得到的内容,应从上一个页面传参获取，自己拼接处理
+        // 采用正则表达式判断输入的内容是否是中文
+        var reg=/^[\u0391-\uFFE5]+$/;
+        if(valText!=""&&!reg.test(valText)){
+            // 如果不是中文，直接将输入的内容转换成二维码
+            $('#qr_container' +i+'').qrcode({render:"canvas",height:130, width:130,correctLevel:0,text:valText});
+        }else{
+            // 如果是中文，直接将输入的内容字符串转换成UTF-8，然后再转换成二维码
+            $('#qr_container' +i+'').qrcode({render:"canvas",height:130, width:130,correctLevel:0,text:utf16to8(valText)});
+        }
+
+        //获取网页中的canvas对象
+        var mycanvas1=document.getElementsByTagName('canvas')[0];
+
+        //将转换后的img标签插入到html中
+        var img = convertCanvasToImage(mycanvas1);
+        $('#imgDiv'+i+'').append(img);//imgDiv表示你要插入的容器id
+        document.getElementById("name"+i+"").innerHTML=name;
+        document.getElementById("model"+i+"").innerHTML=model;
+        document.getElementById("brand"+i+"").innerHTML=brand;
+        document.getElementById("code"+i+"").innerHTML=codeNew.substring(6,codeNew.length);
+    }
+
+    // 字符编码
+    function utf16to8(str) {
+        var out, i, len, c;
+        out = "";
+        len = str.length;
+        for(i = 0; i < len; i++) {
+            c = str.charCodeAt(i);
+            if ((c >= 0x0001) && (c <= 0x007F)) {
+                out += str.charAt(i);
+            } else if (c > 0x07FF) {
+                out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                out += String.fromCharCode(0x80 | ((c >>  6) & 0x3F));
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+            } else {
+                out += String.fromCharCode(0xC0 | ((c >>  6) & 0x1F));
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+            }
+        }
+        return out;
+    }
+
+    //从canvas中提取图片image
+    function convertCanvasToImage(canvas) {
+        //新Image对象，可以理解为DOM
+        var image = new Image();
+        // canvas.toDataURL 返回的是一串Base64编码的URL
+        // 指定格式PNG
+        image.src = canvas.toDataURL("image/png");
+        return image;
+    }
+
+
+    //打印指定div区域
+    function printme()
+    {
+        insertEi();
+        document.body.innerHTML=document.getElementById('printArea').innerHTML;
+        window.print();
+    }
+    function insertEi() {
+        /*   var b =  parent.$("#signupForm").serialize();*/
+
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/equipment/print/saveInfo",
+            /* data : $("#signupForm").serialize(),// 你的formid*/
+            data : {
+                id:id,
+                printId:printId
+            },
+            async : false,
+            error : function(request) {
+
+            },
+            success : function(data) {
+            }
+        });
+    }
+</script>

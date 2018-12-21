@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+						</div>
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+							<input id="name" name="name"  class="form-control" type="text" placeholder="单据编号">
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+							<select data-placeholder="--状态--" name="deptId1" id="deptId1"
+									class="form-control chosen-select" tabindex="2" required>
+								<option value="">--选择状态--</option>
+								<option value="全部">--全部--</option>
+								<option value="备件库">--备件库--</option>
+								<option value="维修库">--维修库--</option>
+								<option value="报废库">--报废库--</option>
+							</select>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;margin-top: 0;max-width:150px; ">
+							<input type="text" class="laydate-icon layer-date form-control" id="createDate1" name="createDate"
+								   th:value="${createDate}==null?null:${#dates.format(createDate,'yyyy-MM-dd')}" placeholder="请选择结束时间"
+								   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;margin-top: 0;max-width:150px;">
+							<input type="text" class="laydate-icon layer-date form-control" id="createDate" name="createDate"
+								   th:value="${createDate}==null?null:${#dates.format(createDate,'yyyy-MM-dd')}" placeholder="请选择开始时间"
+								   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:repair:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:repair:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:repair:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/stock/repair/repair1.js"></script>
+</body>
+</html>

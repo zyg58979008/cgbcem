@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+    .layui-btn {
+        display: inline-block;
+        vertical-align: middle;
+        height: 34px;
+        line-height: 34px;
+        padding: 0 15px;
+        background-color: #1ab394;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    .input-group{
+        display: block;
+    }
+    .label {
+        width: auto;
+        float: left;
+        padding:11px 10px;
+    }
+    table tr td {
+        white-space:nowrap
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">开始时间：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="laydate-icon layer-date form-control" id="startDate" name="startDate"  placeholder="请选择开始时间"
+                                       onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">结束时间：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="laydate-icon layer-date form-control" id="endDate" name="endDate"  placeholder="请选择结束时间"
+                                       onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">活动名称：</label>
+                            <div class="col-sm-8">
+                                <input id="activityName" name="activityName" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button shiro:hasPermission="business:contract:upload" type="button" id="upload"
+                                        class="layui-btn" >
+                                    <i class="fa fa-cloud hidden" aria-hidden="true"></i>批量上传
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+        var s_download_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="system:contract:edit">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="system:contract:remove">
+    <script type="text/javascript">
+        var s_remove_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:download">
+    <script type="text/javascript">
+        var s_download_h = '';
+    </script>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/layui.js"></script>
+<script src="/js/vue.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("layui-upload-file").hide();
+    });
+    function getuploaddata() {
+        var json = {
+            activityName: $("#activityName").val(),
+            startDate: $("#startDate").val(),
+            endDate: $("#endDate").val()
+        }
+        return json;
+    }
+    layui.use('upload', function () {
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload', //绑定元素
+            url: '/business/activity/upload', //上传接口
+            size: 1000,
+            accept: 'file',
+            before: function (obj) {                    //预读本地文件示例，不支持ie8
+                this.data = getuploaddata();
+                layer.load(); //上传loading
+            },
+            done: function (r) {
+                layer.msg(r.msg);
+                $('#exampleTable').bootstrapTable('refresh');
+            },
+            error: function (r) {
+                layer.msg(r.msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

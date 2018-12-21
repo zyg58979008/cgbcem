@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.ProfitDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.ProfitDO">
+		select `id`,`dept_id`,`profit`,state,`start_date`,`end_date`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag` from business_profit where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.ProfitDO">
+		select `id`,`dept_id`,`profit`,`start_date`,`end_date`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,state from business_profit
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="profit != null and profit != ''"> and profit = #{profit} </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(start_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(end_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by start_date desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from business_profit
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="profit != null and profit != ''"> and profit = #{profit} </if>
+				 <if test="startDate != null and startDate != ''"> and
+					 DATE_FORMAT(start_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+				 </if>
+				 <if test="endDate != null and endDate != ''">
+					 and DATE_FORMAT(end_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+				 </if>
+			      <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		</where>
+	</select>
+	<select id="callLeaseback" >
+		CALL `leaseback`(#{id}, #{deptId})
+	</select>
+	<select id="checkHas" resultType="int">
+		select count(*) from business_profit
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="profit != null and profit != ''"> and profit = #{profit} </if>
+			<if test="startDate != null and startDate != ''"> and
+				((DATE_FORMAT(start_date, '%Y-%m-%d') >= DATE_FORMAT(#{startDate},'%Y-%m-%d' ) AND
+				DATE_FORMAT(start_date, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')) OR
+				(DATE_FORMAT(start_date, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{startDate},'%Y-%m-%d' ) AND
+				DATE_FORMAT(end_date, '%Y-%m-%d') >= DATE_FORMAT(#{endDate}, '%Y-%m-%d')) OR
+				(DATE_FORMAT(end_date, '%Y-%m-%d') >= DATE_FORMAT(#{startDate},'%Y-%m-%d' ) AND
+				DATE_FORMAT(end_date, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')))
+			</if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+	</select>
+	<insert id="save" parameterType="com.bootdo.business.domain.ProfitDO"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into business_profit
+		(
+			`dept_id`,
+			`profit`, 
+			`start_date`, 
+			`end_date`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`state`,
+			`del_flag`
+		)
+		values
+		(
+			#{deptId},
+			#{profit}, 
+			#{startDate}, 
+			#{endDate}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			'0',
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.business.domain.ProfitDO">
+		update business_profit 
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="profit != null">`profit` = #{profit}, </if>
+			<if test="startDate != null">`start_date` = #{startDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="removeMoney">
+		update leaseback set ying='0',unpay='0' where profit_id=#{id}
+		and type='1'
+ 	</update>
+	<update id="update7">
+		update leaseback set ying=CONVERT(price*day,DECIMAL(10,2))
+		,unpay=CONVERT(price*day,DECIMAL(10,2)) where profit_id=#{id}
+		and type='2'
+ 	</update>
+
+	<delete id="remove">
+		delete from business_profit where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from business_profit where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

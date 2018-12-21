@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+	<!--	<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>-->
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<!--<form class="fixed-table-toolbar">-->
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+							<input type="text" class="laydate-icon layer-date form-control" id="endDate" name="endDate"  placeholder="请选择结束时间"
+								   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+							<input type="text" class="laydate-icon layer-date form-control" id="startDate" name="startDate"  placeholder="请选择开始时间"
+								   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+							<input type="text" id="activityName" name="activityName" class=" form-control" style="background-color: #fff;"  placeholder="活动名"
+							/>
+						</div>
+						<form id="importForm" action='' method='post'/>
+						<div class="columns pull-left">
+							<button shiro:hasPermission="business:activity:download" type="button" class="btn  btn-primary" onclick="download()">
+								<i class="fa fa-plus" aria-hidden="true"></i>下载模板
+							</button>
+							<!--<button shiro:hasPermission="business:activity:add"  type="button" class="btn  btn-primary" style="margin-top: 10px;"
+									onclick="add()">
+								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							</button>-->
+							<button shiro:hasPermission="business:activity:upload" type="button" onclick="uploadActivity()"
+									class="layui-btn" >
+								<i class="fa fa-cloud hidden" aria-hidden="true"></i>批量上传
+							</button>
+						</div>
+					</form>
+					</div>
+				</div>
+				<table id="exampleTable" data-mobile-responsive="true">
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+		var s_download_h = 'hidden';
+		var s_adnew_h = 'hidden';
+		var s_editGeneral_h = 'hidden';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:edit">
+	<script type="text/javascript">
+		s_edit_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:editGeneral">
+	<script type="text/javascript">
+		s_editGeneral_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:adnew">
+	<script type="text/javascript">
+		s_adnew_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:remove">
+	<script type="text/javascript">
+		var s_remove_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:download">
+	<script type="text/javascript">
+		var s_download_h = '';
+	</script>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<style>
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<script type="text/javascript" src="/js/appjs/report/activityReport.js?randomId=<%=Math.random()%>"></script>
+<script src="/js/layui.js"></script>
+<script src="/js/vue.min.js"></script>
+<script>
+	layui.use('upload', function () {
+		var upload = layui.upload;
+		//执行实例
+		var uploadInst = upload.render({
+			elem: '#upload', //绑定元素
+			url: prefix+'/upload', //上传接口
+			size: 1000,
+			accept: 'file',
+			done: function (r) {
+				layer.msg(r.msg);
+			},
+			error: function (r) {
+				layer.msg(r.msg);
+			}
+		});
+	});
+</script>
+</body>
+</html>

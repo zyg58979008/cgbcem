@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${ActivityDO.id}"
+							   class="hidden">
+						<input id="activityName"  th:value="${ActivityDO?.activityName}"
+							   class="hidden">
+						<input id="brand"  th:value="${ActivityDO?.brand}"
+							   class="hidden">
+						<div class="form-group buildingDiv">
+							<input type="hidden" id="s" th:value="${ActivityDO.startDate}">
+							<input type="hidden" id="e" th:value="${ActivityDO.endDate}" >
+							<label class="col-sm-3 control-label">活动日期：</label>
+							<div class="col-sm-3">
+								<input id="startDate" name="startDate"class="form-control"
+									   type="text" disabled>
+							</div>
+							<div class="col-sm-1">
+								<label class="control-label">至</label>
+							</div>
+							<div class="col-sm-3">
+								<input id="endDate" name="endDate" class="form-control"
+									   type="text" disabled>
+
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款方式：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="shouType1">
+								<input type="hidden" id="shouTypeName">
+								<select data-placeholder="--选择收款方式--" name="shouType" id="shouType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择收款方式--</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">交来：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="shopType1">
+								<input type="hidden" id="shopTypeName">
+								<select data-placeholder="--选择交来项目--" name="shopType" id="shopType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择交来项目--</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="activityMoneyDiv">
+							<label class="col-sm-3 control-label">活动费应收金额：</label>
+							<div class="col-sm-8">
+								<input id="activityMoney" name="activityMoney" class="form-control"  th:value="${ActivityDO.activityMoney}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="dmDanDiv">
+							<label class="col-sm-3 control-label">DM单应收金额：</label>
+							<div class="col-sm-8">
+								<input id="dmDan" name="dmDan" class="form-control"  th:value="${ActivityDO.dmDan}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="cardMoneyDiv">
+							<label class="col-sm-3 control-label">邀请卡款应收金额：</label>
+							<div class="col-sm-8">
+								<input id="cardMoney" name="cardMoney" class="form-control"  th:value="${ActivityDO.cardMoney}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="activityMoneyUnreceivedDiv">
+							<label class="col-sm-3 control-label">活动费未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="activityMoneyUnreceived" name="activityMoneyUnreceived" class="form-control"  th:value="${ActivityDO.activityMoneyUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="dmDanUnreceivedDiv">
+							<label class="col-sm-3 control-label">DM单未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="dmDanUnreceived" name="dmDanUnreceived" class="form-control"  th:value="${ActivityDO.dmDanUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="cardMoneyUnreceivedDiv">
+							<label class="col-sm-3 control-label">邀请卡款未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="cardMoneyUnreceived" name="cardMoneyUnreceived" class="form-control"  th:value="${ActivityDO.cardMoneyUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="activityMoneyPriceDiv">
+							<label class="col-sm-3 control-label">活动费缴费：</label>
+							<div class="col-sm-8">
+								<input id="activityMoneyPrice" name="activityMoneyPrice" class="form-control"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="dmDanPriceDiv">
+							<label class="col-sm-3 control-label">DM单缴费：</label>
+							<div class="col-sm-8">
+								<input id="dmDanPrice" name="dmDanPrice" class="form-control"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="cardMoneyPriceDiv">
+							<label class="col-sm-3 control-label">邀请卡款缴费：</label>
+							<div class="col-sm-8">
+								<input id="cardMoneyPrice" name="cardMoneyPrice" class="form-control"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款人：</label>
+							<div class="col-sm-8">
+								<input id="receiptBy" name="receiptBy" th:value="${name}" class="form-control"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款日期：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="payDate"  name="payDate" th:value="${date}" placeholder="yyyy年MM月dd日">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">备注：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="remarks"  name="remarks">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="save()" class="btn btn-primary">提交</button>
+								<button type="button" onclick="p()" id="print"   class="btn btn-success" style="padding-left: 50px;">打印</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/appjs/business/activityPay/shou.js">
+</script>
+<script>
+	laydate.render({
+		elem: '#payDate'
+		,format: 'yyyy-MM-dd'
+	});
+	var s=$("#s").val();
+	var e=$("#e").val();
+	$("#startDate").val(dateFormat(s,"yyyy-MM-dd"));
+	$("#endDate").val(dateFormat(e,"yyyy-MM-dd"));
+
+	function dateFormat(date, format) {
+
+		date = new Date(date);
+
+		var o = {
+			'M+' : date.getMonth() + 1, //month
+			'd+' : date.getDate(), //day
+			'H+' : date.getHours(), //hour
+			'm+' : date.getMinutes(), //minute
+			's+' : date.getSeconds(), //second
+			'q+' : Math.floor((date.getMonth() + 3) / 3), //quarter
+			'S' : date.getMilliseconds() //millisecond
+		};
+
+		if (/(y+)/.test(format))
+			format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+
+		for (var k in o)
+			if (new RegExp('(' + k + ')').test(format))
+				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+
+		return format;
+	}
+</script>
+</body>
+</html>

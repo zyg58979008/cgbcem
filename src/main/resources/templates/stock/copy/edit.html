@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${copy.id}"  type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">商品品牌：</label>
+								<div class="col-sm-8">
+									<input id="brand" name="brand" th:value="${copy.brand}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">：</label>
+								<div class="col-sm-8">
+									<input id="name" name="name" th:value="${copy.name}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">使用年限：</label>
+								<div class="col-sm-8">
+									<input id="durableYears" name="durableYears" th:value="${copy.durableYears}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">商品编码：</label>
+								<div class="col-sm-8">
+									<input id="code" name="code" th:value="${copy.code}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">商品分类：</label>
+								<div class="col-sm-8">
+									<input id="category" name="category" th:value="${copy.category}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">商品型号：</label>
+								<div class="col-sm-8">
+									<input id="model" name="model" th:value="${copy.model}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">设备状态：</label>
+								<div class="col-sm-8">
+									<input id="state" name="state" th:value="${copy.state}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">机构id：</label>
+								<div class="col-sm-8">
+									<input id="deptId" name="deptId" th:value="${copy.deptId}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remarks" name="remarks" th:value="${copy.remarks}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建者：</label>
+								<div class="col-sm-8">
+									<input id="createBy" name="createBy" th:value="${copy.createBy}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建时间：</label>
+								<div class="col-sm-8">
+									<input id="createDate" name="createDate" th:value="${copy.createDate}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新者：</label>
+								<div class="col-sm-8">
+									<input id="updateBy" name="updateBy" th:value="${copy.updateBy}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新时间：</label>
+								<div class="col-sm-8">
+									<input id="updateDate" name="updateDate" th:value="${copy.updateDate}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">删除标记：</label>
+								<div class="col-sm-8">
+									<input id="delFlag" name="delFlag" th:value="${copy.delFlag}" class="form-control" type="text">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/system/copy/edit.js">
+	</script>
+</body>
+</html>

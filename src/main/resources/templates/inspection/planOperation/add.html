@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="planCode" name="planCode" class="form-control" type="hidden">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">巡检网点：</label>
+								<div class="col-sm-8">
+									<input id="deptId" name="deptId" class="hidden"> <input
+										id="deptName" name="deptName" class="form-control" type="text"
+										style="cursor: pointer;" onclick="openDept()"
+										readonly="readonly" placeholder="-----请选择-----">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">计划巡检时间：</label>
+								<div class="col-sm-8">
+									<input id="planTime" name="planTime" class="form-control" type="date">
+								</div>
+
+							</div>
+
+						<!--	<div class="form-group">
+								<label class="col-sm-3 control-label">菜单权限：</label>
+								<div class="col-sm-8"style="height: 400px;overflow: scroll">
+									<div id="deptTree"></div>
+								</div>
+							</div>-->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remarks" name="remarks" class="form-control" type="text">
+
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/inspection/planOperation/add.js">
+	</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	.chosen-container{
+		float: left;
+	}
+	table tr td {
+		white-space:nowrap;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<input type="hidden" id="y" th:value="${year}">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="row" style="padding-left: 15px;">
+						<div class="input-group">
+							<div class="form-group">
+                                <button type="button" id="download" style="float: left;margin-right: 100px;" id="btn_download" class="btn btn-primary" onClick ="$('#exampleTable').tableExport({ type: 'excel', escape: 'false' ,fileName:'合同收入摊销报表'})">数据导出</button>
+								<div class="input-group-addon label" >查询年份</div>
+								<input type="text" class="layui-input" id="startDate" placeholder="开始日期"style="width: 150px;float: left">
+								<input type="text" class="layui-input" id="endDate" placeholder="结束日期"style="width: 150px;float: left">
+								<input id="brand" type="text" class="layui-input" placeholder="品牌" style="width: 150px;float: left">
+								<button class="btn btn-success"  onclick="reLoad()">查询</button>
+							</div>
+						</div>
+
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false" data-height="450">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/report/shopAmortize.js?randomId=<%=Math.random()%>"></script>
+<script src="/js/plugins/bootstrap-table/tableExport.js"></script>
+<script>
+	laydate.render({
+		elem: '#startDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+	laydate.render({
+		elem: '#endDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+
+</script>
+</body>
+</html>

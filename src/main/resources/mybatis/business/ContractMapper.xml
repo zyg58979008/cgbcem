@@ -1,0 +1,2445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.ContractDao">
+
+    <select id="getNumForAreaA" resultType="com.bootdo.report.domain.ReportDO">
+SELECT
+  SUM(s.building_area) - (SELECT
+    SUM(a.rent_area)
+  FROM
+    shop_to_contract a, shop_contract b
+  WHERE a.oid=b.oid AND a.building_id = '13' AND ((b.contract_chechang_date IS NULL AND b.state = '0')OR b.contract_chechang_date > NOW())
+    AND b.dept_id = #{deptId}) AS unRentArea,
+  (SELECT
+    SUM(a.rent_area)
+  FROM
+    shop_to_contract a, shop_contract b
+  WHERE a.oid=b.oid AND a.building_id = '13' AND ((b.contract_chechang_date IS NULL AND b.state = '0')OR b.contract_chechang_date > NOW())
+    AND b.dept_id = #{deptId}) AS rentArea
+  FROM
+    shop s WHERE s.dept_id = #{deptId} AND building_id = '13'
+</select>
+    <select id="getNumForAreaB" resultType="com.bootdo.report.domain.ReportDO">
+SELECT
+  SUM(s.building_area) - (SELECT
+    SUM(a.rent_area)
+  FROM
+    shop_to_contract a, shop_contract b
+  WHERE a.oid=b.oid AND a.building_id = '14' AND ((b.contract_chechang_date IS NULL AND b.state = '0')OR b.contract_chechang_date > NOW())
+    AND b.dept_id = #{deptId}) AS unRentArea,
+  (SELECT
+    SUM(a.rent_area)
+  FROM
+    shop_to_contract a, shop_contract b
+  WHERE a.oid=b.oid AND a.building_id = '14' AND ((b.contract_chechang_date IS NULL AND b.state = '0')OR b.contract_chechang_date > NOW())
+    AND b.dept_id = #{deptId}) AS rentArea
+  FROM
+    shop s WHERE s.dept_id = #{deptId} AND building_id = '14'
+</select>
+
+    <select id="getNumForShoujiaolv" resultType="com.bootdo.report.domain.ReportDO">
+        SELECT
+		SUM(IFNULL(sa.`amortize_price_guanli_received`,0) + IFNULL(sa.`amortize_price_wuye_received`,0) + IFNULL(sa.`amortize_price_zujin_received`,0)) AS payed,
+		SUM(
+		IFNULL(sa.`total`,0) - IFNULL(sa.`amortize_price_guanli_received`,0) - IFNULL(sa.`amortize_price_wuye_received`,0) - IFNULL(sa.`amortize_price_zujin_received`,0)
+		) AS unpay
+		FROM
+		`shop_amortize` sa
+		LEFT JOIN `shop_contract` sc
+		ON sc.`oid` = sa.`oid`
+		AND sc.state = '0'
+		WHERE sa.`dept_id` = #{deptId}
+		AND sa.`month` = DATE_FORMAT(NOW(), '%Y-%m')
+    </select>
+
+    <select id="getNumForType" resultType="com.bootdo.report.domain.ReportDO">
+		SELECT
+  t.num AS num,
+  ec.`shop_type` AS name
+FROM
+  (SELECT
+    shop_type,
+    COUNT(*) num
+  FROM
+    `shop_contract`
+  GROUP BY shop_type) t,
+  `shop_contract` ec
+WHERE t.shop_type = ec.shop_type  and ec.dept_id = #{deptId}
+GROUP BY ec.shop_type
+	</select>
+    <select id="get" resultType="com.bootdo.business.domain.ContractDO">
+		select * from shop_contract where id = #{value}
+	</select>
+
+    <select id="reportlist" resultType="com.bootdo.business.domain.ContractDO">
+        select * from shop_contract where dept_id = #{value}
+    </select>
+
+    <select id="getByCode" resultType="com.bootdo.business.domain.ContractDO">
+        select * from shop_contract where contract_code = #{value}
+    </select>
+
+    <select id="getByOid" resultType="com.bootdo.business.domain.ContractDO">
+        select
+        sd3.`name` AS bankName,
+        sc.`id`,
+sc.`contract_code`,
+sc.`floor`,
+sc.`shop_code`,
+sc.`contractor`,
+sc.`contract_true_area`,
+sc.`contract_rent_area`,
+sc.`rent_area`,
+sc.`brand`,
+sc.`shop_type`,
+sc.`contract_pay_total`,
+sc.`contract_pay_total_received`,
+sc.`contract_pay_total_unreceived`,
+sc.`unit_price`,
+sc.`pay_type`,
+sc.`youhui`,
+sc.`fenlei_zujin`,
+sc.`fenlei_zujin_received`,
+sc.`fenlei_zujin_unreceived`,
+sc.`fenlei_wuye`,
+sc.`fenlei_wuye_received`,
+sc.`fenlei_wuye_unreceived`,
+sc.`fenlei_guanli`,
+sc.`fenlei_guanli_received`,
+sc.`fenlei_guanli_unreceived`,
+sc.`contract_start_date`,
+sc.`contract_end_date`,
+sc.`amortize_months`,
+sc.`receivable_lvyue`,
+sc.`receivable_zhiliang`,
+sc.`receivable_fuwu`,
+sc.`receivable_zhuangxiu`,
+sc.`received_lvyue`,
+sc.`received_zhiliang`,
+sc.`received_fuwu`,
+sc.`received_zhuangxiu`,
+sc.`discrepancy`,
+sc.`phone`,
+sc.`id_card`,
+sc.`kaidan_code`,
+sc.`kaidan_name`,
+sc.`payee`,
+sc.`account`,
+sc.`bank`,
+sc.`contract_date`,
+sc.`zulinbiao`,
+sc.`copy_id_card`,
+sc.`copy_bank_card`,
+sc.`tuzhi`,
+sc.`remarks`,
+sc.`create_date`,
+sc.`create_by`,
+sc.`youhui_unit_price`,
+sc.`amortize_price`,
+sc.`discount`,
+sc.`building_id`,
+sc.`state`,
+sc.`del_flag`,
+sc.`order_id`,
+sc.`total`,
+sc.`dept_id`,
+sc.`shop_id`,
+sc.`oid`,
+sc.`contract_chechang_date`
+ from shop_contract sc LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank' where sc.oid = #{value}
+    </select>
+
+    <select id="countLog" resultType="int">
+		SELECT count(*) FROM shop_contract_log r  where r.contract_id=#{contractId}
+	</select>
+
+    <select id="getDoubleByCo" resultType="String">
+		select `contract_code` from shop_contract where `state` != '2'
+	</select>
+
+    <select id="listForReport" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        sc.`id`,
+        sc.`contract_code`,
+        sc.`contractor`,
+        sc.`brand`,
+        sc.`youhui`,
+        sd4.`name` AS payType,
+        sc.contract_pay_total AS `contract_pay_total`,
+        sc.contract_pay_total_received AS`contract_pay_total_received`,
+        sc.contract_pay_total_unreceived AS`contract_pay_total_unreceived`,
+        sc.fenlei_zujin AS fenleiZujin,
+        sc.fenlei_wuye AS fenleiWuye,
+        sc.fenlei_guanli AS fenleiGuanli,
+        sc.fenlei_zujin_received AS fenleiZujinReceived,
+        sc.fenlei_wuye_received AS fenleiWuyeReceived,
+        sc.fenlei_guanli_received AS fenleiGuanliReceived,
+        sc.fenlei_zujin_unreceived AS fenleiZujinUnreceived,
+        sc.fenlei_wuye_unreceived AS fenleiWuyeUnreceived,
+        sc.fenlei_guanli_unreceived AS fenleiGuanliUnreceived,
+        sc.`contract_start_date` AS contractStartDate,
+        sc.`contract_end_date` AS contractEndDate,
+        sc.`amortize_months` AS amortizeMonths,
+        sc.`receivable_lvyue`,
+        sc.`receivable_zhiliang`,
+        sc.`receivable_fuwu`,
+        sc.`receivable_zhuangxiu`,
+        sc.`received_lvyue`,
+        sc.`received_zhiliang`,
+        sc.`received_fuwu`,
+        sc.`received_zhuangxiu`,
+        sc.`discrepancy`,
+        sc.`phone`,
+        sc.`id_card`,
+        sc.`kaidan_code`,
+        sc.`kaidan_name`,
+        sc.`payee`,
+        sc.`account`,
+        sd3.`name` AS bank,
+        sc.`contract_date`,
+        sc.`zulinbiao`,
+        sc.`copy_id_card`,
+        sc.`copy_bank_card`,
+        sc.`tuzhi`,
+        sc.`remarks`,
+        sc.`create_date`,
+        sc.`create_by`,
+        sc.`youhui_unit_price`,
+        sc.`amortize_price`,
+        sc.`discount`,
+        sc.`oid`
+        FROM
+        shop_contract sc
+
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank'
+        LEFT JOIN sys_dict sd4
+        ON sc.pay_type = sd4.value
+        AND sd4.type = 'shop_pay_cycle'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and sc.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.contract_code IN
+                (SELECT
+                stc.contract_code
+                FROM
+                `shop_to_contract` stc
+                WHERE stc.shop_code IN
+                (SELECT
+                s.code
+                FROM
+                `shop` s
+                WHERE s.floor = #{floor})
+                )</if>
+            <if test="shopCode != null and shopCode != ''">and sc.shop_code = #{shopCode}</if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by sc.contract_code desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+
+    </select>
+    <select id="totalForReport" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        '合计' AS contract_code,
+        '' AS contractor,
+        '' AS brand,
+        '' AS youhui,
+        '' AS payType,
+        SUM(sc.contract_pay_total) AS `contract_pay_total`,
+        SUM(sc.contract_pay_total_received) AS `contract_pay_total_received`,
+        SUM(sc.contract_pay_total_unreceived) AS `contract_pay_total_unreceived`,
+        SUM(sc.fenlei_zujin) AS fenleiZujin,
+        SUM(sc.fenlei_wuye) AS fenleiWuye,
+        SUM(sc.fenlei_guanli) AS fenleiGuanli,
+        SUM(sc.fenlei_zujin_received) AS fenleiZujinReceived,
+        SUM(sc.fenlei_wuye_received) AS fenleiWuyeReceived,
+        SUM(sc.fenlei_guanli_received) AS fenleiGuanliReceived,
+        SUM(sc.fenlei_zujin_unreceived) AS fenleiZujinUnreceived,
+        SUM(sc.fenlei_wuye_unreceived) AS fenleiWuyeUnreceived,
+        SUM(sc.fenlei_guanli_unreceived) AS fenleiGuanliUnreceived,
+
+        SUM(sc.`receivable_lvyue`) AS receivableLvyue,
+        SUM(sc.`receivable_zhiliang`) AS receivableZhiliang,
+        SUM(sc.`receivable_fuwu`) AS receivableFuwu,
+        SUM(sc.`receivable_zhuangxiu`) AS receivableZhuangxiu,
+        SUM(sc.`received_lvyue`) AS receivedLvyue,
+        SUM(sc.`received_zhiliang`) AS receivedZhiliang,
+        SUM(sc.`received_fuwu`) AS receivedFuwu,
+        SUM(sc.`received_zhuangxiu`) AS receivedZhuangxiu,
+        SUM(sc.`discrepancy`) AS discrepancy
+        FROM
+        shop_contract sc
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and sc.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.contract_code IN
+                (SELECT
+                stc.contract_code
+                FROM
+                `shop_to_contract` stc
+                WHERE stc.shop_code IN
+                (SELECT
+                s.code
+                FROM
+                `shop` s
+                WHERE s.floor = #{floor})
+                )</if>
+            <if test="shopCode != null and shopCode != ''">and sc.shop_code = #{shopCode}</if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+                order by sc.contract_code desc
+    </select>
+
+    <select id="list" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        sc.`id`,
+        sc.`contract_code`,
+        sc.`contractor`,
+        sc.`brand`,
+        sc.`youhui`,
+        sd4.`name` AS payType,
+        sc.contract_pay_total AS `contract_pay_total`,
+        sc.contract_pay_total_received AS`contract_pay_total_received`,
+        sc.contract_pay_total_unreceived AS`contract_pay_total_unreceived`,
+        sc.fenlei_zujin AS fenleiZujin,
+        sc.fenlei_wuye AS fenleiWuye,
+        sc.fenlei_guanli AS fenleiGuanli,
+        sc.fenlei_zujin_received AS fenleiZujinReceived,
+       sc.fenlei_wuye_received AS fenleiWuyeReceived,
+        sc.fenlei_guanli_received AS fenleiGuanliReceived,
+        sc.fenlei_zujin_unreceived AS fenleiZujinUnreceived,
+        sc.fenlei_wuye_unreceived AS fenleiWuyeUnreceived,
+       sc.fenlei_guanli_unreceived AS fenleiGuanliUnreceived,
+        sc.`contract_start_date` AS contractStartDate,
+        sc.`contract_end_date` AS contractEndDate,
+        sc.`amortize_months` AS amortizeMonths,
+        sc.`receivable_lvyue`,
+        sc.`receivable_zhiliang`,
+        sc.`receivable_fuwu`,
+        sc.`receivable_zhuangxiu`,
+        sc.`received_lvyue`,
+        sc.`received_zhiliang`,
+        sc.`received_fuwu`,
+        sc.`received_zhuangxiu`,
+        sc.`discrepancy`,
+        sc.`phone`,
+        sc.`id_card`,
+        sc.`kaidan_code`,
+        sc.`kaidan_name`,
+        sc.`payee`,
+        sc.`account`,
+        sd3.`name` AS bank,
+        sc.`contract_date`,
+        sc.`zulinbiao`,
+        sc.`copy_id_card`,
+        sc.`copy_bank_card`,
+        sc.`tuzhi`,
+        sc.`remarks`,
+        sc.`create_date`,
+        sc.`create_by`,
+        sc.`youhui_unit_price`,
+        sc.`amortize_price`,
+        sc.`discount`,
+        sc.`oid`
+        FROM
+        shop_contract sc
+
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank'
+        LEFT JOIN sys_dict sd4
+        ON sc.pay_type = sd4.value
+        AND sd4.type = 'shop_pay_cycle'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            sc.state != '2'
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.contract_code IN
+                (SELECT
+                stc.contract_code
+                FROM
+                `shop_to_contract` stc
+                WHERE stc.shop_code IN
+                (SELECT
+                s.code
+                FROM
+                `shop` s
+                WHERE s.floor = #{floor})
+                )</if>
+            <if test="shopCode != null and shopCode != ''">and sc.oid in
+                (SELECT
+                oid
+                FROM
+                `shop_to_contract`
+                WHERE shop_code = #{shopCode}
+                AND (state = '0'
+                OR state = '1'))
+               </if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by sc.contract_code desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+
+	</select>
+    <select id="taizhangList" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        s.code as shopCode,
+        s.`floor_area` AS contractTrueArea,
+        s.`building_area` AS contractRentArea,
+        (SELECT
+        SUM(stc.rent_area)
+        FROM
+        shop_to_contract stc
+        WHERE stc.contract_code = sc.contract_code)AS rentArea,
+        CONCAT(s.`floor`,'楼') AS floorString,
+        sc.`contract_code`,
+        sc.`shop_type` as shopType,
+        sc.`contractor`,
+        sc.`id`,
+        sc.`brand`,
+        sc.`unit_price` as unitPrice,
+        sc.`youhui`,
+        sd4.`name` AS payType,
+        sc.contract_pay_total AS `contract_pay_total`,
+        sc.contract_pay_total_received AS `contract_pay_total_received`,
+        sc.contract_pay_total_unreceived AS `contract_pay_total_unreceived`,
+        sc.fenlei_zujin AS fenleiZujin,
+        sc.fenlei_wuye AS fenleiWuye,
+        sc.fenlei_guanli AS fenleiGuanli,
+        sc.fenlei_zujin_received AS fenleiZujinReceived,
+        sc.fenlei_wuye_received AS fenleiWuyeReceived,
+        sc.fenlei_guanli_received AS fenleiGuanliReceived,
+        sc.fenlei_zujin_unreceived AS fenleiZujinUnreceived,
+        sc.fenlei_wuye_unreceived AS fenleiWuyeUnreceived,
+        sc.fenlei_guanli_unreceived AS fenleiGuanliUnreceived,
+        sc.`contract_start_date` AS contractStartDate,
+        sc.`contract_end_date` AS contractEndDate,
+        sc.`amortize_months` AS amortizeMonths,
+        sc.`receivable_lvyue`,
+        sc.`receivable_zhiliang`,
+        sc.`receivable_fuwu`,
+        sc.`receivable_zhuangxiu`,
+        sc.`received_lvyue`,
+        sc.`received_zhiliang`,
+        sc.`received_fuwu`,
+        sc.`received_zhuangxiu`,
+        sc.`discrepancy`,
+        sc.`phone`,
+        sc.`id_card`,
+        sc.`kaidan_code`,
+        sc.`kaidan_name`,
+        sc.`payee`,
+        sc.`account`,
+        sd3.`name` AS bank,
+        sc.`contract_date`,
+        sc.`zulinbiao`,
+        sc.`copy_id_card`,
+        sc.`copy_bank_card`,
+        sc.`tuzhi`,
+        sc.`remarks`,
+        sc.`oid`
+        FROM
+        shop s
+        LEFT JOIN shop_to_contract stc ON stc.`shop_code`=s.`code` AND stc.state = '0'
+        LEFT JOIN shop_contract sc ON sc.`contract_code` = stc.`contract_code` AND sc.state = '0'
+        LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank'
+        LEFT JOIN sys_dict sd4
+        ON sc.pay_type = sd4.value
+        AND sd4.type = 'shop_pay_cycle'
+        <where>
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and s.floor = #{floor} </if>
+            <if test="shopCode != null and shopCode != ''">and sc.shop_code = #{shopCode}</if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+                order by sc.`contract_code` asc,s.`code` asc
+	</select>
+
+    <select id="cheChangList" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        sc.`id`,
+        sc.`contract_code`,
+        sc.`contractor`,
+        sc.`brand`,
+        sc.`youhui`,
+        sd4.`name` AS payType,
+        sc.contract_pay_total AS `contract_pay_total`,
+        sc.contract_pay_total_received AS`contract_pay_total_received`,
+        sc.contract_pay_total_unreceived AS`contract_pay_total_unreceived`,
+        sc.fenlei_zujin AS fenleiZujin,
+        sc.fenlei_wuye AS fenleiWuye,
+        sc.fenlei_guanli AS fenleiGuanli,
+        sc.fenlei_zujin_received AS fenleiZujinReceived,
+        sc.fenlei_wuye_received AS fenleiWuyeReceived,
+        sc.fenlei_guanli_received AS fenleiGuanliReceived,
+        sc.fenlei_zujin_unreceived AS fenleiZujinUnreceived,
+        sc.fenlei_wuye_unreceived AS fenleiWuyeUnreceived,
+        sc.fenlei_guanli_unreceived AS fenleiGuanliUnreceived,
+        sc.`contract_start_date` AS contractStartDate,
+        sc.`contract_end_date` AS contractEndDate,
+        sc.`contract_chechang_date` AS contractChechangDate,
+        sc.`amortize_months` AS amortizeMonths,
+        sc.`receivable_lvyue`,
+        sc.`receivable_zhiliang`,
+        sc.`receivable_fuwu`,
+        sc.`receivable_zhuangxiu`,
+        sc.`received_lvyue`,
+        sc.`received_zhiliang`,
+        sc.`received_fuwu`,
+        sc.`received_zhuangxiu`,
+        sc.`discrepancy`,
+        sc.`phone`,
+        sc.`id_card`,
+        sc.`kaidan_code`,
+        sc.`kaidan_name`,
+        sc.`payee`,
+        sc.`account`,
+        sd3.`name` AS bank,
+        sc.`contract_date`,
+        sc.`zulinbiao`,
+        sc.`copy_id_card`,
+        sc.`copy_bank_card`,
+        sc.`tuzhi`,
+        sc.`remarks`,
+        sc.`create_date`,
+        sc.`create_by`,
+        sc.`youhui_unit_price`,
+        sc.`amortize_price`,
+        sc.`discount`,
+        sc.`oid`,
+        sc.`state`
+        FROM
+        shop_contract sc
+
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank'
+        LEFT JOIN sys_dict sd4
+        ON sc.pay_type = sd4.value
+        AND sd4.type = 'shop_pay_cycle'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            (sc.state = '2' or sc.state='3')
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.contract_code IN
+                (SELECT
+                stc.contract_code
+                FROM
+                `shop_to_contract` stc
+                WHERE stc.shop_code IN
+                (SELECT
+                s.code
+                FROM
+                `shop` s
+                WHERE s.floor = #{floor})
+                )</if>
+            <if test="shopCode != null and shopCode != ''">and sc.shop_code = #{shopCode}</if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by sc.contract_code desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+
+    </select>
+
+    <select id="listDetail" resultType="com.bootdo.business.domain.ContractDO">
+        SELECT
+        stc.`contract_code`,
+        stc.`shop_code`,
+        stc.`rent_area`,
+        s.`floor`,
+        sc.`contractor`,
+        sc.`brand` ,
+        sc.`id_card`,
+        stc.`shop_id`,
+        b.name as buildingName
+        FROM
+        `shop_to_contract` stc
+        LEFT JOIN `shop` s
+        ON s.`id` = stc.`shop_id`
+        LEFT JOIN `shop_contract` sc
+        ON sc.`contract_code` = stc.`contract_code`
+        LEFT JOIN business_building b ON s.building_id=b.id
+        <where>
+            <if test="contractCode != null and contractCode != ''">and stc.contract_code = #{contractCode}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by sc.create_date desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="chechangCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        shop_contract sc
+
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN sys_dict sd3
+        ON sc.bank = sd3.value
+        AND sd3.type = 'bank'
+        LEFT JOIN sys_dict sd4
+        ON sc.pay_type = sd4.value
+        AND sd4.type = 'shop_pay_cycle'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            (sc.state = '2' or sc.state='3')
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.contract_code IN
+                (SELECT
+                stc.contract_code
+                FROM
+                `shop_to_contract` stc
+                WHERE stc.shop_code IN
+                (SELECT
+                s.code
+                FROM
+                `shop` s
+                WHERE s.floor = #{floor})
+                )</if>
+            <if test="shopCode != null and shopCode != ''">and sc.shop_code = #{shopCode}</if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''"> and sc.brand LIKE CONCAT('%',#{brand},'%') </if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+    </select>
+
+    <select id="count" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        shop_contract sc
+
+        LEFT JOIN shop s
+        ON sc.`shop_code` = s.`code`
+        AND s.del_flag = '0'
+        LEFT JOIN business_building b
+        ON s.building_id = b.id
+        <where>
+            sc.state != '2'
+            <if test="id != null and id != ''">and sc.id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and s.dept_id = #{deptId}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                s.building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="contractCode != null and contractCode != ''">and sc.contract_code = #{contractCode}</if>
+            <if test="floor != null and floor != ''">and sc.floor = #{floor}</if>
+            <if test="shopCode != null and shopCode != ''">and sc.oid in
+                (SELECT
+                oid
+                FROM
+                `shop_to_contract`
+                WHERE shop_code = #{shopCode}
+                AND (state = '0'
+                OR state = '1'))
+            </if>
+            <if test="contractor != null and contractor != ''">and sc.contractor LIKE CONCAT('%',#{contractor},'%')</if>
+            <if test="contractTrueArea != null and contractTrueArea != ''">and sc.contract_true_area =
+                #{contractTrueArea}
+            </if>
+            <if test="contractRentArea != null and contractRentArea != ''">and sc.contract_rent_area =
+                #{contractRentArea}
+            </if>
+            <if test="rentArea != null and rentArea != ''">and sc.rent_area = #{rentArea}</if>
+            <if test="brand != null and brand != ''">and sc.brand LIKE CONCAT('%',#{brand},'%')</if>
+            <if test="shopType != null and shopType != ''">and sc.shop_type = #{shopType}</if>
+            <if test="contractPayTotal != null and contractPayTotal != ''">and sc.contract_pay_total =
+                #{contractPayTotal}
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">and sc.unit_price = #{unitPrice}</if>
+            <if test="payType != null and payType != ''">and sc.pay_type = #{payType}</if>
+            <if test="youhui != null and youhui != ''">and sc.youhui = #{youhui}</if>
+            <if test="fenleiZujin != null and fenleiZujin != ''">and sc.fenlei_zujin = #{fenleiZujin}</if>
+            <if test="fenleiWuye != null and fenleiWuye != ''">and sc.fenlei_wuye = #{fenleiWuye}</if>
+            <if test="fenleiGuanli != null and fenleiGuanli != ''">and sc.fenlei_guanli = #{fenleiGuanli}</if>
+            <if test="contractStartDate != null and contractStartDate != ''">and sc.contract_start_date =
+                #{contractStartDate}
+            </if>
+            <if test="contractEndDate != null and contractEndDate != ''">and sc.contract_end_date = #{contractEndDate}
+            </if>
+            <if test="amortizeMonths != null and amortizeMonths != ''">and sc.amortize_months = #{amortizeMonths}</if>
+            <if test="receivableLvyue != null and receivableLvyue != ''">and sc.receivable_lvyue = #{receivableLvyue}
+            </if>
+            <if test="receivableZhiliang != null and receivableZhiliang != ''">and sc.receivable_zhiliang =
+                #{receivableZhiliang}
+            </if>
+            <if test="receivableFuwu != null and receivableFuwu != ''">and sc.receivable_fuwu = #{receivableFuwu}</if>
+            <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''">and sc.receivable_zhuangxiu =
+                #{receivableZhuangxiu}
+            </if>
+            <if test="receivedLvyue != null and receivedLvyue != ''">and sc.received_lvyue = #{receivedLvyue}</if>
+            <if test="receivedZhiliang != null and receivedZhiliang != ''">and sc.received_zhiliang =
+                #{receivedZhiliang}
+            </if>
+            <if test="receivedFuwu != null and receivedFuwu != ''">and sc.received_fuwu = #{receivedFuwu}</if>
+            <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''">and sc.received_zhuangxiu =
+                #{receivedZhuangxiu}
+            </if>
+            <if test="discrepancy != null and discrepancy != ''">and sc.discrepancy = #{discrepancy}</if>
+            <if test="phone != null and phone != ''">and sc.phone = #{phone}</if>
+            <if test="idCard != null and idCard != ''">and sc.id_card = #{idCard}</if>
+            <if test="kaidanCode != null and kaidanCode != ''">and sc.kaidan_code = #{kaidanCode}</if>
+            <if test="kaidanName != null and kaidanName != ''">and sc.kaidan_name = #{kaidanName}</if>
+            <if test="payee != null and payee != ''">and sc.payee = #{payee}</if>
+            <if test="account != null and account != ''">and sc.account = #{account}</if>
+            <if test="bank != null and bank != ''">and sc.bank = #{bank}</if>
+            <if test="contractDate != null and contractDate != ''">and sc.contract_date = #{contractDate}</if>
+            <if test="zulinbiao != null and zulinbiao != ''">and sc.zulinbiao = #{zulinbiao}</if>
+            <if test="copyIdCard != null and copyIdCard != ''">and sc.copy_id_card = #{copyIdCard}</if>
+            <if test="copyBankCard != null and copyBankCard != ''">and sc.copy_bank_card = #{copyBankCard}</if>
+            <if test="tuzhi != null and tuzhi != ''">and sc.tuzhi = #{tuzhi}</if>
+            <if test="remarks != null and remarks != ''">and sc.remarks = #{remarks}</if>
+            <if test="createDate != null and createDate != ''">and sc.create_date = #{createDate}</if>
+            <if test="createBy != null and createBy != ''">and sc.create_by = #{createBy}</if>
+            <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''">and sc.youhui_unit_price = #{youhuiUnitPrice}
+            </if>
+            <if test="amortizePrice != null and amortizePrice != ''">and sc.amortize_price = #{amortizePrice}</if>
+            <if test="discount != null and discount != ''">and sc.discount = #{discount}</if>
+        </where>
+    </select>
+
+    <select id="countDetail" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        `shop_to_contract` stc
+        LEFT JOIN `shop` s
+        ON s.`code` = stc.`shop_code`
+        LEFT JOIN `shop_contract` sc
+        ON sc.`contract_code` = stc.`contract_code`
+        LEFT JOIN business_building b ON s.building_id=b.id
+        <where>
+            <if test="contractCode != null and contractCode != ''">and stc.contract_code = #{contractCode}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by sc.create_date desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.business.domain.ContractDO" useGeneratedKeys="true" keyProperty="id">
+		insert into shop_contract
+		(
+		`contract_code`,
+		`floor`,
+		`shop_code`,
+		`contractor`,
+		`contract_true_area`,
+		`contract_rent_area`,
+		`rent_area`,
+		`brand`,
+		`shop_type`,
+		`contract_pay_total`,
+		`unit_price`,
+		`pay_type`,
+		`youhui`,
+		`fenlei_zujin`,
+		`fenlei_wuye`,
+		`fenlei_guanli`,
+		`contract_start_date`,
+		`contract_end_date`,
+		`amortize_months`,
+		`receivable_lvyue`,
+		`receivable_zhiliang`,
+		`receivable_fuwu`,
+		`receivable_zhuangxiu`,
+		`received_lvyue`,
+		`received_zhiliang`,
+		`received_fuwu`,
+		`received_zhuangxiu`,
+		`discrepancy`,
+		`phone`,
+		`id_card`,
+		`kaidan_code`,
+		`kaidan_name`,
+		`payee`,
+		`account`,
+		`bank`,
+		`contract_date`,
+		`zulinbiao`,
+		`copy_id_card`,
+		`copy_bank_card`,
+		`tuzhi`,
+		`remarks`,
+		`create_date`,
+		`create_by`,
+		`youhui_unit_price`,
+		`amortize_price`,
+		`discount`,
+		`building_id`,
+		`oid`,
+		`dept_id`,
+		`contract_pay_total_received`,
+		`contract_pay_total_unreceived`,
+        `fenlei_zujin_received`,
+        `fenlei_zujin_unreceived`,
+        `fenlei_wuye_received`,
+        `fenlei_wuye_unreceived`,
+        `fenlei_guanli_received`,
+        `fenlei_guanli_unreceived`,
+        `total`,
+        `state`,
+        `order_id`
+		)
+		values
+		(
+		#{contractCode},
+		#{floor},
+		#{shopCode},
+		#{contractor},
+		#{contractTrueArea},
+		#{contractRentArea},
+		#{rentArea},
+		#{brand},
+		#{shopType},
+		#{contractPayTotal},
+		#{unitPrice},
+		#{payType},
+		#{youhui},
+		#{fenleiZujin},
+		#{fenleiWuye},
+		#{fenleiGuanli},
+		#{contractStartDate},
+		#{contractEndDate},
+		#{amortizeMonths},
+		#{receivableLvyue},
+		#{receivableZhiliang},
+		#{receivableFuwu},
+		#{receivableZhuangxiu},
+		#{receivedLvyue},
+		#{receivedZhiliang},
+		#{receivedFuwu},
+		#{receivedZhuangxiu},
+		#{discrepancy},
+		#{phone},
+		#{idCard},
+		#{kaidanCode},
+		#{kaidanName},
+		#{payee},
+		#{account},
+		#{bank},
+		#{contractDate},
+		#{zulinbiao},
+		#{copyIdCard},
+		#{copyBankCard},
+		#{tuzhi},
+		#{remarks},
+		#{createDate},
+		#{createBy},
+		#{youhuiUnitPrice},
+		#{amortizePrice},
+		#{discount},
+		#{buildingId},
+		#{oid},
+		#{deptId},
+		#{contractPayTotalReceived},
+		#{contractPayTotalUnreceived},
+		#{fenleiZujinReceived},
+		#{fenleiZujinUnreceived},
+		#{fenleiWuyeReceived},
+		#{fenleiWuyeUnreceived},
+		#{fenleiGuanliReceived},
+		#{fenleiGuanliUnreceived},
+		#{total},
+		#{state},
+		#{orderId}
+		)
+	</insert>
+
+    <update id="updateChechangContract" parameterType="com.bootdo.business.domain.ContractDO" useGeneratedKeys="true" keyProperty="id">
+        update shop_contract
+        <set>
+            <if test="contractCode != null">`contract_code` = #{contractCode},</if>
+            <if test="floor != null">`floor` = #{floor},</if>
+            <if test="shopCode != null">`shop_code` = #{shopCode},</if>
+            <if test="contractor != null">`contractor` = #{contractor},</if>
+            <if test="contractTrueArea != null">`contract_true_area` = #{contractTrueArea},</if>
+            <if test="contractRentArea != null">`contract_rent_area` = #{contractRentArea},</if>
+            <if test="rentArea != null">`rent_area` = #{rentArea},</if>
+            <if test="brand != null">`brand` = #{brand},</if>
+            <if test="shopType != null">`shop_type` = #{shopType},</if>
+            <if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal},</if>
+            <if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived},
+            </if>
+            <if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` =
+                #{contractPayTotalUnreceived},
+            </if>
+            <if test="unitPrice != null">`unit_price` = #{unitPrice},</if>
+            <if test="payType != null">`pay_type` = #{payType},</if>
+            <if test="youhui != null">`youhui` = #{youhui},</if>
+            <if test="fenleiZujin != null">`fenlei_zujin` = #{fenleiZujin},</if>
+            <if test="fenleiZujinReceived != null">`fenlei_zujin_received` = #{fenleiZujinReceived},</if>
+            <if test="fenleiZujinUnreceived != null">`fenlei_zujin_unreceived` = #{fenleiZujinUnreceived},</if>
+            <if test="fenleiWuye != null">`fenlei_wuye` = #{fenleiWuye},</if>
+            <if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = #{fenleiWuyeReceived},</if>
+            <if test="fenleiWuyeUnreceived != null">`fenlei_wuye_unreceived` = #{fenleiWuyeUnreceived},</if>
+            <if test="fenleiGuanli != null">`fenlei_guanli` = #{fenleiGuanli},</if>
+            <if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = #{fenleiGuanliReceived},</if>
+            <if test="fenleiGuanliUnreceived != null">`fenlei_guanli_unreceived` = #{fenleiGuanliUnreceived},</if>
+            <if test="contractStartDate != null">`contract_start_date` = #{contractStartDate},</if>
+            <if test="contractEndDate != null">`contract_end_date` = #{contractEndDate},</if>
+            <if test="amortizeMonths != null">`amortize_months` = #{amortizeMonths},</if>
+            <if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue},</if>
+            <if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang},</if>
+            <if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu},</if>
+            <if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu},</if>
+            <if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue},</if>
+            <if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang},</if>
+            <if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu},</if>
+            <if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu},</if>
+            <if test="discrepancy != null">`discrepancy` = #{discrepancy},</if>
+            <if test="phone != null">`phone` = #{phone},</if>
+            <if test="idCard != null">`id_card` = #{idCard},</if>
+            <if test="kaidanCode != null">`kaidan_code` = #{kaidanCode},</if>
+            <if test="kaidanName != null">`kaidan_name` = #{kaidanName},</if>
+            <if test="payee != null">`payee` = #{payee},</if>
+            <if test="account != null">`account` = #{account},</if>
+            <if test="bank != null">`bank` = #{bank},</if>
+            <if test="contractDate != null">`contract_date` = #{contractDate},</if>
+            <if test="zulinbiao != null">`zulinbiao` = #{zulinbiao},</if>
+            <if test="copyIdCard != null">`copy_id_card` = #{copyIdCard},</if>
+            <if test="copyBankCard != null">`copy_bank_card` = #{copyBankCard},</if>
+            <if test="tuzhi != null">`tuzhi` = #{tuzhi},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="createDate != null">`create_date` = #{createDate},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice},</if>
+            <if test="amortizePrice != null">`amortize_price` = #{amortizePrice},</if>
+            <if test="discount != null">`discount` = #{discount},</if>
+            <if test="buildingId != null">`building_id` = #{buildingId},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="orderId != null">`order_id` = #{orderId},</if>
+            <if test="contractChechangDate != null">`contract_chechang_date` = #{contractChechangDate},</if>
+            <if test="chechangOperationDate != null">`chechang_operation_date` = #{chechangOperationDate},</if>
+            <if test="total != null">`total` = #{total}</if>
+        </set>
+        where oid = #{oid}
+    </update>
+
+    <update id="update" parameterType="com.bootdo.business.domain.ContractDO">
+        update shop_contract
+        <set>
+            <if test="contractCode != null">`contract_code` = #{contractCode},</if>
+            <if test="floor != null">`floor` = #{floor},</if>
+            <if test="shopCode != null">`shop_code` = #{shopCode},</if>
+            <if test="contractor != null">`contractor` = #{contractor},</if>
+            <if test="contractTrueArea != null">`contract_true_area` = #{contractTrueArea},</if>
+            <if test="contractRentArea != null">`contract_rent_area` = #{contractRentArea},</if>
+            <if test="rentArea != null">`rent_area` = #{rentArea},</if>
+            <if test="brand != null">`brand` = #{brand},</if>
+            <if test="shopType != null">`shop_type` = #{shopType},</if>
+            <if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal},</if>
+            <if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived},
+            </if>
+            <if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` =
+                #{contractPayTotalUnreceived},
+            </if>
+            <if test="unitPrice != null">`unit_price` = #{unitPrice},</if>
+            <if test="payType != null">`pay_type` = #{payType},</if>
+            <if test="youhui != null">`youhui` = #{youhui},</if>
+            <if test="fenleiZujin != null">`fenlei_zujin` = #{fenleiZujin},</if>
+            <if test="fenleiZujinReceived != null">`fenlei_zujin_received` = #{fenleiZujinReceived},</if>
+            <if test="fenleiZujinUnreceived != null">`fenlei_zujin_unreceived` = #{fenleiZujinUnreceived},</if>
+            <if test="fenleiWuye != null">`fenlei_wuye` = #{fenleiWuye},</if>
+            <if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = #{fenleiWuyeReceived},</if>
+            <if test="fenleiWuyeUnreceived != null">`fenlei_wuye_unreceived` = #{fenleiWuyeUnreceived},</if>
+            <if test="fenleiGuanli != null">`fenlei_guanli` = #{fenleiGuanli},</if>
+            <if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = #{fenleiGuanliReceived},</if>
+            <if test="fenleiGuanliUnreceived != null">`fenlei_guanli_unreceived` = #{fenleiGuanliUnreceived},</if>
+            <if test="contractStartDate != null">`contract_start_date` = #{contractStartDate},</if>
+            <if test="contractEndDate != null">`contract_end_date` = #{contractEndDate},</if>
+            <if test="amortizeMonths != null">`amortize_months` = #{amortizeMonths},</if>
+            <if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue},</if>
+            <if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang},</if>
+            <if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu},</if>
+            <if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu},</if>
+            <if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue},</if>
+            <if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang},</if>
+            <if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu},</if>
+            <if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu},</if>
+            <if test="discrepancy != null">`discrepancy` = #{discrepancy},</if>
+            <if test="phone != null">`phone` = #{phone},</if>
+            <if test="idCard != null">`id_card` = #{idCard},</if>
+            <if test="kaidanCode != null">`kaidan_code` = #{kaidanCode},</if>
+            <if test="kaidanName != null">`kaidan_name` = #{kaidanName},</if>
+            <if test="payee != null">`payee` = #{payee},</if>
+            <if test="account != null">`account` = #{account},</if>
+            <if test="bank != null">`bank` = #{bank},</if>
+            <if test="contractDate != null">`contract_date` = #{contractDate},</if>
+            <if test="zulinbiao != null">`zulinbiao` = #{zulinbiao},</if>
+            <if test="copyIdCard != null">`copy_id_card` = #{copyIdCard},</if>
+            <if test="copyBankCard != null">`copy_bank_card` = #{copyBankCard},</if>
+            <if test="tuzhi != null">`tuzhi` = #{tuzhi},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="createDate != null">`create_date` = #{createDate},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice},</if>
+            <if test="amortizePrice != null">`amortize_price` = #{amortizePrice},</if>
+            <if test="discount != null">`discount` = #{discount},</if>
+            <if test="buildingId != null">`building_id` = #{buildingId},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="orderId != null">`order_id` = #{orderId},</if>
+            <if test="contractChechangDate != null">`contract_chechang_date` = #{contractChechangDate},</if>
+            <if test="chechangOperationDate != null">`chechang_operation_date` = #{chechangOperationDate},</if>
+            <if test="unitCode != null">`unit_code` = #{unitCode},</if>
+            <if test="total != null">`total` = #{total}</if>
+        </set>
+        where oid = #{oid}
+    </update>
+
+    <update id="updateOld">
+        update shop_contract
+        set
+            `receivable_lvyue` = 0.00,
+            `receivable_zhiliang` = 0.00,
+            `receivable_fuwu` = 0.00,
+            `receivable_zhuangxiu` = 0.00,
+            `received_lvyue` = 0.00,
+            `received_zhiliang` = 0.00,
+            `received_fuwu` = 0.00,
+            `received_zhuangxiu` = 0.00,
+            `discrepancy` = 0.00
+        where oid = #{oid}
+    </update>
+
+    <update id="updateToContractState">
+         UPDATE
+          `shop_to_contract` t
+         SET
+           t.state =
+            (SELECT
+             tt.state
+           FROM
+            `shop_contract` tt
+          WHERE tt.`oid` = t.oid)
+    </update>
+
+    <update id="updateTanxiaoForChechang" parameterType="com.bootdo.business.domain.ContractDO">
+        update `shop_amortize` t set t.total = 0.00,
+        t.amortize_price_zujin = 0.00,
+        t.amortize_price_guanli = 0.00,
+        t.amortize_price_wuye = 0.00
+         where t.oid = #{oid} AND t.month > DATE_FORMAT(NOW(),'%Y-%m' )
+    </update>
+
+    <update id="updateTanxiaoForChechangD" parameterType="com.bootdo.business.domain.ContractDO">
+        update `shop_amortize` t set t.total = 0.00,
+        t.amortize_price_zujin = 0.00,
+        t.amortize_price_guanli = 0.00,
+        t.amortize_price_wuye = 0.00
+        where t.oid = #{oid} AND t.month > DATE_FORMAT(#{contractChechangDate},'%Y-%m' )
+    </update>
+
+    <update id="updateTanxiaoCurrentMonth" parameterType="com.bootdo.business.domain.AmortizeDO">
+        update `shop_amortize` t set t.total = #{total},
+        t.amortize_price_zujin = #{amortizePriceZujin},
+        t.amortize_price_guanli = #{amortizePriceGuanli},
+        t.amortize_price_wuye = #{amortizePriceWuye}
+        where t.oid = #{oid} AND t.month = #{month}
+    </update>
+
+
+    <update id="updateTanxiaoOperationMonth" parameterType="com.bootdo.business.domain.AmortizeDO">
+        update `shop_amortize` t
+        <set>
+        <if test="total != null">t.total = #{total},</if>
+        <if test="amortizePriceZujin != null"> t.amortize_price_zujin = #{amortizePriceZujin},</if>
+        <if test="amortizePriceGuanli != null">t.amortize_price_guanli = #{amortizePriceGuanli},</if>
+        <if test="amortizePriceWuye != null">t.amortize_price_wuye = #{amortizePriceWuye}</if>
+       </set>
+        where t.id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from shop_contract where id = #{value}
+	</delete>
+    <delete id="deleteAmortizeForRevert">
+		delete from shop_amortize where oid = #{oid} and month > DATE_FORMAT(#{contractEndDate},'%Y-%m')
+	</delete>
+    <delete id="deleteAmortizeBf">
+		delete from shop_amortize_bf where oid = #{oid}
+	</delete>
+    <delete id="deleteContractBf">
+		delete from shop_contract_bf where oid = #{oid}
+	</delete>
+    <delete id="deletePayCountBf">
+		delete from shop_pay_count_final_bf where oid = #{oid}
+	</delete>
+    <delete id="deletePayListChechang">
+		delete from shop_pay_list_chechang where oid = #{oid}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from shop_contract where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsert">
+        insert into shop_contract
+        (
+        `contract_code`,
+        `floor`,
+        `shop_code`,
+        `contractor`,
+        `contract_true_area`,
+        `contract_rent_area`,
+        `rent_area`,
+        `brand`,
+        `shop_type`,
+        `contract_pay_total`,
+        `unit_price`,
+        `pay_type`,
+        `youhui`,
+        `fenlei_zujin`,
+        `fenlei_wuye`,
+        `fenlei_guanli`,
+        `contract_start_date`,
+        `contract_end_date`,
+        `amortize_months`,
+        `receivable_lvyue`,
+        `receivable_zhiliang`,
+        `receivable_fuwu`,
+        `receivable_zhuangxiu`,
+        `received_lvyue`,
+        `received_zhiliang`,
+        `received_fuwu`,
+        `received_zhuangxiu`,
+        `discrepancy`,
+        `phone`,
+        `id_card`,
+        `kaidan_code`,
+        `kaidan_name`,
+        `payee`,
+        `account`,
+        `bank`,
+        `contract_date`,
+        `zulinbiao`,
+        `copy_id_card`,
+        `copy_bank_card`,
+        `tuzhi`,
+        `remarks`,
+        `create_date`,
+        `create_by`,
+        `youhui_unit_price`,
+        `amortize_price`,
+        `discount`,
+        `building_id`,
+        `state`,
+        `order_id`,
+        `total`,
+        `contract_pay_total_received`,
+        `contract_pay_total_unreceived`,
+        `fenlei_zujin_received`,
+        `fenlei_zujin_unreceived`,
+        `fenlei_wuye_received`,
+        `fenlei_wuye_unreceived`,
+        `fenlei_guanli_received`,
+        `fenlei_guanli_unreceived`,
+        `dept_id`,
+        `shop_id`,
+        `oid`
+        )
+        values
+        <foreach collection="shopContractDOList" item="shop" separator=",">
+            (
+            #{shop.contractCode},
+            (select DISTINCT s.floor from shop s where s.building_id=#{shop.buildingId} and
+            s.code=#{shop.shopCode}),
+            #{shop.shopCode},
+            #{shop.contractor},
+            #{shop.contractTrueArea},
+            #{shop.contractRentArea},
+            #{shop.rentArea},
+            #{shop.brand},
+            #{shop.shopType},
+            #{shop.contractPayTotal},
+            #{shop.unitPrice},
+            #{shop.payType},
+            #{shop.youhui},
+            #{shop.fenleiZujin},
+            #{shop.fenleiWuye},
+            #{shop.fenleiGuanli},
+            #{shop.contractStartDate},
+            #{shop.contractEndDate},
+            #{shop.amortizeMonths},
+            #{shop.receivableLvyue},
+            #{shop.receivableZhiliang},
+            #{shop.receivableFuwu},
+            #{shop.receivableZhuangxiu},
+            #{shop.receivedLvyue},
+            #{shop.receivedZhiliang},
+            #{shop.receivedFuwu},
+            #{shop.receivedZhuangxiu},
+            #{shop.discrepancy},
+            #{shop.phone},
+            #{shop.idCard},
+            #{shop.kaidanCode},
+            #{shop.kaidanName},
+            #{shop.payee},
+            #{shop.account},
+            #{shop.bank},
+            #{shop.contractDate},
+            #{shop.zulinbiao},
+            #{shop.copyIdCard},
+            #{shop.copyBankCard},
+            #{shop.tuzhi},
+            #{shop.remarks},
+            #{shop.createDate},
+            #{shop.createBy},
+            #{shop.youhuiUnitPrice},
+            #{shop.amortizePrice},
+            #{shop.discount},
+            #{shop.buildingId},
+            #{shop.state},
+            #{shop.orderId},
+            #{shop.total},
+            #{shop.contractPayTotalReceived},
+            #{shop.contractPayTotalUnreceived},
+            #{shop.fenleiZujinReceived},
+            #{shop.fenleiZujinUnreceived},
+            #{shop.fenleiWuyeReceived},
+            #{shop.fenleiWuyeUnreceived},
+            #{shop.fenleiGuanliReceived},
+            #{shop.fenleiGuanliUnreceived},
+            #{shop.deptId},
+            (select s.id from shop s where s.building_id=#{shop.buildingId} and
+            s.code=#{shop.shopCode}),
+            #{shop.oid}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertTanxiao">
+        insert into shop_amortize
+        (
+        `dept_id`,
+        `amortize_price`,
+        `month`,
+        `shop_code`,
+        `day`,
+        `create_date`,
+        `create_by`,
+        `del_flag`,
+        `total`,
+        `building_id`,
+
+        `brand`,
+        `contract_code`,
+        `contractor`,
+        `amortize_price_zujin`,
+        `amortize_price_guanli`,
+        `amortize_price_wuye`,
+        `oid`
+        )
+        values
+        <foreach collection="tanxiaoDOList" item="tanxiao" separator=",">
+            (
+            #{tanxiao.deptId},
+            #{tanxiao.amortizePrice},
+            #{tanxiao.month},
+            #{tanxiao.shopCode},
+            #{tanxiao.day},
+            #{tanxiao.createDate},
+            #{tanxiao.createBy},
+            #{tanxiao.delFlag},
+            #{tanxiao.total},
+            #{tanxiao.buildingId},
+
+            #{tanxiao.brand},
+            #{tanxiao.contractCode},
+            #{tanxiao.contractor},
+            #{tanxiao.amortizePriceZujin},
+            #{tanxiao.amortizePriceGuanli},
+            #{tanxiao.amortizePriceWuye},
+            #{tanxiao.oid}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="saveLog">
+		insert into shop_contract_log
+		select null,#{name},#{createBy},#{createDate},contract_code,#{orderId},oid from shop_contract
+		where order_id=#{orderId}
+	</insert>
+
+    <select id="getDate" resultType="com.bootdo.business.domain.ContractDO">
+		SELECT
+  `contract_start_date`,`contract_end_date`
+FROM
+  shop_contract
+WHERE contract_code = #{contractCode} and  building_id = #{buildingId} and state != '2' and del_flag = '0'
+	</select>
+    <select id="log" resultType="com.bootdo.business.domain.ContractLog">
+        SELECT r.id,r.name,s.name AS createByName,r.create_date FROM shop_contract_log r LEFT JOIN sys_user s ON
+        r.create_by=s.user_id where r.contract_id=#{contractId}
+        order by r.create_date desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getId" resultType="String">
+		CALL `generate_shopNo`(#{s},#{deptId}, 8, @orderNo)
+	</select>
+
+    <insert id="savePayLog" parameterType="com.bootdo.business.domain.ContractLog" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into shop_contract_log
+		(
+		`name`,
+		`create_by`,
+		`create_date`,
+		`contract_id`,
+		`oid`
+		) values
+		(#{name},#{createBy},#{createDate},#{contractId},#{oid})
+	</insert>
+
+    <select id="pay" resultType="com.bootdo.business.domain.PayListDO">
+        select
+        `id`,`dept_id`,`dept_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`shop_id`,`shop_code`,`floor`,`type`,`type_name`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`print`,`name`,`date`,`pay_date`,`count_start_date`,`count_end_date`
+        from shop_pay_list
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="brand != null and brand != ''"> and brand like CONCAT('%',#{brand},'%') </if>
+            <if test="deptId != null and deptId != ''">and dept_id = #{deptId}</if>
+            <if test="deptName != null and deptName != ''">and dept_name = #{deptName}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="createBy != null and createBy != ''">and create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''">and building_name = #{buildingName}</if>
+            <if test="shopId != null and shopId != ''">and shop_id = #{shopId}</if>
+            <if test="shopCode != null and shopCode != ''">and shop_code = #{shopCode}</if>
+            <if test="floor != null and floor != ''">and floor = #{floor}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="typeName != null and typeName != ''">and type_name = #{typeName}</if>
+            <if test="sType != null and sType != ''">and s_type = #{sType}</if>
+            <if test="sTypeName != null and sTypeName != ''">and s_type_name = #{sTypeName}</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="payType != null and payType != ''">and pay_type = #{payType}</if>
+            <if test="receiptBy != null and receiptBy != ''">and receipt_by = #{receiptBy}</if>
+            <if test="payBy != null and payBy != ''">and pay_by = #{payBy}</if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''">and brand_receipt_by = #{brandReceiptBy}</if>
+            <if test="cardNo != null and cardNo != ''">and card_no = #{cardNo}</if>
+            <if test="bank != null and bank != ''">and bank = #{bank}</if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''">and chongxiao_code = #{chongxiaoCode}</if>
+            <if test="area != null and area != ''">and area = #{area}</if>
+            <if test="yewuId != null and yewuId != ''">and yewu_id = #{yewuId}</if>
+            <if test="print != null and print != ''">and print = #{print}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="date != null and date != ''">and date = #{date}</if>
+            <if test="startDate != null and startDate != ''">and
+                DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(#{endDate},'%Y-%m-%d' ) >= DATE_FORMAT(pay_date,'%Y-%m-%d')
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getCountForSaledShop" resultType="int">
+        select count(*) FROM `shop_to_contract` t WHERE t.`shop_code` = #{shopCode} AND (t.state = '0' OR t.`state` = '1')
+    </select>
+
+    <select id="countPayList" resultType="int">
+        select count(*) from shop_pay_list
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and dept_id = #{deptId}</if>
+            <if test="deptName != null and deptName != ''">and dept_name = #{deptName}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="createBy != null and createBy != ''">and create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''">and building_name = #{buildingName}</if>
+            <if test="shopId != null and shopId != ''">and shop_id = #{shopId}</if>
+            <if test="shopCode != null and shopCode != ''">and shop_code = #{shopCode}</if>
+            <if test="floor != null and floor != ''">and floor = #{floor}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="typeName != null and typeName != ''">and type_name = #{typeName}</if>
+            <if test="sType != null and sType != ''">and s_type = #{sType}</if>
+            <if test="sTypeName != null and sTypeName != ''">and s_type_name = #{sTypeName}</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="payType != null and payType != ''">and pay_type = #{payType}</if>
+            <if test="receiptBy != null and receiptBy != ''">and receipt_by = #{receiptBy}</if>
+            <if test="payBy != null and payBy != ''">and pay_by = #{payBy}</if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''">and brand_receipt_by = #{brandReceiptBy}</if>
+            <if test="cardNo != null and cardNo != ''">and card_no = #{cardNo}</if>
+            <if test="bank != null and bank != ''">and bank = #{bank}</if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''">and chongxiao_code = #{chongxiaoCode}</if>
+            <if test="area != null and area != ''">and area = #{area}</if>
+            <if test="yewuId != null and yewuId != ''">and yewu_id = #{yewuId}</if>
+            <if test="print != null and print != ''">and print = #{print}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="date != null and date != ''">and date = #{date}</if>
+            <if test="brand != null and brand != ''"> and brand like CONCAT('%',#{brand},'%') </if>
+            <if test="startDate != null and startDate != ''">and
+                DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+            </if>
+        </where>
+    </select>
+
+    <select id="payForChechang" resultType="com.bootdo.business.domain.PayListDO">
+        select
+        `id`,`dept_id`,`dept_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`shop_id`,`shop_code`,`floor`,`type`,`type_name`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`print`,`name`,`date`,`pay_date`,`count_start_date`,`count_end_date`
+        from shop_pay_list_chechang
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="brand != null and brand != ''"> and brand like CONCAT('%',#{brand},'%') </if>
+            <if test="deptId != null and deptId != ''">and dept_id = #{deptId}</if>
+            <if test="deptName != null and deptName != ''">and dept_name = #{deptName}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="createBy != null and createBy != ''">and create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''">and building_name = #{buildingName}</if>
+            <if test="shopId != null and shopId != ''">and shop_id = #{shopId}</if>
+            <if test="shopCode != null and shopCode != ''">and shop_code = #{shopCode}</if>
+            <if test="floor != null and floor != ''">and floor = #{floor}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="typeName != null and typeName != ''">and type_name = #{typeName}</if>
+            <if test="sType != null and sType != ''">and s_type = #{sType}</if>
+            <if test="sTypeName != null and sTypeName != ''">and s_type_name = #{sTypeName}</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="payType != null and payType != ''">and pay_type = #{payType}</if>
+            <if test="receiptBy != null and receiptBy != ''">and receipt_by = #{receiptBy}</if>
+            <if test="payBy != null and payBy != ''">and pay_by = #{payBy}</if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''">and brand_receipt_by = #{brandReceiptBy}</if>
+            <if test="cardNo != null and cardNo != ''">and card_no = #{cardNo}</if>
+            <if test="bank != null and bank != ''">and bank = #{bank}</if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''">and chongxiao_code = #{chongxiaoCode}</if>
+            <if test="area != null and area != ''">and area = #{area}</if>
+            <if test="yewuId != null and yewuId != ''">and yewu_id = #{yewuId}</if>
+            <if test="print != null and print != ''">and print = #{print}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="date != null and date != ''">and date = #{date}</if>
+            <if test="startDate != null and startDate != ''">and
+                DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(#{endDate},'%Y-%m-%d' ) >= DATE_FORMAT(pay_date,'%Y-%m-%d')
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="countPayListForChechang" resultType="int">
+        select count(*) from shop_pay_list_chechang
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and dept_id = #{deptId}</if>
+            <if test="deptName != null and deptName != ''">and dept_name = #{deptName}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="createBy != null and createBy != ''">and create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="buildingId != null and buildingId != ''">and
+                building_id in (select b.id from business_building b where
+                FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+                b.dept_id=#{deptId} )
+            </if>
+            <if test="buildingName != null and buildingName != ''">and building_name = #{buildingName}</if>
+            <if test="shopId != null and shopId != ''">and shop_id = #{shopId}</if>
+            <if test="shopCode != null and shopCode != ''">and shop_code = #{shopCode}</if>
+            <if test="floor != null and floor != ''">and floor = #{floor}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="typeName != null and typeName != ''">and type_name = #{typeName}</if>
+            <if test="sType != null and sType != ''">and s_type = #{sType}</if>
+            <if test="sTypeName != null and sTypeName != ''">and s_type_name = #{sTypeName}</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="payType != null and payType != ''">and pay_type = #{payType}</if>
+            <if test="receiptBy != null and receiptBy != ''">and receipt_by = #{receiptBy}</if>
+            <if test="payBy != null and payBy != ''">and pay_by = #{payBy}</if>
+            <if test="brandReceiptBy != null and brandReceiptBy != ''">and brand_receipt_by = #{brandReceiptBy}</if>
+            <if test="cardNo != null and cardNo != ''">and card_no = #{cardNo}</if>
+            <if test="bank != null and bank != ''">and bank = #{bank}</if>
+            <if test="chongxiaoCode != null and chongxiaoCode != ''">and chongxiao_code = #{chongxiaoCode}</if>
+            <if test="area != null and area != ''">and area = #{area}</if>
+            <if test="yewuId != null and yewuId != ''">and yewu_id = #{yewuId}</if>
+            <if test="print != null and print != ''">and print = #{print}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="date != null and date != ''">and date = #{date}</if>
+            <if test="brand != null and brand != ''"> and brand like CONCAT('%',#{brand},'%') </if>
+            <if test="startDate != null and startDate != ''">and
+                DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <insert id="batchInsertToShop">
+        insert into shop_to_contract
+        (
+        `building_id`,
+        `shop_code`,
+        `contract_code`,
+        `floor`,
+        `room_type`,
+        `dept_id`,
+        `contract_true_area`,
+        `contract_rent_area`,
+        `rent_area`,
+        `order_id`,
+        `shop_id`,
+        `oid`
+        )
+        values
+        <foreach collection="toContractDOList" item="to" separator=",">
+        (
+        #{to.buildingId},
+        #{to.shopCode},
+        #{to.contractCode},
+        #{to.floor},
+        #{to.roomType},
+        #{to.deptId},
+        #{to.contractTrueArea},
+        #{to.contractRentArea},
+        #{to.rentArea},
+        #{to.orderId},
+            (select s.id from shop s where s.building_id=#{to.buildingId} and
+            s.code=#{to.shopCode}),
+            #{to.oid}
+        )
+        </foreach>
+    </insert>
+    <update id="updateLog" parameterType="com.bootdo.business.domain.ContractLog">
+        update shop_contract_log
+        <set>
+            <if test="contractId != null">`contract_id` = #{contractId}</if>
+        </set>
+        where oid = #{oid}
+    </update>
+    <update id="updateToContract" parameterType="com.bootdo.business.domain.ToContractDO">
+        update shop_to_contract
+        <set>
+            <if test="contractCode != null">`contract_code` = #{contractCode}</if>
+        </set>
+        where oid = #{oid}
+    </update>
+
+    <select id="getShop" resultType="String">
+        SELECT
+        code
+        FROM
+        shop s
+        WHERE s.dept_id = #{deptId}
+        AND s.`del_flag` = '0'
+    </select>
+
+    <select id="getCodes" resultType="String">
+    SELECT
+    contract_code
+    FROM
+    shop_contract sc
+    WHERE sc.dept_id = #{deptId}
+    AND sc.`del_flag` = '0'
+    </select>
+
+    <insert id="insertAddToCon" parameterType="com.bootdo.business.domain.ToContractDO">
+        insert into shop_to_contract
+		select null,
+		`building_id`,
+        `shop_code`,
+        #{contractCode},
+        `floor`,
+        `room_type`,
+        `dept_id`,
+        `contract_true_area`,
+        `contract_rent_area`,
+        `rent_area`,
+         '0',
+        `order_id`,
+        `shop_id`,
+        #{oid},
+        #{state}
+         from shop_to_contract
+		where oid=#{oidOld}
+    </insert>
+
+    <select id="getTanxiaoFenleiPrice" resultType="com.bootdo.business.domain.AmortizeDO">
+        select * from shop_amortize
+        where oid = #{oid} and month = #{month}
+    </select>
+
+    <insert id="insertTanxiao" parameterType="com.bootdo.business.domain.AmortizeDO">
+        insert into shop_amortize
+        (
+        `dept_id`,
+        `amortize_price`,
+        `month`,
+        `shop_code`,
+        `day`,
+        `create_date`,
+        `create_by`,
+        `del_flag`,
+        `total`,
+        `building_id`,
+        `brand`,
+        `contract_code`,
+        `contractor`,
+        `amortize_price_zujin`,
+        `amortize_price_guanli`,
+        `amortize_price_wuye`,
+        `oid`
+        )
+        values
+        (
+        #{deptId},
+        #{amortizePrice},
+        #{month},
+        #{shopCode},
+        #{day},
+        #{createDate},
+        #{createBy},
+        #{delFlag},
+        #{total},
+        #{buildingId},
+
+        #{brand},
+        #{contractCode},
+        #{contractor},
+        #{amortizePriceZujin},
+        #{amortizePriceGuanli},
+        #{amortizePriceWuye},
+        #{oid}
+        )
+    </insert>
+    <insert id="saveAmortizeBf">
+        INSERT INTO `shop_amortize_bf`
+SELECT
+   `id`,
+  `dept_id`,
+  `amortize_price`,
+  `month`,
+  `shop_code`,
+  `shop_id`,
+  `day`,
+  `create_date`,
+  `create_by`,
+  `del_flag`,
+  `total`,
+  `unpay`,
+  `payed`,
+  `building_id`,
+  `brand`,
+  `contract_code`,
+  `contractor`,
+  `rent_area`,
+  `amortize_price_zujin`,
+  `amortize_price_guanli`,
+  `amortize_price_wuye`,
+  `oid`,
+  `received`,
+  `amortize_price_zujin_received`,
+  `amortize_price_guanli_received`,
+  `amortize_price_wuye_received`
+  FROM
+    shop_amortize
+  WHERE oid = #{oid}
+    </insert>
+    <insert id="saveContractBf">
+       INSERT INTO `shop_contract_bf`
+SELECT
+   `id`,
+`contract_code`,
+`floor`,
+`shop_code`,
+`contractor`,
+`contract_true_area`,
+`contract_rent_area`,
+`rent_area`,
+`brand`,
+`shop_type`,
+`contract_pay_total`,
+`contract_pay_total_received`,
+`contract_pay_total_unreceived`,
+`unit_price`,
+`pay_type`,
+`youhui`,
+`fenlei_zujin`,
+`fenlei_zujin_received`,
+`fenlei_zujin_unreceived`,
+`fenlei_wuye`,
+`fenlei_wuye_received`,
+`fenlei_wuye_unreceived`,
+`fenlei_guanli`,
+`fenlei_guanli_received`,
+`fenlei_guanli_unreceived`,
+`contract_start_date`,
+`contract_end_date`,
+`amortize_months`,
+`receivable_lvyue`,
+`receivable_zhiliang`,
+`receivable_fuwu`,
+`receivable_zhuangxiu`,
+`received_lvyue`,
+`received_zhiliang`,
+`received_fuwu`,
+`received_zhuangxiu`,
+`discrepancy`,
+`phone`,
+`id_card`,
+`kaidan_code`,
+`kaidan_name`,
+`payee`,
+`account`,
+`bank`,
+`contract_date`,
+`zulinbiao`,
+`copy_id_card`,
+`copy_bank_card`,
+`tuzhi`,
+`remarks`,
+`create_date`,
+`create_by`,
+`youhui_unit_price`,
+`amortize_price`,
+`discount`,
+`building_id`,
+`state`,
+`del_flag` ,
+`order_id`,
+`total`,
+`dept_id`,
+`shop_id`,
+`oid`,
+`contract_chechang_date`,
+`unit_code`,
+`chechang_operation_date`
+  FROM
+    shop_contract
+  WHERE oid = #{oid}
+    </insert>
+    <insert id="savePayCountBf">
+      INSERT INTO `shop_pay_count_final_bf`
+SELECT
+`id`,
+  `contract_code`,
+  `floor`,
+  `shop_code`,
+  `rent_area`,
+  `brand`,
+  `contract_pay_total`,
+  `contract_pay_total_received` ,
+  `contract_pay_total_unreceived`,
+  `unit_price`,
+  `pay_type`,
+  `fenlei_zujin`,
+  `fenlei_zujin_received` ,
+  `fenlei_zujin_unreceived`,
+  `fenlei_wuye`,
+  `fenlei_wuye_received`,
+  `fenlei_wuye_unreceived`,
+  `fenlei_guanli`,
+  `fenlei_guanli_received` ,
+  `fenlei_guanli_unreceived`,
+  `count_start_date`,
+  `count_end_date`,
+  `amortize_months`,
+  `receivable_lvyue`,
+  `receivable_zhiliang`,
+  `receivable_fuwu`,
+  `receivable_zhuangxiu`,
+  `received_lvyue` ,
+  `received_zhiliang`,
+  `received_fuwu` ,
+  `received_zhuangxiu`,
+  `discrepancy`,
+  `remarks`,
+  `create_date`,
+  `create_by`,
+  `youhui_unit_price`,
+  `amortize_price`,
+  `discount`,
+  `building_id`,
+  `state`,
+  `del_flag`,
+  `dept_id`,
+  `oid`,
+  `contractor`
+  FROM
+    shop_pay_count_final
+  WHERE oid = #{oid}
+    </insert>
+
+    <update id="revertAmortize">
+       UPDATE
+  `shop_amortize` a ,`shop_amortize_bf` b
+SET
+    a.`dept_id` = b.`dept_id`,
+    a.`amortize_price`=b.`amortize_price`,
+    a.`month`=b.`month`,
+    a.`shop_code`=b.`shop_code`,
+    a.`shop_id`=b.`shop_id`,
+    a.`day`=b.`day`,
+    a.`create_date`=b.`create_date`,
+    a.`create_by`=b.`create_by`,
+    a.`del_flag`=b.`del_flag`,
+    a.`total`=b.`total`,
+    a.`unpay`=b.`unpay`,
+    a.`payed`=b.`payed`,
+    a.`building_id`=b.`building_id`,
+    a.`brand`=b.`brand`,
+    a.`contract_code`=b.`contract_code`,
+    a.`contractor`=b.`contractor`,
+    a.`rent_area`=b.`rent_area`,
+    a.`amortize_price_zujin`=b.`amortize_price_zujin`,
+    a.`amortize_price_guanli`=b.`amortize_price_guanli`,
+    a.`amortize_price_wuye`=b.`amortize_price_wuye`,
+    a.`oid`=b.`oid`,
+    a.`received`=b.`received`,
+    a.`amortize_price_zujin_received`=b.`amortize_price_zujin_received`,
+    a.`amortize_price_guanli_received`=b.`amortize_price_guanli_received`,
+    a.`amortize_price_wuye_received`=b.`amortize_price_wuye_received`
+  WHERE a.oid = b.oid AND a.id = b.id AND b.oid = #{oid}
+    </update>
+    <update id="revertContract">
+       UPDATE
+  `shop_contract` a ,`shop_contract_bf` b
+SET
+a.`contract_code`=b.`contract_code`,
+a.`floor`=b.`floor`,
+a.`shop_code`=b.`shop_code`,
+a.`contractor`=b.`contractor`,
+a.`contract_true_area`=b.`contract_true_area`,
+a.`contract_rent_area`=b.`contract_rent_area`,
+a.`rent_area`=b.`rent_area`,
+a.`brand`=b.`brand`,
+a.`shop_type`=b.`shop_type`,
+a.`contract_pay_total`=b.`contract_pay_total`,
+a.`contract_pay_total_received`=b.`contract_pay_total_received`,
+a.`contract_pay_total_unreceived`=b.`contract_pay_total_unreceived`,
+a.`unit_price`=b.`unit_price`,
+a.`pay_type`=b.`pay_type`,
+a.`youhui`=b.`youhui`,
+a.`fenlei_zujin`=b.`fenlei_zujin`,
+a.`fenlei_zujin_received`=b.`fenlei_zujin_received`,
+a.`fenlei_zujin_unreceived`=b.`fenlei_zujin_unreceived`,
+a.`fenlei_wuye`=b.`fenlei_wuye`,
+a.`fenlei_wuye_received`=b.`fenlei_wuye_received`,
+a.`fenlei_wuye_unreceived`=b.`fenlei_wuye_unreceived`,
+a.`fenlei_guanli`=b.`fenlei_guanli`,
+a.`fenlei_guanli_received`=b.`fenlei_guanli_received`,
+a.`fenlei_guanli_unreceived`=b.`fenlei_guanli_unreceived`,
+a.`contract_start_date`=b.`contract_start_date`,
+a.`contract_end_date`=b.`contract_end_date`,
+a.`amortize_months`=b.`amortize_months`,
+a.`receivable_lvyue`=b.`receivable_lvyue`,
+a.`receivable_zhiliang`=b.`receivable_zhiliang`,
+a.`receivable_fuwu`=b.`receivable_fuwu`,
+a.`receivable_zhuangxiu`=b.`receivable_zhuangxiu`,
+a.`received_lvyue`=b.`received_lvyue`,
+a.`received_zhiliang`=b.`received_zhiliang`,
+a.`received_fuwu`=b.`received_fuwu`,
+a.`received_zhuangxiu`=b.`received_zhuangxiu`,
+a.`discrepancy`=b.`discrepancy`,
+a.`phone`=b.`phone`,
+a.`id_card`=b.`id_card`,
+a.`kaidan_code`=b.`kaidan_code`,
+a.`kaidan_name`=b.`kaidan_name`,
+a.`payee`=b.`payee`,
+a.`account`=b.`account`,
+a.`bank`=b.`bank`,
+a.`contract_date`=b.`contract_date`,
+a.`zulinbiao`=b.`zulinbiao`,
+a.`copy_id_card`=b.`copy_id_card`,
+a.`copy_bank_card`=b.`copy_bank_card`,
+a.`tuzhi`=b.`tuzhi`,
+a.`remarks`=b.`remarks`,
+a.`create_date`=b.`create_date`,
+a.`create_by`=b.`create_by`,
+a.`youhui_unit_price`=b.`youhui_unit_price`,
+a.`amortize_price`=b.`amortize_price`,
+a.`discount`=b.`discount`,
+a.`building_id`=b.`building_id`,
+a.`state`=b.`state`,
+a.`del_flag`=b.`del_flag`,
+a.`order_id`=b.`order_id`,
+a.`total`=b.`total`,
+a.`dept_id`=b.`dept_id`,
+a.`shop_id`=b.`shop_id`,
+a.`oid`=b.`oid`,
+a.`contract_chechang_date`=b.`contract_chechang_date`,
+a.`unit_code`=b.`unit_code`,
+a.`chechang_operation_date`=b.`chechang_operation_date`
+  WHERE a.oid = b.oid AND a.id = b.id AND b.oid = #{oid}
+    </update>
+    <update id="revertPayCount">
+       UPDATE
+`shop_pay_count_final` a,`shop_pay_count_final_bf` b
+SET
+a.`contract_code`=b.`contract_code`,
+a.`floor`=b.`floor`,
+a.`shop_code`=b.`shop_code`,
+a.`rent_area`=b.`rent_area`,
+a.`brand`=b.`brand`,
+a.`contract_pay_total`=b.`contract_pay_total`,
+a.`contract_pay_total_received` =b.`contract_pay_total_received`,
+a.`contract_pay_total_unreceived`=b.`contract_pay_total_unreceived`,
+a.`unit_price`=b.`unit_price`,
+a.`pay_type`=b.`pay_type`,
+a.`fenlei_zujin`=b.`fenlei_zujin`,
+a.`fenlei_zujin_received` =b.`fenlei_zujin_received`,
+a.`fenlei_zujin_unreceived`=b.`fenlei_zujin_unreceived`,
+a.`fenlei_wuye`=b.`fenlei_wuye`,
+a.`fenlei_wuye_received`=b.`fenlei_wuye_received`,
+a.`fenlei_wuye_unreceived`=b.`fenlei_wuye_unreceived`,
+a.`fenlei_guanli`=b.`fenlei_guanli`,
+a.`fenlei_guanli_received` =b.`fenlei_guanli_received`,
+a.`fenlei_guanli_unreceived`=b.`fenlei_guanli_unreceived`,
+a.`count_start_date`=b.`count_start_date`,
+a.`count_end_date`=b.`count_end_date`,
+a.`amortize_months`=b.`amortize_months`,
+a.`receivable_lvyue`=b.`receivable_lvyue`,
+a.`receivable_zhiliang`=b.`receivable_zhiliang`,
+a.`receivable_fuwu`=b.`receivable_fuwu`,
+a.`receivable_zhuangxiu`=b.`receivable_zhuangxiu`,
+a.`received_lvyue` =b.`received_lvyue`,
+a.`received_zhiliang`=b.`received_zhiliang`,
+a.`received_fuwu` =b.`received_fuwu`,
+a.`received_zhuangxiu`=b.`received_zhuangxiu`,
+a.`discrepancy`=b.`discrepancy`,
+a.`remarks`=b.`remarks`,
+a.`create_date`=b.`create_date`,
+a.`create_by`=b.`create_by`,
+a.`youhui_unit_price`=b.`youhui_unit_price`,
+a.`amortize_price`=b.`amortize_price`,
+a.`discount`=b.`discount`,
+a.`building_id`=b.`building_id`,
+a.`state`=b.`state`,
+a.`del_flag`=b.`del_flag`,
+a.`dept_id`=b.`dept_id`,
+a.`contractor` = b.`contractor`
+  WHERE a.oid = b.oid AND a.id = b.id AND b.oid = #{oid}
+    </update>
+
+    <select id="shopShouType" resultType="com.bootdo.common.domain.DictDO">
+         SELECT value , name FROM sys_dict WHERE TYPE = 'shop_shou_type'
+    </select>
+</mapper>

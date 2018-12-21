@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${contract.id}"
+							   class="hidden">
+						<input id="payType"  th:value="${contract.payType}"
+							   class="hidden">
+						<input id="contractPayTotal"  th:value="${contract.contractPayTotal}"
+							   class="hidden">
+						<input id="contractPayTotalReceived"  th:value="${contract.contractPayTotalReceived}"
+							   class="hidden">
+						<input id="contractPayTotalUnreceived"  th:value="${contract.contractPayTotalUnreceived}"
+							   class="hidden">
+						<input id="date" name="date" th:value="${date}"
+							   class="hidden">
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">撤场日期：</label>
+							<div class="col-sm-3">
+								<input id="contractChechangDateString" name="contractChechangDateString" th:value="${contract.contractChechangDateString}" class="form-control"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款方式：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="shouType1">
+								<input type="hidden" id="shouTypeName">
+								<select data-placeholder="--选择收款方式--" name="shouType" id="shouType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择收款方式--</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">交来：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="shopType1">
+								<input type="hidden" id="shopTypeName">
+								<select data-placeholder="--选择交来项目--" name="shopType" id="shopType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择交来项目--</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="fenleiZujinDiv">
+							<label class="col-sm-3 control-label">截止撤场日期应收租金金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiZujin" name="fenleiZujin" class="form-control"  th:value="${contract.fenleiZujin}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiWuyeDiv">
+							<label class="col-sm-3 control-label">截止撤场日期应收物业费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiWuye" name="fenleiWuye" class="form-control"  th:value="${contract.fenleiWuye}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiGuanliDiv">
+							<label class="col-sm-3 control-label">截止撤场日期应收管理费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiGuanli" name="fenleiGuanli" class="form-control"  th:value="${contract.fenleiGuanli}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="fenleiZujinReceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期已收租金金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiZujinReceived" name="fenleiZujinReceived" class="form-control"  th:value="${contract.fenleiZujinReceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiWuyeReceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期已收物业费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiWuyeReceived" name="fenleiWuyeReceived" class="form-control"  th:value="${contract.fenleiWuyeReceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiGuanliReceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期已收管理费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiGuanliReceived" name="fenleiGuanliReceived" class="form-control"  th:value="${contract.fenleiGuanliReceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="fenleiZujinUnreceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期租金未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiZujinUnreceived" name="fenleiZujinUnreceived" class="form-control"  th:value="${contract.fenleiZujinUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiWuyeUnreceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期物业费未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiWuyeUnreceived" name="fenleiWuyeUnreceived" class="form-control"  th:value="${contract.fenleiWuyeUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiGuanliUnreceivedDiv">
+							<label class="col-sm-3 control-label">截止撤场日期管理费未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiGuanliUnreceived" name="fenleiGuanliUnreceived" class="form-control"  th:value="${contract.fenleiGuanliUnreceived}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="receivableLvyueDiv">
+							<label class="col-sm-3 control-label">应收履约保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivableLvyue" name="receivableLvyue" class="form-control"  th:value="${contract.receivableLvyue}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivableZhiliangDiv">
+							<label class="col-sm-3 control-label">应收质量保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivableZhiliang" name="receivableZhiliang" class="form-control"  th:value="${contract.receivableZhiliang}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivableFuwuDiv">
+							<label class="col-sm-3 control-label">应收服务保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivableFuwu" name="receivableFuwu" class="form-control"  th:value="${contract.receivableFuwu}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivableZhuangxiuDiv">
+							<label class="col-sm-3 control-label">应收装修保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivableZhuangxiu" name="receivableZhuangxiu" class="form-control"  th:value="${contract.receivableZhuangxiu}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+						<div class="form-group buildingDiv" id="receivedLvyueDiv">
+							<label class="col-sm-3 control-label">已收履约保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivedLvyue" name="receivedLvyue" class="form-control"  th:value="${contract.receivedLvyue}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedZhiliangDiv">
+							<label class="col-sm-3 control-label">已收质量保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivedZhiliang" name="receivedZhiliang" class="form-control"  th:value="${contract.receivedZhiliang}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedFuwuDiv">
+							<label class="col-sm-3 control-label">已收服务保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivedFuwu" name="receivedFuwu" class="form-control"  th:value="${contract.receivedFuwu}"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedZhuangxiuDiv">
+							<label class="col-sm-3 control-label">已收装修保证金：</label>
+							<div class="col-sm-8">
+								<input id="receivedZhuangxiu" name="receivedZhuangxiu" class="form-control"  th:value="${contract.receivedZhuangxiu}"
+									   type="text" disabled>
+							</div>
+						</div>
+
+
+
+						<div class="form-group buildingDiv" id="fenleiZujinShouldDiv">
+							<label class="col-sm-3 control-label">补退租金金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiZujinShould" name="fenleiZujinShould" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiWuyeShouldDiv">
+							<label class="col-sm-3 control-label">补退物业费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiWuyeShould" name="fenleiWuyeShould" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="fenleiGuanliShouldDiv">
+							<label class="col-sm-3 control-label">补退管理费金额：</label>
+							<div class="col-sm-8">
+								<input id="fenleiGuanliShould" name="fenleiGuanliShould" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedLvyueInDiv">
+							<label class="col-sm-3 control-label">履约保证金缴费：</label>
+							<div class="col-sm-8">
+								<input id="receivedLvyueIn" name="receivedLvyueIn" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedZhiliangInDiv">
+							<label class="col-sm-3 control-label">质量保证金缴费：</label>
+							<div class="col-sm-8">
+								<input id="receivedZhiliangIn" name="receivedZhiliangIn" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedFuwuInDiv">
+							<label class="col-sm-3 control-label">服务保证金缴费：</label>
+							<div class="col-sm-8">
+								<input id="receivedFuwuIn" name="receivedFuwuIn" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv" id="receivedZhuangxiuInDiv">
+							<label class="col-sm-3 control-label">装修保证金缴费：</label>
+							<div class="col-sm-8">
+								<input id="receivedZhuangxiuIn" name="receivedZhuangxiuIn" class="form-control"
+									   type="text" >
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款人：</label>
+							<div class="col-sm-8">
+								<input id="receiptBy" name="receiptBy" th:value="${name}" class="form-control"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款日期：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="payDate"  name="payDate"  th:value="${payDate}">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">备注：</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="remarks"  name="remarks">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="save()" class="btn btn-primary">提交</button>
+								<button type="button" onclick="p()" id="print"   class="btn btn-success" style="padding-left: 50px;">打印</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/appjs/business/contract/contractChechangPay.js">
+</script>
+<script>
+	laydate.render({
+		elem: '#payDate'
+		,format: 'yyyy-MM-dd'
+	});
+	var date=$("#date").val();
+	if(date!=''){
+		$("#payDate").val(dateFormat(date,"yyyy-MM-dd"));
+	}
+	function dateFormat(date, format) {
+
+		date = new Date(date);
+
+		var o = {
+			'M+' : date.getMonth() + 1, //month
+			'd+' : date.getDate(), //day
+			'H+' : date.getHours(), //hour
+			'm+' : date.getMinutes(), //minute
+			's+' : date.getSeconds(), //second
+			'q+' : Math.floor((date.getMonth() + 3) / 3), //quarter
+			'S' : date.getMilliseconds() //millisecond
+		};
+
+		if (/(y+)/.test(format))
+			format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+
+		for (var k in o)
+			if (new RegExp('(' + k + ')').test(format))
+				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+
+		return format;
+	}
+</script>
+</body>
+</html>

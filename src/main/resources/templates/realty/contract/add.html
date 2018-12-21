@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">项目ID：</label>
+								<div class="col-sm-8">
+									<input id="deptId" name="deptId" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">楼宇ID：</label>
+								<div class="col-sm-8">
+									<input id="buildingId" name="buildingId" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">房屋ID：</label>
+								<div class="col-sm-8">
+									<input id="roomId" name="roomId" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">单元数：</label>
+								<div class="col-sm-8">
+									<input id="unit" name="unit" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">楼层：</label>
+								<div class="col-sm-8">
+									<input id="floor" name="floor" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">房屋类型：</label>
+								<div class="col-sm-8">
+									<input id="roomType" name="roomType" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">建筑面积：</label>
+								<div class="col-sm-8">
+									<input id="buildingArea" name="buildingArea" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">使用面积：</label>
+								<div class="col-sm-8">
+									<input id="floorArea" name="floorArea" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">转让类型或未售：</label>
+								<div class="col-sm-8">
+									<input id="sellType" name="sellType" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">单价：</label>
+								<div class="col-sm-8">
+									<input id="price" name="price" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">总价：</label>
+								<div class="col-sm-8">
+									<input id="totalPrice" name="totalPrice" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">付款方式（0全款，1贷款）：</label>
+								<div class="col-sm-8">
+									<input id="payType" name="payType" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">首付款：</label>
+								<div class="col-sm-8">
+									<input id="firstPay" name="firstPay" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">已收首付款：</label>
+								<div class="col-sm-8">
+									<input id="firstReceive" name="firstReceive" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">欠(首付）款：</label>
+								<div class="col-sm-8">
+									<input id="firstOwn" name="firstOwn" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">贷款金额：</label>
+								<div class="col-sm-8">
+									<input id="loan" name="loan" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">销售顾问：</label>
+								<div class="col-sm-8">
+									<input id="sellBy" name="sellBy" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">销售日期：</label>
+								<div class="col-sm-8">
+									<input id="sellDate" name="sellDate" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remark" name="remark" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">合同编号：</label>
+								<div class="col-sm-8">
+									<input id="code" name="code" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">退补面积：</label>
+								<div class="col-sm-8">
+									<input id="balanceArea" name="balanceArea" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">退补金额：</label>
+								<div class="col-sm-8">
+									<input id="balancePrice" name="balancePrice" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">税款：</label>
+								<div class="col-sm-8">
+									<input id="tax" name="tax" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">房屋结算价款(不含税)：</label>
+								<div class="col-sm-8">
+									<input id="totalPriceNoTax" name="totalPriceNoTax" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">计税方法：</label>
+								<div class="col-sm-8">
+									<input id="taxMethod" name="taxMethod" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">已预缴营业税：</label>
+								<div class="col-sm-8">
+									<input id="taxed" name="taxed" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">购房者姓名：</label>
+								<div class="col-sm-8">
+									<input id="name" name="name" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">购房者身份证号：</label>
+								<div class="col-sm-8">
+									<input id="idCard" name="idCard" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">购房者电话号：</label>
+								<div class="col-sm-8">
+									<input id="phone" name="phone" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">开户行：</label>
+								<div class="col-sm-8">
+									<input id="bank" name="bank" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">银行卡号：</label>
+								<div class="col-sm-8">
+									<input id="cardNo" name="cardNo" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建人：</label>
+								<div class="col-sm-8">
+									<input id="createBy" name="createBy" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建日期：</label>
+								<div class="col-sm-8">
+									<input id="createDate" name="createDate" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新人：</label>
+								<div class="col-sm-8">
+									<input id="updateBy" name="updateBy" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">更新日期：</label>
+								<div class="col-sm-8">
+									<input id="updateDate" name="updateDate" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">：</label>
+								<div class="col-sm-8">
+									<input id="delFlag" name="delFlag" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">状态：</label>
+								<div class="col-sm-8">
+									<input id="state" name="state" class="form-control" type="text">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/system/contract/add.js">
+	</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <style>
+        .item{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >设备接收</strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <input type="hidden" id="areaLevel" th:value="${areaLevel}">
+    <input type="hidden" id="deptId" th:value="${deptId}">
+    <input type="hidden" id="deptType" th:value="${deptType}">
+    <div class="heading color-grey">
+        <div class="title" style="margin-top: 10px;"><strong>设备接收单</strong></div>
+    </div>
+    <div class="column " >
+        <div class="columns pull-right col-md-2 nopadding" style="margin-left: 9px" id="storeroomDive">
+            <label class="col-sm-3 control-label">选择接收库房：</label>
+            <select     data-placeholder="--选择移库库房--" name="storeroomId" id="storeroomId"
+                    readonly="readonly" class="form-control chosen-select" tabindex="2"  required="required">
+                <option value="" readonly="readonly" >--选择接收库房--</option>
+            </select>
+        </div>
+        <div class="columns pull-right col-md-2 nopadding" style="margin-left: 9px" id="bumenDive">
+            <label class="col-sm-3 control-label">选择接收部门：</label>
+            <input id="bumenDeptId" name="deptId" class="hidden" th:value="${bumenDeptId}"  >
+            <input
+                    id="deptName" name="deptName" th:value="${deptName}" class="input rounded-lg" type="text"
+                    onclick="openDept()"
+                    placeholder="选择接收部门" readonly style="background-color: white" required="required">
+        </div>
+        <div class="cell-8"  >
+            <div class="list "  id="list" style="width: 100%">
+
+            </div>
+        </div>
+        <div class="cell-2">
+            <textarea class="textarea" name="remarks" id="remarks" rows="3" placeholder="备注"></textarea>
+        </div>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <div class="title text-center" style="background-color: white;color: black" onclick="allCheck()">
+        <a><i class="icon-check-empty" id="check"></i></a>
+        全选
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" onclick="del()">
+        <a><i class="icon-trash"></i></a>
+        删除
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" onclick="scan()">
+        <a>
+            <img src="/img/sao.png" style="width: 14px;height: 14px; padding: 0;margin: -1px 0 0 5px;">
+        </a>
+        扫码
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" onclick="save()">
+        <a><i class="icon-save"></i></a>
+        提交
+    </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/weixin/jweixin-1.2.0.js"></script>
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            type: "get",
+            url: "/mobile/getWechatConfig",
+            data: "url="+encodeURIComponent(location.href.split('#')[0]),
+            dataType:"json",
+            success: function(data){
+                if(data&&data.error=='no'){
+                    wx.config({
+                        debug : false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId : data.appId, // 必填，公众号的唯一标识
+                        timestamp : data.timestamp, // 必填，生成签名的时间戳
+                        nonceStr : data.nonceStr, // 必填，生成签名的随机串
+                        signature : data.signature,// 必填，签名，见附录1
+                        jsApiList : ["scanQRCode"]
+                    });
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    });
+    var num=0;
+    var is_all=false;
+    var equipments=[];
+    function allCheck() {
+        if(num>0){
+            if(!is_all){
+                $("input[name='equipment']").prop("checked", true);
+                is_all=true;
+                $("#check").removeClass("icon-check-empty");
+                $("#check").addClass("icon-sign-blank");
+            }else {
+                $("input[name='equipment']").prop("checked", false);
+                is_all=false;
+                $("#check").removeClass("icon-sign-blank");
+                $("#check").addClass("icon-check-empty");
+            }
+        }
+    }
+    function del() {
+        var length=$('input:checkbox[name="equipment"]:checked').length;
+        $("input[name='equipment']:checked").each(function() {
+            var id=$(this).attr('id');
+            $("#"+id).parent().remove();
+            var i=$(this).parent().attr('id');
+            removeByValue(equipments, i);
+
+        });
+        num-=length;
+    }
+    function scan() {
+        wx.scanQRCode({
+            desc: 'scanQRCode desc',
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var id = res.resultStr;// 当needResult 为 1 时，扫码返回的结果
+                var index = $.inArray(id, equipments);   //结果：index=1
+                if (index < 0) {
+                    $.ajax({
+                        type : "GET",
+                        url: "/mobile/getEquipmentById",
+                        data: "id="+id,
+                        dataType:"json",
+                        success : function(data) {
+                            if(data){
+                                if(data.type=="0"){
+                                    alert('设备未入库,请先进行入库操作！');
+                                    return;
+                                }
+                                if(data.type=="4"&&$("#areaLevel").val()=="05"){
+                                    alert('该设备已上线！');
+                                    return;
+                                }
+                                var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='"+id+"' onclick='choose(num)'>"+
+                                        "<input type='checkbox' name='equipment' id='checkbox"+num+"' style='margin-top: 12px'>"+
+                                        "                    <div class=\"content\">"+
+                                        "                        <div class=\"title\">"+data.categoryName+"-"+data.brandName+"-"+data.model+"</div>"+
+                                        "                        <div class=\"subtitle\">"+id+"</div>"+
+                                        "                    </div>"+
+                                        "                </div>";
+                                $("#list").append(html);
+                                equipments.push(id);
+                                num++;
+                                scan();
+                            }
+                            else{
+                                alert('没有该设备信息！')
+                            }
+
+                        }
+                    });
+                }else{
+                    alert('该条码已扫描！')
+                }
+            }
+        });
+    }
+    function scan1() {
+        var idNew = "A02001001Kq6t1Dj4"
+        $.ajax({
+            type : "GET",
+            url: "/mobile/getEquipmentById",
+            data: "id="+idNew,
+            dataType:"json",
+            success : function(data) {
+                if(data){
+                    /*if(data.type&&data.type=="4"){
+                     alert('已上线设备不能再次上线！');
+                     return;
+                     }*/
+                    var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='"+idNew+"' onclick='choose(num)'>"+
+                            "<input type='checkbox' name='equipment' id='checkbox"+num+"' style='margin-top: 12px'>"+
+                            "                    <div class=\"content\">"+
+                            "                        <div class=\"title\">"+data.categoryName+"-"+data.brandName+"-"+data.model+"</div>"+
+                            "                        <div class=\"subtitle\">"+idNew+"</div>"+
+                            "                    </div>"+
+                            "                </div>";
+                    $("#list").append(html);
+                    equipments.push(idNew);
+                    num++;
+                    //scan();
+                }
+                else{
+                    alert('没有该设备信息！')
+                }
+
+            }
+        });
+    }
+    function save() {
+        if(equipments.length==0){
+            alert("请选择接收设备！")
+            return;
+        }
+        if($("#areaLevel").val()=="04" && $("#deptType").val()!="1"&&$("#storeroomId").val().length==0) {
+            alert("请选择接收库房！")
+            return;
+        }
+        if($("#areaLevel").val()=="05" && $("#deptType").val()=="1"&&$("#bumenDeptId").val().length==0) {
+            alert("请选择接收部门！")
+            return;
+        }
+        var b =  equipments.toString();
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/equipment/move/accept",
+            data : {remarks:$("#remarks").val(),equipmentIds:b,areaLevel:$("#areaLevel").val(),
+                storeroomId:$("#storeroomId").val(),bumenDeptId:$("#bumenDeptId").val(),deptType:$("#deptType").val()},// 你的formid
+            async : false,
+            error : function(request) {
+
+            },
+            success : function(data) {
+                alert("设备接收成功！");
+                window.location.href="/mobile/first";
+            }
+/*            cache : true,
+            type : "POST",
+            url : "/equipment/inbound/save",
+            data : {remarks:$("#remarks").val(),equipmentIds:b},// 你的formid
+            async : false,
+            error : function(request) {
+
+            },
+            success : function(data) {
+                window.location.href="/mobile/first";
+            }*/
+        });
+    }
+    loadStoreroomOrNot();
+    function loadStoreroomOrNot(){
+        var a =$("#areaLevel").val();
+        var b = $("#deptType").val();
+        //if($("#areaLevel").val()=="04"||$("#deptId").val()=="29"){
+        if($("#areaLevel").val()=="04" && $("#deptType").val()!="1"){
+            $("#bumenDive").remove();
+            $("#storeroomDive").addClass('view');
+            getStoreroom();
+        }else if($("#areaLevel").val()=="05" && $("#deptType").val()=="1"){
+            $("#storeroomDive").remove();
+            $("#bumenDive").addClass('view');
+        }
+        else {
+            $("#storeroomDive").remove();
+            $("#bumenDive").remove();
+            if($("#deptId").val()=="29"){
+                getBeiWang();
+            }
+        }
+    }
+    function getBeiWang(){
+        $.ajax({
+            type : "get",
+            data :{
+                deptId: $("#deptId").val()
+            } ,
+            url : "/equipment/move" + '/getStoreroom',
+            success : function(data) {
+                //加载数据
+                for (var i = 0; i < data.length; i++) {
+                    var aa = data[i].id;
+                    $("#storeroomId").val(data[i].id);
+                }
+            }
+        });
+    }
+    function getStoreroom(){
+        var html = "";
+        $.ajax({
+            type : "get",
+            data :{
+               deptId: $("#deptId").val()
+            } ,
+            url : "/equipment/move" + '/getStoreroom',
+            success : function(data) {
+                //加载数据
+                for (var i = 0; i < data.length; i++) {
+                    html += '<option value="' + data[i].id + '">' + data[i].name + '</option>'
+                }
+                /*$("#categoryChose").trigger("chosen:updated");*/
+                $("#storeroomId").append(html);
+                $("#storeroomId").chosen({
+                    maxHeight : 200
+                });
+                //点击事件
+                /*$('#storeroomId').on('change', function(e, params) {
+                    //console.log(params.selected);
+                    var opt = {
+                        query : {
+                            storeroomId : params.selected
+                        }
+                    }
+                });*/
+            }
+        });
+    }
+    function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+            if(arr[i] == val) {
+                arr.splice(i, 1);
+                break;
+            }
+        }
+    }
+    var openDept = function(){
+        layer.open({
+            type:2,
+            title:"选择网点",
+            area : [ '90%', '450px' ],
+            content: "/mobile" + '/treeViewByLevelForFirstOnline'
+        })
+    }
+    function loadDept( Id,name){
+        $("#bumenDeptId").val(Id);
+        $("#deptName").val(name);
+    }
+</script>
+</body>
+</html>

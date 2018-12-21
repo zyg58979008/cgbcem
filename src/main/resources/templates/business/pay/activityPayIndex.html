@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+</style>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<!--<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>-->
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div id="exampleToolbar" role="group">
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-addon label">单据编号</div>
+								<input id="code" type="text" class="layui-input"
+									   placeholder="单据编号" style="width: 100px;float: left">
+								<div class="input-group-addon label">品牌</div>
+								<input id="brand" type="text" class="layui-input"
+									   placeholder="品牌" style="width: 100px;float: left">
+								<div class="input-group-addon label" >开始日期</div>
+								<input type="text" class="layui-input" id="startDate" placeholder=" - "style="width: 150px;float: left">
+								<div class="input-group-addon label" >结束日期</div>
+								<input type="text" class="layui-input" id="endDate" placeholder=" - "style="width: 150px;float: left">
+								<input type="hidden" id="type1">
+								<input type="hidden" id="typeName">
+								<select data-placeholder="选择收款方式" class="form-control chosen-select" name="type" id="type"
+										tabindex="2" style="width: 130px;float: left">
+									<option value="">选择收款方式</option>
+								</select>
+								<button class="btn btn-success" style="float: right" onclick="reLoad()">查询</button><button class="btn btn-primary" style="float: right" onclick="c()">清空</button>
+							</div>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false" data-height="600">
+					</table>
+				</div>
+			</div>
+		</div>
+		<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_chongxiao_h = 'hidden';
+				var s_print_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="business:activity:chongxiao">
+			<script type="text/javascript">
+				s_chongxiao_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="business:pay:print">
+			<script type="text/javascript">
+				var s_print_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script src="/js/lay/laydate/laydate.js"></script>
+	<script type="text/javascript" src="/js/appjs/business/pay/activityPayIndex.js">
+		
+	</script>
+	<script>
+		laydate.render({
+			elem: '#startDate'
+			,format: 'yyyy-MM-dd'
+		});
+		laydate.render({
+			elem: '#endDate'
+			,format: 'yyyy-MM-dd'
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<style>
+	.clearfix {
+		display: none;
+	}
+	.fixed-table-pagination{
+		display: none !important;
+	}
+</style>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<h2 style="text-align: center">入库单</h2>
+						<form class="form-horizontal m-t" id="signupForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">单据编号：</label>
+								<div class="col-sm-4">
+									<input id="code" readonly value="RK20180313000252" name="code" class="form-control" type="text">
+								</div>
+								<label class="col-sm-2 control-label">入库库房：</label>
+								<div class="col-sm-4">
+									<select data-placeholder="--入库库房--" name="storeroomId" id="storeroomId"
+											th:value="${inbound.storeroomId}"
+											class="form-control chosen-select" tabindex="2" required>
+										<option value="">--入库库房--</option>
+										<option value="承德县库房备件一库">--承德县库房备件一库--</option>
+										<option value="承德县库房备件二库">--承德县库房备件二库--</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<button type="button" id="addData" class="btn btn-primary">添加</button>
+								<table id="exampleTable" data-mobile-responsive="true">
+								</table>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">备注：</label>
+								<div class="col-sm-10">
+									<input id="remarks" name="remarks" th:value="${inbound.remarks}" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入库日期：</label>
+								<div class="col-sm-4">
+									<input type="text" class="laydate-icon layer-date form-control" id="createDate" name="createDate" th:value="${createDate}==null?null:${#dates.format(createDate,'yyyy-MM-dd')}" placeholder="请选择入库日期"
+										   th:value="${inbound.createDate}"
+										   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+								</div>
+								<label class="col-sm-2 control-label">经手人：</label>
+								<div class="col-sm-4">
+									<select data-placeholder="--选择人员--" name="inboundBy" id="inboundBy"
+											th:value="${inbound.inboundBy}"
+											class="form-control chosen-select" tabindex="2"  required>
+										<option value="">--选择人员--</option>
+										<option value="张三" selected>--张三--</option>
+										<option value="李四">--李四--</option>
+									</select>
+									<!--
+                                                                    <input id="inboundBy" name="inboundBy" class="form-control" type="text">
+                                    -->
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/stock/inbound/edit.js">
+	</script>
+</body>
+</html>

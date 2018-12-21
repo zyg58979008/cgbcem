@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.realty.dao.BuildingDao">
+
+	<select id="get" resultType="com.bootdo.realty.domain.BuildingDO">
+		select
+		`id`,`parent_id`,`name`,`sort`,`dept_id`,`type`,`del_flag`,`unit`,`room_type` from building
+		where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.realty.domain.BuildingDO">
+		select `id`,`parent_id`,`name`,`sort`,`dept_id`,`type`,`del_flag`,`unit`,`room_type` from
+		building
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="name != null and name != ''"> and name = #{name} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+			<if test="sort != null and sort != ''"> and sort = #{sort} </if>
+			<if test="unit != null and unit != ''"> and unit = #{unit} </if>
+			<if test="roomType != null and roomType != ''"> and room_type = #{roomType} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by sort ASC
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from building
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+			<if test="name != null and name != ''"> and name = #{name} </if>
+			<if test="sort != null and sort != ''"> and sort = #{sort} </if>
+			<if test="unit != null and unit != ''"> and unit = #{unit} </if>
+			<if test="roomType != null and roomType != ''"> and room_type = #{roomType} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.bootdo.realty.domain.BuildingDO"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into building
+		(
+		`parent_id`,
+		`name`,
+		`sort`,
+		`type`,
+		`dept_id`,
+		`unit`,
+		`room_type`,
+		`del_flag`
+		)
+		values
+		(
+		#{parentId},
+		#{name},
+		#{sort},
+		#{type},
+		#{deptId},
+		#{unit},
+		#{roomType},
+		#{delFlag}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.bootdo.realty.domain.BuildingDO">
+		update building
+		<set>
+			<if test="parentId != null">`parent_id` = #{parentId}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="sort != null">`sort` = #{sort}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="unit != null">`unit` = #{unit}, </if>
+			<if test="roomType != null">`room_type` = #{roomType}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="remove">
+		delete from building where id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from building where id in
+		<foreach item="id" collection="array" open="(" separator=","
+				 close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="listParentDept" resultType="long">
+		select DISTINCT parent_id from building
+	</select>
+
+	<select id="getDeptUserNumber" resultType="int">
+		select count(*) from sys_user where id = #{value}
+	</select>
+</mapper>

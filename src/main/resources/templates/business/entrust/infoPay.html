@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+	.btn{
+		margin-left: 5px;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<input id="id" type="hidden" th:value="${id}" >
+					<input id="leasebackStartDate" type="hidden" th:value="${leasebackStartDate}" >
+					<table id="exampleTable" >
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div th:include="include :: footer"></div>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/business/entrust/infoPay.js"></script>
+</body>
+</html>

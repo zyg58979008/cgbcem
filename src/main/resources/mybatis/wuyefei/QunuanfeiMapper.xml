@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wuye.dao.QunuanManageDao">
+
+    <select id="get" resultType="com.bootdo.wuye.domain.QunuanfeiDO">
+		select `id`,`dept_id`,`name`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`state`,`start_year`,`end_year`,`start_date`,`end_date`,`unpay`,`payed` from qunuanfei where id = #{value}
+	</select>
+    <select id="getDetail" resultType="com.bootdo.wuye.domain.QunuanfeiDetailDO">
+		select wd.id,wd.dept_id,wd.state,wd.start_year as startYear,wd.end_year as endYear,wd.start_date as startDate,wd.end_date as endDate,wd.building_id,r.code as roomCode,r.id as roomId,r.unit,r.floor,r.building_area as buildingArea,wd.qunuanfei_id,wd.qunuan_unpay,wd.qunuan_payed,wd.qunuan_ying,wd.tingnuan_unpay,wd.tingnuan_pay,wd.tingnuan_ying,wd.height,wd.ratio,wd.price from qunuanfei_detail wd left join room r on wd.room_id=r.id  where wd.id = #{value}
+	</select>
+    <select id="getId" resultType="String">
+		CALL `generate_wuyeNo`(#{value}, 8, @orderNo)
+	</select>
+    <select id="getPay" resultType="com.bootdo.common.domain.PayListDO">
+		select `id`,`dept_id`,`remark`,`dept_name`,`name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`room_id`,`room_code`,`unit`,`floor`,`type`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`type_name`,`print`,`date`,`pay_date` from pay_wuye_list where id = #{value}
+	</select>
+    <select id="getSum" resultType="com.bootdo.wuye.domain.QunuanfeiDO">
+        select (SELECT
+        count(*)
+        FROM
+        qunuanfei_detail wd
+        WHERE wd.qunuanfei_id=#{id}
+        <if test="buildingId != null and buildingId != ''">and
+        wd.building_id in (select b.id from building b where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and
+        b.
+        del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+    </if>)  AS totalNum,
+        (SELECT
+        count(*)
+        FROM
+        qunuanfei_detail wd
+        WHERE  wd.qunuanfei_id=#{id} and state='1'
+        <if test="buildingId != null and buildingId != ''"> and
+            wd.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+        </if>) AS payedNum,
+        (SELECT
+        count(*)
+        FROM
+        qunuanfei_detail wd
+        WHERE  wd.qunuanfei_id=#{id} and state='0'
+        <if test="buildingId != null and buildingId != ''"> and
+            wd.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+        </if>)
+        AS unpayNum
+        from dual
+    </select>
+    <select id="getSumMoney" resultType="com.bootdo.wuye.domain.QunuanfeiDetailDO">
+        select SUM(qunuan_ying) as qunuanYing,
+        SUM(qunuan_unpay) as qunuanUnpay,
+        SUM(qunuan_payed) as qunuanPayed,
+        SUM(tingnuan_ying) as tingnuanYing,
+        SUM(tingnuan_unpay) as tingnuanUnpay,
+        SUM(tingnuan_pay) as tingnuanPay
+        from qunuanfei_detail p
+        where 1=1
+        <if test="deptId != null and deptId != ''">and p.dept_id = #{deptId}</if>
+        <if test="id != null and id != ''">and p.qunuanfei_id = #{id}</if>
+        <if test="state != null and state != ''">and p.state = #{state}</if>
+        <if test="buildingId != null and buildingId != ''">and
+            p.building_id in (select b.id from building b where
+            FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+            b.dept_id=#{deptId} )
+        </if>
+        <if test='type != "" and type == "1"'>
+            and p.qunuan_payed>0
+        </if>
+        <if test='type != "" and type == "2"'>
+            and p.tingnuan_pay>0
+        </if>
+        <if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+    </select>
+    <select id="getExport" resultType="com.bootdo.wuye.domain.ExportDO">
+        SELECT
+        code,name
+        FROM
+        export_wuye e
+        WHERE  dept_id=#{value}
+    </select>
+    <select id="getPaySum" resultType="com.bootdo.wuye.domain.QunuanfeiDO">
+        select CONVERT(SUM(IF(p.type='1' and p.s_type='2',p.price,0)),DECIMAL(10,2)) as qunuanYing,
+        CONVERT(SUM(IF(p.type='2' and p.s_type='2',p.price,0)),DECIMAL(10,2)) as qunuanUnpay,
+        CONVERT(SUM(IF(p.type='3' and p.s_type='2',p.price,0)),DECIMAL(10,2)) as qunuanPayed,
+        CONVERT(SUM(IF(p.type='1' and p.s_type='3',p.price,0)),DECIMAL(10,2)) as tingnuanYing,
+        CONVERT(SUM(IF(p.type='2' and p.s_type='3',p.price,0)),DECIMAL(10,2)) as tingnuanUnpay,
+        CONVERT(SUM(IF(p.type='3' and p.s_type='3',p.price,0)),DECIMAL(10,2)) as tingnuanPayed
+        from pay_wuye_list p
+        where p.state='0' and p.s_type in ('2','3')
+        <if test="deptId != null and deptId != ''"> and p.dept_id = #{deptId} </if>
+        <if test="buildingId != null and buildingId != ''"> and
+            p.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+        </if>
+        <if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+        <if test="type != null and type != ''"> and p.s_type = #{type} </if>
+        <if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+        <if test="payType != null and payType != ''"> and p.pay_type = #{payType} </if>
+        <if test="startDate != null and startDate != ''"> and
+            DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+        </if>
+    </select>
+    <select id="list" resultType="com.bootdo.wuye.domain.QunuanfeiDO">
+        SELECT
+        q.id,
+        q.dept_id ,q.name,
+        q.create_by ,q.create_date,
+        q.update_by ,q.update_date,
+        q.del_flag ,q.state,
+        q.start_year ,q.end_year,
+        q.start_date ,q.end_date,
+        q.unpay ,q.payed,
+        q.qunuan_ying ,q.qunuan_unpay,
+        q.qunuan_payed ,q.tingnuan_ying,
+        q.tingnuan_unpay ,q.tingnuan_payed,
+        (SELECT
+        COUNT(*)
+        FROM
+        qunuanfei_detail qd
+        WHERE qd.qunuanfei_id = q.id
+        AND qd.state = '1') AS payedNum,
+        (SELECT
+        COUNT(*)
+        FROM
+        qunuanfei_detail qd
+        WHERE qd.qunuanfei_id = q.id) AS totalNum
+        FROM
+        qunuanfei q
+        <where>
+        <if test = "id != null and id != ''" >
+        AND q.id = #{id}</if>
+        <if test = "deptId != null and deptId != ''" >
+            AND q.dept_id = #{deptId}</if>
+        <if test = "name != null and name != ''" >
+            AND q.name LIKE CONCAT('%',
+            #{name},'%')</if>
+        <if test = "createBy != null and createBy != ''" >
+            AND q.create_by = #{createBy}</if>
+        <if test = "createDate != null and createDate != ''" >
+            AND q.create_date = #{createDate}</if>
+        <if test = "updateBy != null and updateBy != ''" >
+            AND q.update_by = #{updateBy}</if>
+        <if test = "updateDate != null and updateDate != ''" >
+            AND q.update_date = #{updateDate}</if>
+        <if test = "delFlag != null and delFlag != ''" >
+            AND q.del_flag = #{delFlag}</if>
+        <if test = "state != null and state != ''" >
+            AND q.state = #{state}</if>
+        <if test = "startYear != null and startYear != ''" >
+            (q.start_year >= #{startYear} AND
+            q.start_year <![CDATA[ <= ]]> #{endYear}) OR
+            (q.start_year <![CDATA[ <= ]]> #{startYear} AND
+            q.end_year >= #{endYear}) OR
+            (q.end_year>= #{startYear} AND
+            q.end_year <![CDATA[ <= ]]> #{endYear})
+        </if>
+        <if test = "startDate != null and startDate != ''" >
+        AND q.start_date = #{startDate}</if>
+        <if test = "endDate != null and endDate != ''" >
+            AND q.end_date = #{endDate}</if>
+        </where>
+        <choose>
+            <when test = "sort != null and sort.trim() != ''">
+            ORDER BY $ { sort } $ {
+            ORDER }
+            </when>
+            <otherwise>
+          ORDER BY q.create_date DESC
+          </otherwise>
+        </choose>
+        <if test = "offset != null and limit != null" >LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+    <select id="detailList" resultType="com.bootdo.wuye.domain.QunuanfeiDetailDO">
+        SELECT
+        wd.id,
+        wd.dept_id,
+        wd.state,
+        wd.start_year,
+        wd.end_year,
+        wd.start_date,
+        wd.end_date,
+        wd.building_id,
+        r.code AS roomCode,
+        (SELECT
+        b.name
+        FROM
+        building b
+        WHERE b.id = r.building_id
+        AND b.del_flag = '0') AS buildingName,
+        r.unit,
+        r.floor,
+        r.building_area AS buildingArea,
+        (SELECT
+        sd1.name
+        FROM
+        sys_dict sd1
+        WHERE r.room_type = sd1.value
+        AND sd1.type = 'room_type') AS roomTypeName,
+        wd.qunuanfei_id,
+        wd.qunuan_unpay,
+        wd.qunuan_payed,
+        wd.qunuan_ying,
+        wd.tingnuan_unpay,
+        wd.tingnuan_pay,
+        wd.tingnuan_ying,
+        wd.height,
+        wd.ratio,
+        wd.price,
+        (SELECT
+        rc.id_card
+        FROM
+        room_contract rc
+        WHERE rc.id = r.contract_id
+        AND rc.del_flag = '0') AS idCard
+        FROM
+        qunuanfei_detail wd,
+        room r,room_contract rc
+        WHERE wd.room_id = r.id AND r.del_flag='0'
+        AND rc.room_id = wd.room_id AND rc.id=r.`contract_id`
+        AND rc.del_flag = '0'
+        <if test="id != null and id != ''">and wd.id = #{id}</if>
+        <if test="deptId != null and deptId != ''">and wd.dept_id = #{deptId}</if>
+        <if test="state != null and state != ''">and wd.state = #{state}</if>
+        <if test="startYear != null and startYear != ''">and wd.start_year = #{startYear}</if>
+        <if test="endYear != null and endYear != ''">and wd.end_year = #{endYear}</if>
+        <if test="startDate != null and startDate != ''">and wd.start_date = #{startDate}</if>
+        <if test="endDate != null and endDate != ''">and wd.end_date = #{endDate}</if>
+        <if test="buildingId != null and buildingId != ''">and
+            wd.building_id in (select b.id from building b where
+            FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+            b.dept_id=#{deptId} )
+        </if>
+        <if test='type != "" and type == "1"'>
+           and wd.qunuan_payed>0
+        </if>
+        <if test='type != "" and type == "2"'>
+            and wd.tingnuan_pay>0
+        </if>
+        <if test="qunuanUnpay != null and qunuanUnpay != ''">and wd.qunuan_unpay = #{qunuanUnpay}</if>
+        <if test="qunuanPayed != null and qunuanPayed != ''">and wd.qunuan_payed = #{qunuanPayed}</if>
+        <if test="qunuanYing != null and qunuanYing != ''">and wd.qunuan_ying = #{qunuanYing}</if>
+        <if test="tingnuanUnpay != null and tingnuanUnpay != ''">and wd.tingnuan_unpay = #{tingnuanUnpay}</if>
+        <if test="tingnuanPay != null and tingnuanPay != ''">and wd.tingnuan_pay = #{tingnuanPay}</if>
+        <if test="tingnuanYing != null and tingnuanYing != ''">and wd.tingnuan_ying = #{tingnuanYing}</if>
+        <if test="roomId != null and roomId != ''">and wd.room_id = #{roomId}</if>
+        <if test="height != null and height != ''">and wd.height = #{height}</if>
+        <if test="ratio != null and ratio != ''">and wd.ratio = #{ratio}</if>
+        <if test="price != null and price != ''">and wd.price = #{price}</if>
+        <if test="roomCode != null and roomCode != ''">and wd.room_code like CONCAT('%',#{roomCode},'%')</if>
+<if test="unit != null and unit != ''">and unit = #{unit} </if>
+        <if test="qunuanfeiId != null and qunuanfeiId != ''">and wd.qunuanfei_id = #{qunuanfeiId}</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by r.floor,r.code,r.unit desc
+            </otherwise>
+        </choose>
+    </select>
+    <select id="count" resultType="int">
+        select count(*) from qunuanfei
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="deptId != null and deptId != ''">and dept_id = #{deptId}</if>
+            <if test="name != null and name != ''">and name like CONCAT('%',#{name},'%')</if>
+            <if test="createBy != null and createBy != ''">and create_by = #{createBy}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="updateBy != null and updateBy != ''">and update_by = #{updateBy}</if>
+            <if test="updateDate != null and updateDate != ''">and update_date = #{updateDate}</if>
+            <if test="delFlag != null and delFlag != ''">and del_flag = #{delFlag}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="startYear != null and startYear != ''">and
+                (start_year >= #{startYear} AND
+                start_year <![CDATA[ <= ]]> #{endYear}) OR
+                (start_year <![CDATA[ <= ]]> #{startYear} AND
+                end_year >= #{endYear}) OR
+                (end_year>= #{startYear} AND
+                end_year <![CDATA[ <= ]]> #{endYear})
+            </if>
+            <if test="startDate != null and startDate != ''">and start_date = #{startDate}</if>
+            <if test="endDate != null and endDate != ''">and end_date = #{endDate}</if>
+        </where>
+    </select>
+    <select id="countDetail" resultType="int">
+        select count(*) FROM
+        qunuanfei_detail wd,
+        room r
+        WHERE wd.room_id = r.id
+        AND r.del_flag = '0'
+        <if test="id != null and id != ''">and wd.id = #{id}</if>
+        <if test="deptId != null and deptId != ''">and wd.dept_id = #{deptId}</if>
+        <if test="state != null and state != ''">and wd.state = #{state}</if>
+        <if test="startYear != null and startYear != ''">and wd.start_year = #{startYear}</if>
+        <if test="endYear != null and endYear != ''">and wd.end_year = #{endYear}</if>
+        <if test="startDate != null and startDate != ''">and wd.start_date = #{startDate}</if>
+        <if test="endDate != null and endDate != ''">and wd.end_date = #{endDate}</if>
+        <if test="buildingId != null and buildingId != ''">and
+            wd.building_id in (select b.id from building b where
+            FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+            b.dept_id=#{deptId} )
+        </if>
+        <if test='type != "" and type == "1"'>
+            and wd.qunuan_payed>0
+        </if>
+        <if test='type != "" and type == "2"'>
+            and wd.tingnuan_pay>0
+        </if>
+        <if test="qunuanUnpay != null and qunuanUnpay != ''">and wd.qunuan_unpay = #{qunuanUnpay}</if>
+        <if test="qunuanPayed != null and qunuanPayed != ''">and wd.qunuan_payed = #{qunuanPayed}</if>
+        <if test="qunuanYing != null and qunuanYing != ''">and wd.qunuan_ying = #{qunuanYing}</if>
+        <if test="tingnuanUnpay != null and tingnuanUnpay != ''">and wd.tingnuan_unpay = #{tingnuanUnpay}</if>
+        <if test="tingnuanPay != null and tingnuanPay != ''">and wd.tingnuan_pay = #{tingnuanPay}</if>
+        <if test="tingnuanYing != null and tingnuanYing != ''">and wd.tingnuan_ying = #{tingnuanYing}</if>
+        <if test="roomId != null and roomId != ''">and wd.room_id = #{roomId}</if>
+        <if test="height != null and height != ''">and wd.height = #{height}</if>
+        <if test="ratio != null and ratio != ''">and wd.ratio = #{ratio}</if>
+        <if test="price != null and price != ''">and wd.price = #{price}</if>
+        <if test="roomCode != null and roomCode != ''">and wd.room_code like CONCAT('%',#{roomCode},'%')</if>
+        <if test="unit != null and unit != ''">and unit = #{unit} </if>
+        <if test="qunuanfeiId != null and qunuanfeiId != ''">and wd.qunuanfei_id = #{qunuanfeiId}</if>
+    </select>
+    <select id="getRoomHas" resultType="String">
+		SELECT
+		CONCAT(r.building_id,'-',r.room_code)
+		FROM
+		qunuanfei_detail r
+		WHERE r.qunuanfei_id = #{id}
+	</select>
+    <select id="checkQunuanfei" resultType="int">
+		select count(*) from qunuanfei_detail wd where wd.qunuanfei_id=#{id} and (wd.qunuan_payed+wd.tingnuan_pay)>0
+	</select>
+    <select id="checkRoomNum" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        room r,
+        room_contract c
+        WHERE r.`building_id` = c.`building_id`
+        AND r.`id` = c.`room_id`
+        AND r.`del_flag` = '0'
+        AND c.`del_flag` = '0'
+        AND r.`dept_id` = c.`dept_id`
+        AND r.`dept_id` = #{deptId}
+        AND c.state = '1'
+        AND r.`building_id` IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <insert id="save" parameterType="com.bootdo.wuye.domain.QunuanfeiDO" useGeneratedKeys="true" keyProperty="id">
+		insert into qunuanfei
+		(
+			`dept_id`, 
+			`name`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`, 
+			`state`, 
+			`start_year`, 
+			`end_year`, 
+			`start_date`, 
+			`end_date`, 
+			`unpay`, 
+			`payed`
+		)
+		values
+		(
+			#{deptId}, 
+			#{name}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}, 
+			'0',
+			#{startYear},
+			#{endYear},
+			#{startDate},
+			#{endDate}, 
+			#{unpay}, 
+			#{payed}
+		)
+	</insert>
+    <insert id="batchInsert">
+        insert into qunuanfei_detail
+        (
+        `dept_id`,`state`,`start_year`,`end_year`,`start_date`,`end_date`,`qunuan_unpay`,`qunuan_payed`,`qunuan_ying`,`tingnuan_unpay`,`tingnuan_pay`,`tingnuan_ying`,`building_id`,`room_id`,`room_code`,`qunuanfei_id`,`height`,`ratio`,`price`
+        )
+        values
+        <foreach collection="qunuanfeiDetailDOList" item="q" separator=",">
+            (
+            #{q.deptId},
+            '0',
+            #{q.startYear},
+            #{q.endYear},
+            #{q.startDate},
+            #{q.endDate},
+            if(#{q.p} is not null,CONVERT((#{q.p}*(select r.building_area from room r
+            where r.building_id=#{q.buildingId} and
+            r.code=#{q.roomCode})),DECIMAL(10,2)),#{q.qunuanUnpay}),
+            '0',
+            if(#{q.p} is not null,CONVERT((#{q.p}*(select r.building_area from room r
+            where r.building_id=#{q.buildingId} and
+            r.code=#{q.roomCode})),DECIMAL(10,2)),#{q.qunuanYing}),
+            #{q.tingnuanUnpay},
+            #{q.tingnuanPay},
+            #{q.tingnuanYing},
+            #{q.buildingId},
+            (select r.id from room r where r.building_id=#{q.buildingId} and
+            r.code=#{q.roomCode}),
+            #{q.roomCode},
+            #{id},
+            #{q.height},
+            #{q.ratio},
+            #{q.price}
+            )
+        </foreach>
+    </insert>
+    <insert id="savePay" parameterType="com.bootdo.common.domain.PayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into pay_wuye_list
+		(
+		`dept_id`,
+		`dept_name`,
+		`name`,
+		`date`,
+		`state`,
+		`create_by`,
+		`create_date`,
+		`building_id`,
+		`building_name`,
+		`room_id`,
+		`room_code`,
+		`unit`,
+		`floor`,
+		`type`,
+		`s_type`,
+		`s_type_name`,
+		`code`,
+		`price`,
+		`pay_type`,
+		`receipt_by`,
+		`pay_by`,
+		`brand_receipt_by`,
+		`card_no`,
+		`bank`,
+		`chongxiao_code`,
+		`area`,
+		`yewu_id`,
+		`brand`,
+		`type_name`,
+		`print`,
+		`remark`,
+		`pay_date`
+		)
+		values
+		(
+		#{deptId},
+		#{deptName},
+		#{name},
+		#{date},
+		#{state},
+		#{createBy},
+		#{createDate},
+		#{buildingId},
+		#{buildingName},
+		#{roomId},
+		#{roomCode},
+		#{unit},
+		#{floor},
+		#{type},
+		#{sType},
+		#{sTypeName},
+		#{code},
+		#{price},
+		#{payType},
+		#{receiptBy},
+		#{payBy},
+		#{brandReceiptBy},
+		#{cardNo},
+		#{bank},
+		#{chongxiaoCode},
+		#{area},
+		#{yewuId},
+		#{brand},
+		#{typeName},
+		#{print},
+		#{remark},
+		#{payDate}
+		)
+	</insert>
+    <update id="updatePay" parameterType="com.bootdo.common.domain.PayListDO">
+        update pay_wuye_list
+        <set>
+            <if test="deptId != null">`dept_id` = #{deptId},</if>
+            <if test="deptName != null">`dept_name` = #{deptName},</if>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="date != null">`date` = #{date},</if>
+            <if test="payDate != null">`pay_date` = #{payDate},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="createBy != null">`create_by` = #{createBy},</if>
+            <if test="createDate != null">`create_date` = #{createDate},</if>
+            <if test="buildingId != null">`building_id` = #{buildingId},</if>
+            <if test="buildingName != null">`building_name` = #{buildingName},</if>
+            <if test="roomId != null">`room_id` = #{roomId},</if>
+            <if test="roomCode != null">`room_code` = #{roomCode},</if>
+            <if test="unit != null">`unit` = #{unit},</if>
+            <if test="floor != null">`floor` = #{floor},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="sType != null">`s_type` = #{sType},</if>
+            <if test="sTypeName != null">`s_type_name` = #{sTypeName},</if>
+            <if test="code != null">`code` = #{code},</if>
+            <if test="price != null">`price` = #{price},</if>
+            <if test="payType != null">`pay_type` = #{payType},</if>
+            <if test="receiptBy != null">`receipt_by` = #{receiptBy},</if>
+            <if test="payBy != null">`pay_by` = #{payBy},</if>
+            <if test="brandReceiptBy != null">`brand_receipt_by` = #{brandReceiptBy},</if>
+            <if test="cardNo != null">`card_no` = #{cardNo},</if>
+            <if test="bank != null">`bank` = #{bank},</if>
+            <if test="chongxiaoCode != null">`chongxiao_code` = #{chongxiaoCode},</if>
+            <if test="area != null">`area` = #{area},</if>
+            <if test="yewuId != null">`yewu_id` = #{yewuId},</if>
+            <if test="brand != null">`brand` = #{brand},</if>
+            <if test="typeName != null">`type_name` = #{typeName},</if>
+            <if test="print != null">`print` = #{print},</if>
+            <if test="payDate != null">`pay_date` = #{payDate},</if>
+            <if test="remark != null">`remark` = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="update" parameterType="com.bootdo.wuye.domain.QunuanfeiDO">
+        update qunuanfei
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="updateBy != null">`update_by` = #{updateBy},</if>
+            <if test="updateDate != null">`update_date` = #{updateDate},</if>
+            <if test="delFlag != null">`del_flag` = #{delFlag},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="startYear != null">`start_year` =  #{startYear},</if>
+            <if test="endYear != null">`end_year` = #{endYear},</if>
+            <if test="startDate != null">`start_date` = #{startDate},</if>
+            <if test="endDate != null">`end_date` = #{endDate},</if>
+            <if test="unpay != null">`unpay` = #{unpay},</if>
+            <if test="payed != null">`payed` = #{payed}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateCount">
+		UPDATE qunuanfei
+			SET unpay= (SELECT COUNT(*) FROM qunuanfei_detail WHERE qunuanfei_id=#{value} AND state='0'),
+			payed= (SELECT COUNT(*) FROM qunuanfei_detail WHERE qunuanfei_id=#{value} AND state='1'),
+			state= if((SELECT COUNT(*) FROM qunuanfei_detail WHERE qunuanfei_id=#{value} AND state='0')=0,"1","0"),
+			qunuan_ying= (SELECT SUM(wd.qunuan_ying) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} ),
+			qunuan_unpay= (SELECT SUM(wd.qunuan_unpay) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} ),
+			qunuan_payed= (SELECT SUM(wd.qunuan_payed) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} ),
+			tingnuan_ying= (SELECT SUM(wd.tingnuan_ying) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} ),
+			tingnuan_unpay= (SELECT SUM(wd.tingnuan_unpay) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} ),
+			tingnuan_payed= (SELECT SUM(wd.tingnuan_pay) FROM qunuanfei_detail wd WHERE wd.qunuanfei_id= #{value} )
+		where id = #{value}
+	</update>
+    <update id="updateDetailId">
+		update qunuanfei_detail set
+	</update>
+    <update id="updateDetail" parameterType="com.bootdo.wuye.domain.QunuanfeiDetailDO">
+        update qunuanfei_detail
+        <set>
+            <if test="deptId != null">`dept_id` = #{deptId},</if>
+            <if test="state != null">`state` = #{state},</if>
+            <if test="startYear != null">`start_year` = #{startYear},</if>
+            <if test="endYear != null">`end_year` = #{endYear},</if>
+            <if test="startDate != null">`start_date` = #{startDate},</if>
+            <if test="endDate != null">`end_date` = #{endDate},</if>
+            <if test="qunuanUnpay != null">`qunuan_unpay` = #{qunuanUnpay},</if>
+            <if test="qunuanPayed != null">`qunuan_payed` = #{qunuanPayed},</if>
+            <if test="qunuanYing != null">`qunuan_ying` = #{qunuanYing},</if>
+            <if test="tingnuanUnpay != null">`tingnuan_unpay` = #{tingnuanUnpay},</if>
+            <if test="tingnuanPay != null">`tingnuan_pay` = #{tingnuanPay},</if>
+            <if test="tingnuanYing != null">`tingnuan_ying` = #{tingnuanYing},</if>
+            <if test="buildingId != null">`building_id` = #{buildingId},</if>
+            <if test="roomId != null">`room_id` = #{roomId},</if>
+            <if test="roomCode != null">`room_code` = #{roomCode},</if>
+            <if test="qunuanfeiId != null">`qunuanfei_id` = #{qunuanfeiId}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="remove">
+		delete from qunuanfei where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from qunuanfei where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="removeDetail">
+		delete from qunuanfei_detail where id=#{value}
+	</delete>
+</mapper>

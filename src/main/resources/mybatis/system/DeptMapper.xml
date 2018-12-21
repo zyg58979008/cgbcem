@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.system.dao.DeptDao">
+
+	<select id="get" resultType="com.bootdo.system.domain.DeptDO">
+		select
+		`dept_id`,`parent_id`,`name`,`order_num`,`org_id`,`area`,`area_level`,(select a.name from sys_area a where a.area_id=d.area) as areaName,`del_flag`,`dept_type` from sys_dept d
+		where dept_id = #{value}
+	</select>
+
+	<select id="getListForB" resultType="com.bootdo.system.domain.DeptDO">
+		select
+		`dept_id`,`parent_id`,`name`,`order_num`,`org_id`,`area`,(select a.name from sys_area a where a.id=d.area)`area_level`,`del_flag`,`dept_type` from sys_dept d
+		  ORDER BY AREA,order_num
+	</select>
+	<select id="getDeptIds" resultType="String">
+		select b.id from building b  where
+		FIND_IN_SET(b.id,getBuildingChildList(#{id}))
+		and b.del_flag='0' and b.type='2'
+	</select>
+	<select id="listByLevel" resultType="com.bootdo.system.domain.DeptDO">
+select
+		`dept_id`,`parent_id`,`name`,`order_num`,`org_id`,`area`,`area_level`,`del_flag`,`dept_type` from sys_dept sc
+WHERE FIND_IN_SET(dept_id,getChildList (#{deptId}))
+  ORDER BY AREA,order_num
+	</select>
+
+	<select id="list" resultType="com.bootdo.system.domain.DeptDO">
+		select d.dept_id,d.parent_id,d.name,d.order_num,d.org_id,d.area,
+		(select a.name from sys_area a where a.area_id=d.area) as areaName,
+		d.area_level,d.del_flag,d.dept_type from
+		sys_dept d
+		<where>
+			<if test="deptId != null and deptId != ''"> and d.dept_id = #{deptId} </if>
+			<if test="orgId != null and orgId != ''"> and d.org_id = #{orgId} </if>
+			<if test="userId != null and userId != ''"> and d.dept_id in (select s.dept_id
+				 from sys_user_dept s where s.user_id=#{userId})
+			</if>
+			<if test="parentId != null and parentId != ''"> and d.parent_id = #{parentId} </if>
+			<if test="name != null and name != ''"> and d.name = #{name} </if>
+			<if test="orderNum != null and orderNum != ''"> and d.order_num = #{orderNum} </if>
+			<if test="delFlag != null and delFlag != ''"> and d.del_flag = #{delFlag} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				ORDER BY order_num ASC
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from sys_dept
+		<where>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="orgId != null and orgId != ''"> and org_id = #{orgId} </if>
+			<if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+			<if test="name != null and name != ''"> and name = #{name} </if>
+			<if test="orderNum != null and orderNum != ''"> and order_num = #{orderNum} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.bootdo.system.domain.DeptDO"
+		useGeneratedKeys="true" keyProperty="deptId">
+		insert into sys_dept
+		(
+		`parent_id`,
+		`name`,
+		`order_num`,
+		`area`,
+		`area_level`,
+		`dept_type`
+		)
+		values
+		(
+		#{parentId},
+		#{name},
+		#{orderNum},
+		#{area},
+		#{areaLevel},
+		<if test="deptType != null and deptType != ''"> #{deptType} </if>
+		<if test="deptType == null or deptType == ''">  '0' </if>
+		)
+	</insert>
+
+	<update id="update" parameterType="com.bootdo.system.domain.DeptDO">
+		update sys_dept
+		<set>
+			<if test="parentId != null">`parent_id` = #{parentId}, </if>
+			<if test="orgId != null">`org_id` = #{orgId}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="orderNum != null">`order_num` = #{orderNum}, </if>
+			<if test="area != null">`area` = #{area}, </if>
+			<if test="areaLevel != null">`area_level` = #{areaLevel}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+			<if test="deptType != null">`dept_type` = #{deptType}</if>
+		</set>
+		where dept_id = #{deptId}
+	</update>
+
+	<delete id="remove">
+		delete from sys_dept where dept_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from sys_dept where dept_id in
+		<foreach item="deptId" collection="array" open="(" separator=","
+			close=")">
+			#{deptId}
+		</foreach>
+	</delete>
+	
+	<select id="listParentDept" resultType="long">
+		select DISTINCT parent_id from sys_dept
+	</select>
+
+    <select id="getDeptUserNumber" resultType="int">
+		select count(*) from sys_user where dept_id = #{value}
+	</select>
+	<update id="updateParentId" parameterType="com.bootdo.system.domain.DeptDO">
+		update sys_dept
+		set `dept_type` = '1'
+		where dept_id = #{deptId}
+	</update>
+</mapper>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<input type="hidden" id="id" th:value="${wuyefei.id}">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="row" style="padding-left: 15px;">
+						<div class="input-group">
+							<div class="form-group">
+								<button class="btn btn-success" style="float: left" onclick="save()">生成物业费</button>
+							</div>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/wuye/wuyefeiManage/create.js"></script>
+</body>
+</html>

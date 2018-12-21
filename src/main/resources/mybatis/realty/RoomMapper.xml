@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.realty.dao.RoomDao">
+
+	<select id="get" resultType="com.bootdo.realty.domain.RoomDO">
+		select `id`,`building_id`,`code`,`sell_type`,`unit`,`floor`,`room_type`,`dept_id`,`building_area`,`floor_area`,`del_flag`,`wuyefei`,`weixiu`,`jiaoyifei`,`fangchanzheng`,`qishui`,`daibanfei` from room where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,sd.name as roomTypeName,
+		sd1.name as sellTypeName,
+		r.dept_id,r.building_area,r.floor_area,r.del_flag,r.wuyefei,r.weixiu,r.jiaoyifei,
+		r.fangchanzheng,r.qishui,r.daibanfei from room r left join sys_dict sd
+		on r.room_type=sd.value and sd.type='room_type'
+		left join sys_dict sd1
+		on r.room_type=sd1.value and sd1.type='sell_type'
+        <where>  
+		  		  <if test="id != null and id != ''"> and r.id = #{id} </if>
+		  		  <if test="buildingId != null and buildingId != ''"> and
+					  r.building_id =#{buildingId}
+				  </if>
+		  		  <if test="code != null and code != ''"> and r.code like CONCAT('%',#{code},'%') </if>
+		  		  <if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		  		  <if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		  		  <if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		  		  <if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		  		  <if test="deptId != null and deptId != ''"> and r.dept_id = #{deptId} </if>
+		  		  <if test="buildingArea != null and buildingArea != ''"> and r.building_area = #{buildingArea} </if>
+		  		  <if test="floorArea != null and floorArea != ''"> and r.floor_area = #{floorArea} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and r.del_flag = #{delFlag}
+				  </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by r.CODE
+            </when>
+			<otherwise>
+                order by r.floor,r.CODE
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from room r
+		<where>
+			<if test="id != null and id != ''"> and r.id = #{id} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				r.building_id=#{buildingId}
+			</if>
+			<if test="code != null and code != ''"> and r.code like CONCAT('%',#{code},'%') </if>
+			<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+			<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+			<if test="deptId != null and deptId != ''"> and r.dept_id = #{deptId} </if>
+			<if test="buildingArea != null and buildingArea != ''"> and r.building_area = #{buildingArea} </if>
+			<if test="floorArea != null and floorArea != ''"> and r.floor_area = #{floorArea} </if>
+			<if test="delFlag != null and delFlag != ''"> and r.del_flag = #{delFlag}
+
+			</if>
+		</where>
+	</select>
+
+	<select id="listNotHas" resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,sd.name as roomTypeName,
+		r.dept_id,r.building_area,r.floor_area,r.del_flag,r.wuyefei,r.weixiu,r.jiaoyifei,
+		r.fangchanzheng,r.qishui,r.daibanfei from room r left join sys_dict sd
+		on r.room_type=sd.value and sd.type='room_type'
+		<where>
+			<if test="id != null and id != ''">
+				and r.id not in (SELECT
+				wd.`room_id`
+				FROM
+				wuyefei_detail wd
+				WHERE wd.`wuyefei_id` = #{id}
+				GROUP BY wd.`room_id` ) and r.wuyefei>0
+				and r.id not in (select e.room_id from entrust e where e.dept_id = #{deptId})
+				and (select rc.state from room_contract rc
+				where rc.room_id=r.id) ='1'
+
+			</if>
+			<if test="buildingId != null and buildingId != ''"> and
+				r.building_id =#{buildingId}
+			</if>
+			<if test="code != null and code != ''"> and r.code like CONCAT('%',#{code},'%') </if>
+			<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+			<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+			<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+			<if test="deptId != null and deptId != ''"> and r.dept_id = #{deptId} </if>
+			<if test="buildingArea != null and buildingArea != ''"> and r.building_area = #{buildingArea} </if>
+			<if test="floorArea != null and floorArea != ''"> and r.floor_area = #{floorArea} </if>
+			<if test="delFlag != null and delFlag != ''"> and r.del_flag = #{delFlag}
+			</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by r.CODE
+			</when>
+			<otherwise>
+				order by r.floor,r.CODE,r.unit
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="countListNotHas" resultType="int">
+		select count(*) from room r
+		<where>
+			<if test="id != null and id != ''">
+				and r.id not in (SELECT
+				wd.`room_id`
+				FROM
+				wuyefei_detail wd
+				WHERE wd.`wuyefei_id` = #{id}
+				GROUP BY wd.`room_id` ) and r.wuyefei>0
+				and r.id not in (select e.room_id from entrust e where e.dept_id = #{deptId})
+				and (select rc.state from room_contract rc
+				where rc.room_id=r.id) ='1'
+			</if>
+			<if test="buildingId != null and buildingId != ''"> and
+				r.building_id =#{buildingId}
+			</if>
+			<if test="code != null and code != ''"> and r.code like CONCAT('%',#{code},'%') </if>
+			<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+			<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+			<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+			<if test="deptId != null and deptId != ''"> and r.dept_id = #{deptId} </if>
+			<if test="buildingArea != null and buildingArea != ''"> and r.building_area = #{buildingArea} </if>
+			<if test="floorArea != null and floorArea != ''"> and r.floor_area = #{floorArea} </if>
+			<if test="delFlag != null and delFlag != ''"> and r.del_flag = #{delFlag}
+			</if>
+		</where>
+	</select>
+	<select id="checkCode" resultType="int">
+		select count(*) from room
+		<where>
+			<if test="id != null and id != ''"> and id != #{id} </if>
+			<if test="buildingId != null and buildingId != ''"> and building_id = #{buildingId} </if>
+			<if test="code != null and code != ''"> and code = #{code} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+			<if test="mergedIds != null and mergedIds != ''">
+				and code in <foreach item="id" collection="mergedIds" open="(" separator="," close=")">
+				#{id}
+			</foreach> </if>
+			<if test="mergeIds != null and mergeIds != ''">
+				and id not in <foreach item="id" collection="mergeIds" open="(" separator="," close=")">
+				#{id}
+			</foreach> </if>
+
+		</where>
+	</select>
+	<select id="listByType" resultType="com.bootdo.common.domain.DictDO">
+		select
+				`id`,`name`,`value`,`type`
+				from sys_dict where  type=#{type} and value in (select r.room_type from room r where r.building_id=#{buildingId})
+			</select>
+	<select id="getSum" resultType="String">
+		select CONVERT(sum(r.building_area),DECIMAL(10,2)) from room r
+		<where>
+			<if test="id != null and id != ''"> and r.id = #{id} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				r.building_id =#{buildingId}
+			</if>
+			<if test="code != null and code != ''"> and r.code like CONCAT('%',#{code},'%') </if>
+			<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+			<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+			<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+			<if test="deptId != null and deptId != ''"> and r.dept_id = #{deptId} </if>
+			<if test="buildingArea != null and buildingArea != ''"> and r.building_area = #{buildingArea} </if>
+			<if test="floorArea != null and floorArea != ''"> and r.floor_area = #{floorArea} </if>
+			<if test="delFlag != null and delFlag != ''"> and r.del_flag = #{delFlag}
+			</if>
+		</where>
+	</select>
+	<select id="getLoukuan" resultType="com.bootdo.realty.domain.RoomContractDO">
+		SELECT
+		  IFNULL((SELECT
+			d.name
+		  FROM
+			building d
+		  WHERE d.id = b.`parent_id`
+			AND d.del_flag = '0'
+			AND d.type = '1'),' ') AS parentBuildingName,
+			IFNULL((SELECT
+			d.sort
+		  FROM
+			building d
+		  WHERE d.id = b.`parent_id`
+			AND d.del_flag = '0'
+			AND d.type = '1'),'1') AS psort,
+		  NAME AS buildingName,
+		  CONVERT((SELECT IFNULL(SUM(rc.total_price),'0') FROM room_contract rc WHERE rc.building_id=b.id AND rc.del_flag='0'),DECIMAL(15,2)) AS totalPrice,
+			CONVERT((SELECT IFNULL(SUM(rc.yishou),'0') FROM room_contract rc WHERE rc.building_id=b.id AND rc.del_flag='0'),DECIMAL(15,2)) AS yishou,
+			  CONVERT((SELECT IFNULL(SUM(rc.weishou),'0') FROM room_contract rc WHERE rc.building_id=b.id AND rc.del_flag='0'),DECIMAL(15,2)) AS weishou
+		FROM
+		  building b
+		WHERE b.`del_flag` = '0'
+		  AND b.dept_id = #{deptId}
+		  AND b.type = '2'
+
+		  ORDER BY psort,b.sort
+  	</select>
+	<insert id="save" parameterType="com.bootdo.realty.domain.RoomDO"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into room
+		(
+			`building_id`, 
+			`code`, 
+			`unit`, 
+			`floor`, 
+			`room_type`, 
+			`sell_type`,
+			`dept_id`,
+			`building_area`, 
+			`floor_area`, 
+			`contract_id`,
+			`del_flag`
+		)
+		values
+		(
+			#{buildingId}, 
+			#{code}, 
+			#{unit}, 
+			#{floor}, 
+			#{roomType}, 
+			'6',
+			#{deptId},
+			#{buildingArea}, 
+			#{floorArea}, 
+			null,
+			'0'
+		)
+	</insert>
+	<insert id="batchInsert" >
+		insert into room_copy
+		(
+		`building_id`,
+		`code`,
+		`unit`,
+		`floor`,
+		`room_type`,
+		`sell_type`,
+		`dept_id`,
+		`building_area`,
+		`floor_area`,
+		`del_flag`,
+		`contract_id`,
+		`order_id`
+		)
+		values
+		<foreach collection ="roomDOList" item="room" separator =",">
+			(
+			#{room.buildingId},
+			#{room.code},
+			#{room.unit},
+			#{room.floor},
+			#{room.roomType},
+			'6',
+			#{room.deptId},
+			#{room.buildingArea},
+			#{room.floorArea},
+			'0',
+			null,
+			#{room.orderId}
+			)
+		</foreach >
+	</insert>
+	<insert id="synchronization" >
+		insert into room
+		select
+		null,
+		`building_id`,
+		`code`,
+		`unit`,
+		`floor`,
+		room_type,
+		`dept_id`,
+		`building_area`,
+		`floor_area`,
+		`del_flag`,
+		 `order_id`,
+			'0',
+			'0',
+			'0',
+			'0',
+			'0',
+			'0',
+			sell_type,
+			 `contract_id`
+			 from room_copy r where r.order_id=#{orderId} and r.del_flag='0'
+	</insert>
+	<update id="update" parameterType="com.bootdo.realty.domain.RoomDO">
+		update room 
+		<set>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="unit != null">`unit` = #{unit}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="roomType != null">`room_type` = #{roomType}, </if>
+			<if test="sellType != null">`sell_type` = #{sellType}, </if>
+			<if test="contractId != null">`contract_id` = #{contractId}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="buildingArea != null">`building_area` = #{buildingArea}, </if>
+			<if test="floorArea != null">`floor_area` = #{floorArea}, </if>
+			<if test="wuyefei != null">`wuyefei` = #{wuyefei}, </if>
+			<if test="weixiu != null">`weixiu` = #{weixiu}, </if>
+			<if test="jiaoyifei != null">`jiaoyifei` = #{jiaoyifei}, </if>
+			<if test="fangchanzheng != null">`fangchanzheng` = #{fangchanzheng}, </if>
+			<if test="qishui != null">`qishui` = CONVERT(#{qishui}*(select IFNULL(rc.total_price,'0') from room_contract rc where rc.room_id=r.id and rc.del_flag='0'),DECIMAL(10,2)), </if>
+			<if test="daibanfei != null">`daibanfei` = #{daibanfei}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateRoom">
+		update room r set r.contract_id=null
+		 WHERE r.id=#{roomId}
+	</update>
+	<update id="updateArea">
+		update room r set r.building_area=(select rc.building_area from room_contract rc
+		where rc.room_id=r.id),r.contract_id=(select rc.id from room_contract rc
+		where rc.room_id=r.id) where r.id in (select rc.room_id from room_contract rc
+		where rc.order_id=#{orderId})
+	</update>
+	<delete id="remove">
+		delete from room where id = #{value}
+	</delete>
+	<delete id="batchRemove">
+		delete from room where id in 
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<delete id="duplicate">
+		DELETE
+		FROM
+		  room_copy
+		WHERE id IN
+		  (SELECT
+			a.id
+		  FROM
+			(SELECT
+			  c.id AS id
+			FROM
+			  room r,
+			  room_copy c
+			WHERE r.building_id = c.building_id
+			  AND r.code = c.code
+			  AND r.del_flag = '0'
+			  AND c.`order_id` =#{orderId}) a)
+	</delete>
+	<delete id="removeCopy">
+		delete from room_copy where order_id = #{orderId}
+	</delete>
+</mapper>

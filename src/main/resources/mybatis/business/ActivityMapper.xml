@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.ActivityDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.ActivityDO">
+		select * from business_activity where id = #{value}
+	</select>
+
+	<select id="getDetailIds" resultType="java.lang.Long">
+		select id from business_activity where order_id = #{value}
+	</select>
+
+	<select id="getDetail" resultType="com.bootdo.business.domain.ActivityDO">
+		SELECT
+   ba.`id`,
+   ba.`shop_code`,
+   ba.`contractor`,
+   ba.`contract_true_area`,
+   ba.`contract_rent_area`,
+   ba.`rent_area`,
+   ba.`brand`,
+   ba.`shop_type`,
+   bag.`activity_name`,
+   ba.`activity_money`,
+   ba.`dm_dan`,
+   ba.`card_money`,
+   bag.`start_date`,
+   ba.`end_date`,
+   ba.`create_date`,
+   ba.`create_by`,
+   ba.`update_date`,
+   ba.`update_by`,
+   ba.`del_flag`,
+   ba.`dept_id`,
+   ba.`order_id`,
+   ba.`unreceived`,
+		ba.`activity_money_received`,
+		ba.`dm_dan_received`,
+		ba.`card_money_received`,
+		ba.`activity_money_unreceived`,
+		ba.`dm_dan_unreceived`,
+		ba.`card_money_unreceived`,
+		ba.`building_id`
+FROM
+  business_activity ba LEFT JOIN business_activity_general bag
+  ON ba.`order_id`=bag.`order_id` WHERE ba.id = #{value}
+	</select>
+
+	<select id="getId" resultType="String">
+		CALL `generate_acNo`(#{s},#{deptId}, 8, @orderNo)
+	</select>
+
+	<select id="getShop" resultType="String">
+		select `shop_code` from business_activity where order_id = #{value}
+	</select>
+
+	<select id="getGeneral" resultType="com.bootdo.business.domain.ActivityGeneralDO">
+		select * from business_activity_general where id = #{value}
+	</select>
+
+	<select id="listDetail" resultType="com.bootdo.business.domain.ActivityDO">
+		SELECT
+		ba.`id`,
+		ba.`shop_code`,
+		ba.`contractor`,
+		ba.`contract_true_area`,
+		ba.`contract_rent_area`,
+		ba.`rent_area`,
+		ba.`brand`,
+		ba.`shop_type`,
+		ba.`unreceived`,
+		bag.`activity_name`,
+		ba.`activity_money`,
+		ba.`dm_dan`,
+		ba.`card_money`,
+		ba.`activity_money_unreceived`,
+		ba.`dm_dan_unreceived`,
+		ba.`card_money_unreceived`,
+		ba.`activity_money_received`,
+		ba.`dm_dan_received`,
+		ba.`card_money_received`,
+		bag.`start_date`,
+		bag.`end_date`,
+		ba.`create_date`,
+		ba.`create_by`,
+		ba.`update_date`,
+		ba.`update_by`,
+		ba.`del_flag`
+		FROM
+		business_activity ba LEFT JOIN business_activity_general bag
+		ON ba.`order_id`=bag.`order_id`
+        <where>
+			ba.`order_id`=#{orderId}
+		  		  <if test="id != null and id != ''"> and ba.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and ba.dept_id = #{deptId} </if>
+		  		  <if test="contractor != null and contractor != ''"> and ba.contractor LIKE CONCAT('%',#{contractor},'%') </if>
+		  		  <if test="contractTrueArea != null and contractTrueArea != ''"> and ba.contract_true_area = #{contractTrueArea} </if>
+		  		  <if test="contractRentArea != null and contractRentArea != ''"> and ba.contract_rent_area = #{contractRentArea} </if>
+		  		  <if test="rentArea != null and rentArea != ''"> and ba.rent_area = #{rentArea} </if>
+		  		  <if test="brand != null and brand != ''"> and ba.brand LIKE CONCAT('%',#{brand},'%') </if>
+		  		  <if test="shopType != null and shopType != ''"> and ba.shop_type = #{shopType} </if>
+		  		  <if test="activityName != null and activityName != ''"> and bag.activity_name LIKE CONCAT('%',#{activityName},'%') </if>
+		  		  <if test="activityMoney != null and activityMoney != ''"> and ba.activity_money = #{activityMoney} </if>
+		  		  <if test="dmDan != null and dmDan != ''"> and ba.dm_dan = #{dmDan} </if>
+		  		  <if test="cardMoney != null and cardMoney != ''"> and ba.card_money = #{cardMoney} </if>
+		  		  <if test="startDate != null and startDate != ''"> and bag.start_date >= #{startDate} </if>
+		  		  <if test="endDate != null and endDate != ''"> and #{endDate} >= bag.end_date </if>
+		  		  <if test="createDate != null and createDate != ''"> and ba.create_date = #{createDate} </if>
+		  		  <if test="createBy != null and createBy != ''"> and ba.create_by = #{createBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and ba.update_date = #{updateDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and ba.update_by = #{updateBy} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and ba.del_flag = #{delFlag} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ba.id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="getTotal" resultType="com.bootdo.business.domain.ActivityDO">
+		SELECT
+		'' AS contractor,
+		'' AS brand,
+		'' AS shop_type,
+		'合计' AS activity_name,
+		SUM(ba.`activity_money`) AS activityMoney,
+		SUM(ba.`dm_dan`) AS dmDan,
+		SUM(ba.`card_money`) AS cardMoney,
+		SUM(ba.`activity_money_unreceived`) AS activityMoneyUnreceived,
+		SUM(ba.`dm_dan_unreceived`) AS dmDanUnreceived,
+		SUM(ba.`card_money_unreceived`) AS cardMoneyUnreceived,
+		SUM(ba.`activity_money_received`) AS activityMoneyReceived,
+		SUM(ba.`dm_dan_received`) AS dmDanReceived,
+		SUM(ba.`card_money_received`) AS cardMoneyReceived
+		FROM
+		business_activity ba
+		LEFT JOIN business_activity_general bag
+		ON ba.`order_id` = bag.`order_id`
+        <where>
+			ba.`order_id`=#{orderId}
+		  		  <if test="id != null and id != ''"> and ba.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and ba.dept_id = #{deptId} </if>
+		  		  <if test="contractor != null and contractor != ''"> and ba.contractor LIKE CONCAT('%',#{contractor},'%') </if>
+		  		  <if test="contractTrueArea != null and contractTrueArea != ''"> and ba.contract_true_area = #{contractTrueArea} </if>
+		  		  <if test="contractRentArea != null and contractRentArea != ''"> and ba.contract_rent_area = #{contractRentArea} </if>
+		  		  <if test="rentArea != null and rentArea != ''"> and ba.rent_area = #{rentArea} </if>
+		  		  <if test="brand != null and brand != ''"> and ba.brand LIKE CONCAT('%',#{brand},'%') </if>
+		  		  <if test="shopType != null and shopType != ''"> and ba.shop_type = #{shopType} </if>
+		  		  <if test="activityName != null and activityName != ''"> and bag.activity_name LIKE CONCAT('%',#{activityName},'%') </if>
+		  		  <if test="activityMoney != null and activityMoney != ''"> and ba.activity_money = #{activityMoney} </if>
+		  		  <if test="dmDan != null and dmDan != ''"> and ba.dm_dan = #{dmDan} </if>
+		  		  <if test="cardMoney != null and cardMoney != ''"> and ba.card_money = #{cardMoney} </if>
+		  		  <if test="startDate != null and startDate != ''"> and bag.start_date >= #{startDate} </if>
+		  		  <if test="endDate != null and endDate != ''"> and #{endDate} >= bag.end_date </if>
+		  		  <if test="createDate != null and createDate != ''"> and ba.create_date = #{createDate} </if>
+		  		  <if test="createBy != null and createBy != ''"> and ba.create_by = #{createBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and ba.update_date = #{updateDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and ba.update_by = #{updateBy} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and ba.del_flag = #{delFlag} </if>
+		  		</where>
+                order by ba.id desc
+	</select>
+
+	<select id="countDetail" resultType="int">
+		select count(*) from business_activity
+		<where>
+			order_id = #{orderId}
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="contractor != null and contractor != ''"> and contractor LIKE CONCAT('%',#{contractor},'%') </if>
+			<if test="contractTrueArea != null and contractTrueArea != ''"> and contract_true_area = #{contractTrueArea} </if>
+			<if test="contractRentArea != null and contractRentArea != ''"> and contract_rent_area = #{contractRentArea} </if>
+			<if test="rentArea != null and rentArea != ''"> and rent_area = #{rentArea} </if>
+			<if test="brand != null and brand != ''"> and brand LIKE CONCAT('%',#{brand},'%') </if>
+			<if test="shopType != null and shopType != ''"> and shop_type = #{shopType} </if>
+			<if test="activityName != null and activityName != ''"> and activity_name LIKE CONCAT('%',#{activityName},'%') </if>
+			<if test="activityMoney != null and activityMoney != ''"> and activity_money = #{activityMoney} </if>
+			<if test="dmDan != null and dmDan != ''"> and dm_dan = #{dmDan} </if>
+			<if test="cardMoney != null and cardMoney != ''"> and card_money = #{cardMoney} </if>
+			<if test="startDate != null and startDate != ''"> and start_date >= #{startDate} </if>
+			<if test="endDate != null and endDate != ''"> and #{endDate} >= end_date </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.ActivityGeneralDO">
+		select bag.`id`,bag.`activity_name`,bag.`start_date`,bag.`end_date`,bag.`create_date`,bag.`create_by`,bag.`update_date`,bag.`update_by`,bag.`del_flag`,bag.`dept_id`,bag.`order_id`,
+		(SELECT COUNT(*) FROM business_activity ba WHERE ba.unreceived = 0 AND ba.order_id = bag.order_id) AS payed,
+		(SELECT COUNT(*) FROM business_activity ba WHERE ba.order_id = bag.order_id) AS total from business_activity_general bag
+		<where>
+			bag.del_flag = '0'
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="activityName != null and activityName != ''"> and activity_name = #{activityName} </if>
+			<if test="startDate != null and startDate != ''"> and start_date = #{startDate} </if>
+			<if test="endDate != null and endDate != ''"> and end_date = #{endDate} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="orderId != null and orderId != ''"> and order_id = #{orderId} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+ 	<select id="count" resultType="int">
+		select count(*) from business_activity_general
+		 <where>
+			 del_flag = '0'
+			 <if test="id != null and id != ''"> and id = #{id} </if>
+			 <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			 <if test="contractor != null and contractor != ''"> and contractor LIKE CONCAT('%',#{contractor},'%') </if>
+			 <if test="contractTrueArea != null and contractTrueArea != ''"> and contract_true_area = #{contractTrueArea} </if>
+			 <if test="contractRentArea != null and contractRentArea != ''"> and contract_rent_area = #{contractRentArea} </if>
+			 <if test="rentArea != null and rentArea != ''"> and rent_area = #{rentArea} </if>
+			 <if test="brand != null and brand != ''"> and brand = #{brand} </if>
+			 <if test="shopType != null and shopType != ''"> and shop_type = #{shopType} </if>
+			 <if test="activityName != null and activityName != ''"> and activity_name LIKE CONCAT('%',#{activityName},'%') </if>
+			 <if test="activityMoney != null and activityMoney != ''"> and activity_money = #{activityMoney} </if>
+			 <if test="dmDan != null and dmDan != ''"> and dm_dan = #{dmDan} </if>
+			 <if test="cardMoney != null and cardMoney != ''"> and card_money = #{cardMoney} </if>
+			 <if test="startDate != null and startDate != ''"> and start_date >= #{startDate} </if>
+			 <if test="endDate != null and endDate != ''"> and #{endDate} >= end_date </if>
+			 <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			 <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			 <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			 <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		</where>
+	</select>
+
+	<insert id="saveList" parameterType="com.bootdo.business.domain.ActivityPayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into business_activity_pay_list
+		(
+		`dept_id`,
+		`dept_name`,
+		`activity_name`,
+		`state`,
+		`create_by`,
+		`create_date`,
+		`building_id`,
+		`building_name`,
+		`shop_id`,
+		`floor`,
+		`type_name`,
+		`s_type`,
+		`s_type_name`,
+		`code`,
+		`price`,
+		`pay_type`,
+		`receipt_by`,
+		`pay_by`,
+		`brand_receipt_by`,
+		`card_no`,
+		`bank`,
+		`chongxiao_code`,
+		`area`,
+		`yewu_id`,
+		`brand`,
+		`print`,
+		`name`,
+		`date`,
+		`pay_date`,
+		`oid`,
+		`type`,
+		`remarks`
+		)
+		values
+		(
+		#{deptId},
+		#{deptName},
+		#{activityName},
+		#{state},
+		#{createBy},
+		#{createDate},
+		#{buildingId},
+		#{buildingName},
+		#{shopId},
+		#{floor},
+		#{typeName},
+		#{sType},
+		#{sTypeName},
+		#{code},
+		#{price},
+		#{payType},
+		#{receiptBy},
+		#{payBy},
+		#{brandReceiptBy},
+		#{cardNo},
+		#{bank},
+		#{chongxiaoCode},
+		#{area},
+		#{yewuId},
+		#{brand},
+		#{print},
+		#{name},
+		#{date},
+		#{payDate},
+		#{oid},
+		#{type},
+		#{remarks}
+		)
+	</insert>
+
+	<insert id="savenew" parameterType="com.bootdo.business.domain.ActivityDO">
+		insert into business_activity
+		(
+			`contractor`,
+			`contract_true_area`, 
+			`contract_rent_area`, 
+			`rent_area`, 
+			`brand`, 
+			`shop_type`, 
+			`activity_name`, 
+			`activity_money`, 
+			`dm_dan`, 
+			`card_money`, 
+			`start_date`, 
+			`end_date`, 
+			`create_date`, 
+			`create_by`, 
+			`update_date`, 
+			`update_by`, 
+			`del_flag`,
+			`dept_id`,
+			`order_id`,
+		  	`unreceived`,
+			`activity_money_received`,
+			`dm_dan_received`,
+			`card_money_received`,
+			`activity_money_unreceived`,
+			`dm_dan_unreceived`,
+			`card_money_unreceived`
+		)
+		values
+		(
+			#{contractor},
+			#{contractTrueArea}, 
+			#{contractRentArea}, 
+			#{rentArea}, 
+			#{brand}, 
+			#{shopType}, 
+			#{activityName}, 
+			#{activityMoney}, 
+			#{dmDan}, 
+			#{cardMoney}, 
+			#{startDate}, 
+			#{endDate}, 
+			#{createDate}, 
+			#{createBy}, 
+			#{updateDate}, 
+			#{updateBy}, 
+			#{delFlag},
+			#{deptId},
+			#{orderId},
+			#{unreceived},
+			#{activityMoneyReceived},
+			#{dmDanReceived},
+			#{cardMoneyReceived},
+			#{activityMoneyUnreceived},
+			#{dmDanUnreceived},
+			#{cardMoneyUnreceived}
+		)
+	</insert>
+
+	<update id="updateGeneral" parameterType="com.bootdo.business.domain.ActivityGeneralDO">
+		update business_activity_general
+		<set>
+			<if test="activityName != null">`activity_name` = #{activityName}, </if>
+			<if test="startDate != null">`start_date` = #{startDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="updateDetail" parameterType="com.bootdo.business.domain.ActivityDO">
+		update business_activity
+		<set>
+			<if test="contractor != null">`contractor` = #{contractor}, </if>
+			<if test="contractTrueArea != null">`contract_true_area` = #{contractTrueArea}, </if>
+			<if test="contractRentArea != null">`contract_rent_area` = #{contractRentArea}, </if>
+			<if test="rentArea != null">`rent_area` = #{rentArea}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="shopType != null">`shop_type` = #{shopType}, </if>
+			<if test="activityName != null">`activity_name` = #{activityName}, </if>
+			<if test="activityMoney != null">`activity_money` = #{activityMoney}, </if>
+			<if test="dmDan != null">`dm_dan` = #{dmDan}, </if>
+			<if test="cardMoney != null">`card_money` = #{cardMoney}, </if>
+			<if test="startDate != null">`start_date` = #{startDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="orderId != null">`order_id` = #{orderId}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="unreceived != null">`unreceived` = #{unreceived}, </if>
+			<if test="activityMoneyReceived != null">`activity_money_received` = #{activityMoneyReceived}, </if>
+			<if test="dmDanReceived != null">`dm_dan_received` = #{dmDanReceived}, </if>
+			<if test="cardMoneyReceived != null">`card_money_received` = #{cardMoneyReceived}, </if>
+			<if test="activityMoneyUnreceived != null">`activity_money_unreceived` = #{activityMoneyUnreceived}, </if>
+			<if test="dmDanUnreceived != null">`dm_dan_unreceived` = #{dmDanUnreceived}, </if>
+			<if test="cardMoneyUnreceived != null">`card_money_unreceived` = #{cardMoneyUnreceived}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from business_activity where id = #{value}
+	</delete>
+
+	<delete id="removeDetail">
+		delete from business_activity where id = #{value}
+	</delete>
+
+	<delete id="removeDetailPayList">
+		delete from business_activity_pay_list where yewu_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from business_activity where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="deletePayList">
+		delete from business_activity_pay_list where yewu_id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<insert id="batchInsert">
+		insert into business_activity
+		(
+		`contractor`,
+		`contract_true_area`,
+		`contract_rent_area`,
+		`rent_area`,
+		`brand`,
+		`shop_type`,
+		`activity_name`,
+		`activity_money`,
+		`dm_dan`,
+		`card_money`,
+		`start_date`,
+		`end_date`,
+		`create_date`,
+		`create_by`,
+		`update_date`,
+		`update_by`,
+		`del_flag`,
+		`dept_id`,
+		`order_id`,
+		`unreceived`,
+		`activity_money_received`,
+		`dm_dan_received`,
+		`card_money_received`,
+		`activity_money_unreceived`,
+		`dm_dan_unreceived`,
+		`card_money_unreceived`
+		)
+		values
+		<foreach collection ="activityDOList" item="activity" separator =",">
+			(
+			#{activity.contractor},
+			#{activity.contractTrueArea},
+			#{activity.contractRentArea},
+			#{activity.rentArea},
+			#{activity.brand},
+			#{activity.shopType},
+			#{activity.activityName},
+			#{activity.activityMoney},
+			#{activity.dmDan},
+			#{activity.cardMoney},
+			#{activity.startDate},
+			#{activity.endDate},
+			#{activity.createDate},
+			#{activity.createBy},
+			#{activity.updateDate},
+			#{activity.updateBy},
+			#{activity.delFlag},
+			#{activity.deptId},
+			#{activity.orderId},
+			#{activity.unreceived},
+			#{activity.activityMoneyReceived},
+			#{activity.dmDanReceived},
+			#{activity.cardMoneyReceived},
+			#{activity.activityMoneyUnreceived},
+			#{activity.dmDanUnreceived},
+			#{activity.cardMoneyUnreceived}
+			)
+		</foreach >
+	</insert>
+
+	<insert id="saveGeneral">
+		insert into business_activity_general
+		(
+			`activity_name`,
+			`start_date`,
+			`end_date`,
+			`create_date`,
+			`create_by`,
+			`update_date`,
+			`update_by`,
+			`del_flag`,
+			`dept_id`,
+			`order_id`
+		)
+		values
+		(
+			#{activityName},
+			#{startDate},
+			#{endDate},
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{delFlag},
+			#{deptId},
+			#{orderId}
+		)
+	</insert>
+
+	<delete id="deleteDetail">
+		delete from business_activity where order_id=#{value}
+	</delete>
+
+	<delete id="deleteGeneral">
+		delete from business_activity_general where id = #{value}
+	</delete>
+
+</mapper>

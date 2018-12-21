@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+	<!--	<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>-->
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<!--<form class="fixed-table-toolbar">-->
+					<div class="columns pull-right">
+						<button class="btn btn-success" onclick="reLoad()" style="margin-top: 10px;">查询</button>
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+						<input type="text" id="brand" name="brand" class=" form-control" style="margin-top: 10px;background-color: #fff;"  placeholder="参与的品牌"
+						/>
+					</div>
+				</div>
+			</div>
+				<table id="exampleTable" data-mobile-responsive="true">
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+		var s_download_h = 'hidden';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:edit">
+	<script type="text/javascript">
+		s_edit_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:removeDetail">
+	<script type="text/javascript">
+		var s_remove_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:activity:download">
+	<script type="text/javascript">
+		var s_download_h = '';
+	</script>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<style>
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<script type="text/javascript" src="/js/appjs/business/activity/activityDetail.js"></script>
+</body>
+</html>

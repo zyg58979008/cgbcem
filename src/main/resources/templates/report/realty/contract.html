@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	.chosen-container{
+		float: left;
+	}
+	table tr td {
+		white-space:nowrap;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="form-group">
+						<button type="button" id="download" style="float: left;" id="btn_download"
+								class="btn btn-primary" onClick ="$('#exampleTable').tableExport({
+									type: 'excel', escape: 'false' ,fileName:'房产合同'})">数据导出</button>
+						<input type="text" class="layui-input" id="startDate" placeholder="开始月份"style="width: 100px;float: left">
+						<input type="text" class="layui-input" id="endDate" placeholder="结束月份"style="width: 100px;float: left">
+						<input id="roomCode" type="text" class="layui-input"
+							   placeholder="房屋编号" style="width: 100px;float: left">
+						<input id="name" type="text" class="layui-input"
+							   placeholder="业主名称" style="width: 100px;float: left">
+						<select data-placeholder="--选择合同状态--" id="state" style="width: 120px;float: left"
+								class="layui-input chosen-select" tabindex="2" >
+							<option value="">--选择合同状态--</option>
+							<option value="0">--未交房--</option>
+							<option value="1">--已交房--</option>
+							<option value="2">--撤销--</option>
+						</select>
+						<input type="hidden" id="roomType1">
+						<select data-placeholder="--选择房屋类型--" style="width: 140px;float: left" name="roomType" id="roomType"
+								class="layui-input chosen-select" tabindex="2">
+							<option value="">--选择房屋类型--</option>
+						</select>
+						<input type="hidden" id="sellType1">
+						<select data-placeholder="--选择转让类型--" style="width: 140px;float: left" name="sellType" id="sellType"
+								class="layui-input chosen-select" tabindex="2">
+							<option value="">--选择转让类型--</option>
+						</select>
+						<button class="btn btn-success" style="float: left" onclick="reLoad()">查询</button>
+						<button class="btn btn-primary" style="float: left" onclick="c()">清空</button>
+					</div>
+
+				</div>
+				<table id="exampleTable" data-mobile-responsive="false"  >
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<style>
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<!-- 全局js -->
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-1.121.min.js"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script
+		src="/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/js/plugins/jsTree/jstree.min.js"></script>
+<script src="/js/plugins/jqTreeGrid/jquery.treegrid.min.js"></script>
+<script src="/js/plugins/jqTreeGrid/jquery.treegrid.extension.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/jqTreeGrid/jquery.treegrid.bootstrap3.js"></script>
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/content.js?v=1.0.0"></script>
+
+<!--summernote-->
+<script src="/js/plugins/summernote/summernote.js"></script>
+<script src="/js/plugins/summernote/summernote-zh-CN.min.js"></script>
+<script src="/js/ajax-util.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script src="/js/plugins/bootstrap-table/tableExport.js"></script>
+<script type="text/javascript" src="/js/appjs/report/realty/contract.js"></script>
+<script>
+	laydate.render({
+		elem: '#startDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+	laydate.render({
+		elem: '#endDate'
+		,format: 'yyyy-MM'
+		,type: 'month'
+	});
+
+</script>
+</body>
+</html>

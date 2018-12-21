@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="columns pull-right">
+						<button class="btn btn-success" onclick="reLoad()">查询</button>
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+						<input type="text" class="laydate-icon layer-date form-control" id="endDate" name="endDate"  placeholder="请选择结束时间"
+							   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+						<input type="text" class="laydate-icon layer-date form-control" id="startDate" name="startDate"  placeholder="请选择开始时间"
+							   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;" readonly="readonly"/>
+
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_info_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="	equipment:equipmentCount:infoQuery">
+			<script type="text/javascript">
+				s_info_h = '';
+			</script>
+		</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/equipment/equipmentCount/equipmentCountQuery.js"></script>
+</body>
+</html>

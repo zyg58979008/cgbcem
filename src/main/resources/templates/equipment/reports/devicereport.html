@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <!-- <link href="/css/layui.css" rel="stylesheet">-->
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="/css/plugins/bootstrap-table/bootstrap-table.min.css"
+          th:href="@{/css/plugins/bootstrap-table/bootstrap-table.min.css}"
+          rel="stylesheet">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+</head>
+<body class="gray-bg">
+<div class="text" style=" text-align:center;margin-top: 25px;font-size: 20px;font-weight: bold">设备月度报表</div>
+<div class="wrapper wrapper-content " >
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-body">
+                <div class="row">
+                   <div class="columns pull-right">
+                        <button class="btn btn-success" onclick="reLoad()" style="margin-top: 0px;">查询</button>
+                    </div>
+                    <div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;max-width:150px;">
+                        <input type="text" class="laydate-icon layer-date form-control" id="Date" name="Date"  placeholder="请选择报表日期"
+                               style="background-color: #fff;" readonly="readonly"/>
+                    </div>
+                </div>
+                <div class="row"style="margin-top: 10px">
+
+                    <div class="col-sm-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>入库统计图</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div class="echarts" id="a"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>维修统计图</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div class="echarts" id="b"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>报废统计图</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div class="echarts" id="c"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>上线统计图</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div class="echarts" id="d"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" >
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>设备近三个月状况统计图</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content"style="height: 500px">
+
+                                <div class="echarts" id="inbound"style="height: 480px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="text" style=" text-align:center;font-size: 17px;">设备近三个月统计表</div>
+                        <!--<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                        </table>-->
+                        <div class="portlet-body">
+                            <div class="table-scrollable">
+                                <!-- <table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                                 </table>-->
+                                <table id="monthTotal" data-mobile-responsive="true">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12" >
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>各区县本月设备信息</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content"style="height: 500px">
+
+                                <div class="echarts" id="e"style="height: 480px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="text" style=" text-align:center;font-size: 17px;">各区县本月设备信息</div>
+                        <div class="portlet-body">
+                            <div class="table-scrollable">
+                       <!-- <table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                        </table>-->
+                        <table id="xianchengTotal" data-mobile-responsive="true">
+                        </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+
+
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script
+        src="/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<!-- ECharts -->
+<script src="/js/plugins/echarts/echarts.js"></script>
+<!-- 自定义js -->
+<script src="/js/content.js?v=1.0.0"></script>
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<!--<script src="/js/plugins/layer/layer.js"></script>-->
+
+
+<!-- ECharts demo data -->
+<script src="/js/appjs/equipment/reports/devicereport.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript" src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript"src="/js/plugins/layer/layer.js"></script>
+<script type="text/javascript">
+    //执行一个laydate实例
+
+    laydate.render({
+        elem: '#Date'
+        ,type: 'month'
+    });
+
+</script>
+
+<!--<script type="text/javascript">
+    $(document).ready(function() {
+        laydate({elem: '#Date',
+            format:'YYYY-MM',type: 'month'
+        });      });       //只显示年月   其他类似);</script>-->
+</body>
+
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link rel="stylesheet" href="/css/viewer.min.css">
+<style>
+    * { margin: 0; padding: 0;}
+    #pic { width: 900px; margin: 0 auto; font-size: 0;}
+    #pic li { display: inline-block; width: 15%; margin-left: 1%; padding-top: 1%;}
+    #pic li img { width: 100%;}
+</style>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 20px;font-weight: bold">巡检记录表</div>
+					<form class="form-horizontal m-t" id="signupForm">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">巡检网点：</label>
+							<div class="col-sm-4">
+								<input id="planArea" name="planArea" th:value="${plan.planArea}" class="form-control" type="text" readonly>
+								<input id="templateId" name="templateId" th:value="${plan.templateId}" type="hidden">
+							</div>
+							<label class="col-sm-2 control-label">计划编号：</label>
+							<div class="col-sm-4">
+								<input id="id" name="id" th:value="${plan.id}" class="form-control" type="text" readonly>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label">计划巡检时间：</label>
+							<div class="col-sm-4">
+								<input id="planTime" name="planTime" th:value="${plan.planTime}" class="form-control" type="text" readonly>
+							</div>
+							<label class="col-sm-2 control-label">巡检时间：</label>
+							<div class="col-sm-4">
+								<input id="Time" name="Time" th:value="${plan.time}"  class="form-control" type="text" readonly>
+							</div>
+						</div>
+						<div class="form-group">
+
+							<label class="col-sm-2 control-label">巡检人：</label>
+							<div class="col-sm-4">
+								<input id="xjperson" name="xjperson" th:value="${plan.planBy}" class="form-control" type="text" readonly>
+							</div>
+						</div>
+					<!--	<div class="form-group">
+							<label class="col-sm-2 control-label">模板名称：</label>
+							<div class="col-sm-4">
+								<input id="storeroomId" name="storeroomId" class="form-control" type="text">
+							</div>
+							<label class="col-sm-2 control-label">模板编号：</label>
+							<div class="col-sm-4">
+								<input id="id" name="storeroomId" class="form-control"th:value="M123456" type="text"readonly>
+							</div>
+
+						</div>-->
+
+
+					</form>
+					<div class="text" style=" text-align:center;font-size: 17px;">柜面设备信息</div>
+					<table id="equipment1" data-mobile-responsive="true">
+
+					</table>
+
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">柜面设备维修信息</div>
+					<table id="equipment2" data-mobile-responsive="true">
+
+					</table>
+
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">发电机组检测</div>
+					<table id="exampleTable1" data-mobile-responsive="true">
+
+					</table>
+
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">UPS机头及电池检测</div>
+					<table  id="exampleTable2" data-mobile-responsive="true">
+
+					</table>
+
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">配电系统检查</div>
+					<table  id="exampleTable3" data-mobile-responsive="true">
+
+					</table>
+
+					<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">巡检图片</div>
+					<!--<table  id="picture" data-mobile-responsive="true">
+
+					</table>-->
+                    <ul  id="pic">
+                       <!--<li><img src="../../../../../img/a1.jpg" alt="1"></li>
+                        <li><img src="../../../../../img/a2.jpg" alt="2"></li>
+                        <li><img src="../../../../../img/a3.jpg" alt="3"></li>
+                        <li><img src="../../../../../img/a4.jpg" alt="4"></li>
+                        <li><img src="../../../../../img/a5.jpg" alt="5"></li>
+                        <li><img src="../../../../../img/a6.jpg" alt="6"></li>-->
+                    </ul>
+
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/inspection/plan/info.js"></script>
+<!--<script src="/js/jquery.min.js"></script>-->
+<script src="/js/viewer-jquery.min.js"></script>
+<script>
+    $(function() {
+		/*$('#pic').viewer({
+			url: 'src',
+		});*/
+		showImg();
+
+
+    });
+    //预览按钮点击事件
+    function showImg() {
+        //清空div中的图片
+        $("#pic").empty();
+        //退出预览
+        $("#pic").viewer('destroy');
+		var html = [];
+		//设置从第一张图片开始预览
+		var index = 0;
+		var id=$("#id").val();
+		$.ajax({
+			url:prefix + "/showPic?id="+id,
+			type:'GET',
+			dataType:'json',
+			content:document.body,
+			success:function(data){
+				if(data.length == 0){
+					//showError("图片不存在！");
+				}
+				//动态添加图片
+				for (var i =0; i < data.length; i++) {
+					html.push("<li >");
+					html.push('<img src="'+data[i]+'" alt="'+i+'">');
+					html.push("</li>");
+				}
+				$("#pic").append(html.join(''));
+				$('#pic').viewer({
+					url: 'src',
+				});
+				//开始预览
+				//openPhotoDialog(index);
+			},
+			error:function(data){
+				showError("获取附件图片失败！");
+			}
+		});
+
+    }
+
+	/*function openPhotoDialog(index,name) {
+		$("#pic").viewer({
+			shown: function () {
+				$("#pic").viewer('view',index);
+			}
+		});
+		$("#pic").viewer('show');
+	}*/
+
+
+</script>
+
+</body>
+</html>

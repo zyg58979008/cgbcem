@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.report.dao.ReportMainDao">
+
+	<select id="getWuyefei" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		SELECT
+		  w.`start_year`,
+		  w.`end_year`
+		FROM
+		  wuyefei w
+		WHERE DATE_FORMAT(NOW(), '%Y-%m-%d') >= DATE_FORMAT(w.`start_date`, '%Y-%m-%d')
+		  AND DATE_FORMAT(w.`end_date`, '%Y-%m-%d') >= DATE_FORMAT(NOW(), '%Y-%m-%d')
+		  and w.del_flag='0' and w.dept_id=#{deptId}
+	</select>
+	<select id="getSum" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		SELECT
+		IFNULL((SUM(wd.`unpay`) + SUM(wd.payed)), '0') AS moneyYing,
+		IFNULL(SUM(wd.payed), '0') AS moneyPayed,
+		IFNULL(SUM(wd.`unpay`), '0') AS moneyUnpay
+		FROM
+		wuyefei_detail wd
+		WHERE  wd.wuyefei_id in (
+		SELECT
+		  w.id
+		FROM
+		  wuyefei w
+		WHERE  w.del_flag='0' and w.dept_id=#{deptId}
+		and w.start_year=#{startYear}
+		)
+	</select>
+	<select id="getQunuanfei" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		SELECT
+		w.`start_year`,
+		w.`end_year`
+		FROM
+		qunuanfei w
+		WHERE DATE_FORMAT(NOW(), '%Y-%m-%d') >= DATE_FORMAT(w.`start_date`, '%Y-%m-%d')
+		AND DATE_FORMAT(w.`end_date`, '%Y-%m-%d') >= DATE_FORMAT(NOW(), '%Y-%m-%d')
+		and w.del_flag='0' and w.dept_id=#{deptId}
+	</select>
+	<select id="getQunuanfeiSum" resultType="com.bootdo.wuye.domain.QunuanfeiDO">
+		select
+		(SELECT
+		count(*)
+		FROM
+		qunuanfei_detail wd
+		WHERE  wd.qunuanfei_id in (
+		SELECT
+		  w.id
+		FROM
+		  qunuanfei w
+		WHERE  w.del_flag='0' and w.dept_id=#{deptId}
+		and w.start_year=#{startYear}
+		)
+		 and state='1'
+		) AS payedNum,
+		(SELECT
+		count(*)
+		FROM
+		qunuanfei_detail wd
+		WHERE  wd.qunuanfei_id  in (
+		SELECT
+		  w.id
+		FROM
+		  qunuanfei w
+		WHERE  w.del_flag='0' and w.dept_id=#{deptId}
+		and w.start_year=#{startYear}
+		) and state='0')
+		AS unpayNum
+		from dual
+	</select>
+	<select id="getWuyefeiAmortize" resultType="com.bootdo.report.domain.AmortizeReportDO">
+
+		SELECT
+
+		<foreach collection ="reportDOs" item="re" separator =",">
+			(SELECT
+			CONCAT(IFNULL(SUM(wa.ying), 0),
+			'|',IFNULL(SUM(wa.payed), 0))
+			FROM
+			wuyefei_amortize wa
+			WHERE wa.month = #{re.month}
+			and wa.wuyefei_id in (
+			SELECT
+			w.id
+			FROM
+			wuyefei w
+			WHERE  w.del_flag='0' and w.dept_id=#{reportDOsin.deptId}
+			)) AS ying${re.name}
+
+		</foreach >
+		FROM dual
+	</select>
+</mapper>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>设备管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link href="/css/doc.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!--<style>
+    .profile-haeder {position: relative; overflow: hidden; min-height: 8rem}
+    .profile-haeder > .back {top: -2rem; left: -2rem; right: -2rem; bottom: -2rem; background-position: center; background-size: cover}
+    .profile-haeder > .front {background: rgba(0,0,0,.1); text-align: center; padding: 1.5rem}
+</style>-->
+<!--<div class="profile-haeder space shadow">
+    <div class="red dock blur-lg back" style="background-image: url(/static/img/img/timg.jpg)"></div>
+    <div class="front dock text-white">
+
+        <h4 class="lead text-shadow-black"style="margin-top: 50px">设备管理系统</h4>
+    </div>
+</div>-->
+<div style="width: 100%;height: 150px;background-image: url(/img/img/timg.jpg);    background-size: 100%;
+        background-repeat:no-repeat;"></div>
+
+
+<input type="hidden" id="menus" th:value="${menus}">
+<div class="section"style="margin-top: 10px">
+    <div class="list with-divider" id="list">
+        <!--<a class="item with-avatar"onclick="out()">
+            <div class="avatar text-gray"><i class="icon-list-ul"></i></div>
+            <div class="title">设备入库</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>
+
+        <a class="item with-avatar"onclick="move()">
+            <div class="avatar text-gray"><i class="icon icon-exchange"></i></div>
+            <div class="title">设备移库</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>
+        <a class="item with-avatar" onclick="pan()">
+            <div class="avatar text-gray"><i class="icon icon-lock"></i></div>
+            <div class="title">设备盘库</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>
+        <a class="item with-avatar"onclick="index()">
+            <div class="avatar text-gray"><i class="icon-cog"></i></div>
+            <div class="title">巡检作业</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>
+        <a class="item with-avatar"onclick="maintenance()">
+            <div class="avatar text-gray"><i class="icon-qrcode"></i></div>
+            <div class="title">设备报修</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>
+        <a class="item with-avatar"onclick="eqOnline()">
+            <div class="avatar text-gray"><i class="icon-plus"></i></div>
+            <div class="title">首次上线</div>
+            <i class="icon icon-chevron-right muted"></i>
+        </a>-->
+    </div>
+</div>
+
+
+</body>
+</html>
+
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script src="/js/doc.min.js"></script>
+
+<script>
+    var menus=eval("("+$("#menus").val()+")")[0].children;
+    for(var i=0;i<menus.length;i++){
+        var className='';
+        if(menus[i].text=='设备报修'){
+            className='icon-qrcode';
+        }
+        if(menus[i].text=='设备入库'){
+            className='icon-cubes';
+        }
+        if(menus[i].text=='设备接收'){
+            className='icon-exchange';
+        }
+        if(menus[i].text=='设备盘库'){
+            className='icon-calculator';
+        }
+        if(menus[i].text=='巡检作业'){
+            className='icon-cog';
+        }
+        if(menus[i].text=='首次上线'){
+            className='icon-plus';
+        }
+        if(menus[i].text=='在线设备盘库'){
+            className='icon-calculator';
+        }
+        if(menus[i].text=='在线设备维修'){
+            className='icon-link';
+        }
+
+        var html='<a class="item with-avatar" href="'+menus[i].attributes.url+'">' +
+                '<div class="avatar text-gray"><i class="'+className+'"></i></div>' +
+                '<div class="title">'+menus[i].text+'</div>' +
+                '<i class="icon icon-chevron-right muted"></i>' +
+                '</a>';
+        $("#list").append(html);
+    }
+    var html='<a class="item with-avatar" href="/mobile/logout">' +
+            '<div class="avatar text-gray"><i class="icon-off"></i></div>' +
+            '<div class="title">退出</div>' +
+            '<i class="icon icon-chevron-right muted"></i>' +
+            '</a>';
+    $("#list").append(html);
+    $.ajax({
+        type: "GET",
+        url: "/mobile/getEquipmentById",
+        data: "id=2",
+        dataType:"json",
+        success: function (data) {
+            var i=0;
+        }
+    });
+
+    function pan() {
+        window.location.href="/mobile/stockCount";
+    }
+    function eqOnline() {
+        window.location.href="/mobile/online";
+    }
+    function repair1() {
+        window.location.href="/mobile/repair1";
+    }
+    function maintenance() {
+        window.location.href="/mobile/repair";
+    }
+    function out() {
+        window.location.href="/mobile/inbound";
+    }
+    function move() {
+        window.location.href="/mobile/move";
+    }
+    function back() {
+        window.location.href="/mobile/back";
+    }
+    function check() {
+        window.location.href="/mobile/check";
+    }
+    function index() {
+        window.location.href="/mobile/index";
+    }
+    function onlrepair() {
+        window.location.href="/mobile/onlrepair";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>君泰财务系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .fontColor {
+            background-color: white;
+        }
+        .wrapper-content {
+            padding: 0px 20px;
+        }
+        .ibox {
+            margin-bottom: 0;
+        }
+        .ibox-content {
+            padding: 0 20px 0;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<ul id="myTab" class="nav nav-tabs">
+    <li shiro:hasPermission="index:shangye">
+        <a href="#shangye" name="a" data-toggle="tab">商业</a>
+    </li>
+    <li shiro:hasPermission="index:dichan"><a href="#dichan" name="a" data-toggle="tab">地产</a></li>
+    <li shiro:hasPermission="index:wuye"><a href="#wuye" name="a" data-toggle="tab">物业</a></li>
+</ul>
+<div id="myTabContent" class="tab-content" style="height: 100%;background: white;display: none">
+    <div class="tab-pane fade in active" id="shangye" style="height: 100%">
+        <div class="wrapper wrapper-content" style="background: white;">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-sm-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>商铺类型统计</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="b"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>商铺面积租售情况统计(A馆)</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="d1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>商铺面积租售情况统计(B馆)</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="d2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>商铺租金收缴统计</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="a"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <!--<ul class="dropdown-menu dropdown-user">
+                                    <li><a href="graph_flot.html#">选项1</a>
+                                    </li>
+                                    <li><a href="graph_flot.html#">选项2</a>
+                                    </li>
+                                </ul>-->
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="echarts-bar-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                               <!-- <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="graph_flot.html#">选项1</a>
+                                    </li>
+                                    <li><a href="graph_flot.html#">选项2</a>
+                                    </li>
+                                </ul>-->
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="echarts" id="echarts-line-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade in active" id="dichan" style="height: 100%">
+    </div>
+    <div class="tab-pane fade in active" id="wuye" style="height: 100%">
+        <div class="wrapper wrapper-content" style="background: white;">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-sm-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>物业费收缴率</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="wuyefeilv"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>取暖费收缴率</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="qunuanfeilv"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>房本费收缴率</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="echarts" id="fangbenfeilv"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="graph_flot.html#">选项1</a>
+                                    </li>
+                                    <li><a href="graph_flot.html#">选项2</a>
+                                    </li>
+                                </ul>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="echarts" id="wuyefei-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- ECharts -->
+<script src="/js/plugins/echarts/echarts-all.js"></script>
+
+<!-- 自定义js -->
+<script src="/js/content.js?v=1.0.0"></script>
+
+
+<!-- ECharts demo data -->
+<script src="/js/appjs/main/echarts-demo.js?randomId=<%=Math.random()%>"></script>
+<script src="/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+
+
+</body>
+
+</html>

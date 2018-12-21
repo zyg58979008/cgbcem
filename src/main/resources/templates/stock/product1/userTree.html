@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox-content">
+					<div id="jsTree"></div>
+				</div>
+				<div class="form-group ">
+					<div class="col-sm-12 col-sm-offset-12">
+						<button type="submit" onclick="loadUser()" class="btn btn-primary">提交</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			getTreeData()
+		});
+		function getTreeData() {
+			$.ajax({
+				type : "GET",
+				url : "/sys/user/tree",
+				success : function(tree) {
+					loadTree(tree);
+				}
+			});
+		}
+		function loadTree(tree) {
+			$('#jsTree').jstree({
+				'core' : {
+					'data' : [
+                        { "id" : "ajson2", "parent" : "#", "text" : "承德市" ,'state' : {  'selected' : false },},
+                        { "id" : "ajson3", "parent" : "ajson2", "text" : "丰宁支行" },
+                        { "id" : "ajson4", "parent" : "ajson2", "text" : "滦平支行" },
+                        { "id" : "ajson5", "parent" : "ajson2", "text" : "围场支行" },
+                        { "id" : "ajson6", "parent" : "ajson2", "text" : "平泉支行" },
+                        { "id" : "ajson7", "parent" : "ajson3", "text" : "大滩支行" },
+                        { "id" : "ajson8", "parent" : "ajson3", "text" : "鱼儿山支行" },
+                        { "id" : "ajson9", "parent" : "ajson3", "text" : "土城子支行" },
+                        { "id" : "ajson10", "parent" : "ajson3", "text" : "杨木栅子支行" }
+                    ]
+				},
+				"plugins" : [ "checkbox" ]
+			});
+			$('#jsTree').jstree().open_all();
+		}
+		function loadUser(){
+			var userNames,userIds;
+			var ref = $('#jsTree').jstree(true); // 获得整个树
+			userIds = ref.get_bottom_selected();
+			users = ref.get_bottom_checked('true');
+			var txt="";
+			for(var user in users){
+					txt=txt+users[user].text+",";
+			}
+			parent.loadDept(userIds,txt);
+			var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+			parent.layer.close(index);
+		}
+	</script>
+</body>
+</html>

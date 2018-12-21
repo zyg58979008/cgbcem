@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.AmortizeDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.AmortizeDO">
+		select `id`,`dept_id`,`amortize_price`,`month`,`shop_code`,`shop_id`,`day`,`create_date`,`create_by`,`del_flag`,`total`,`unpay`,`payed` from shop_amortize where id = #{value}
+	</select>
+
+	<select id="getByCode" resultType="com.bootdo.business.domain.AmortizeDO">
+		select * from shop_amortize where contract_code = #{contractCode} ORDER BY MONTH ASC
+	</select>
+
+	<select id="getForPay" resultType="com.bootdo.business.domain.AmortizeDO">
+		select * from shop_amortize t WHERE t.oid=#{oid} AND #{endDate} >= t.`month` AND t.`month` >= #{startDate} ORDER BY t.month ASC
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.AmortizeDO">
+		select `id`,`dept_id`,`amortize_price`,`month`,`shop_code`,`shop_id`,`day`,`create_date`,`create_by`,`del_flag`,`total`,`unpay`,`payed` from shop_amortize
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="amortizePrice != null and amortizePrice != ''"> and amortize_price = #{amortizePrice} </if>
+		  		  <if test="month != null and month != ''"> and month = #{month} </if>
+		  		  <if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+		  		  <if test="shopId != null and shopId != ''"> and shop_id = #{shopId} </if>
+		  		  <if test="day != null and day != ''"> and day = #{day} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		  <if test="total != null and total != ''"> and total = #{total} </if>
+		  		  <if test="unpay != null and unpay != ''"> and unpay = #{unpay} </if>
+		  		  <if test="payed != null and payed != ''"> and payed = #{payed} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from shop_amortize
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="amortizePrice != null and amortizePrice != ''"> and amortize_price = #{amortizePrice} </if>
+		  		  <if test="month != null and month != ''"> and month = #{month} </if>
+		  		  <if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+		  		  <if test="shopId != null and shopId != ''"> and shop_id = #{shopId} </if>
+		  		  <if test="day != null and day != ''"> and day = #{day} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		  <if test="total != null and total != ''"> and total = #{total} </if>
+		  		  <if test="unpay != null and unpay != ''"> and unpay = #{unpay} </if>
+		  		  <if test="payed != null and payed != ''"> and payed = #{payed} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.business.domain.AmortizeDO" useGeneratedKeys="true" keyProperty="id">
+		insert into shop_amortize
+		(
+			`dept_id`, 
+			`amortize_price`, 
+			`month`, 
+			`shop_code`, 
+			`shop_id`, 
+			`day`, 
+			`create_date`, 
+			`create_by`, 
+			`del_flag`, 
+			`total`, 
+			`unpay`, 
+			`payed`
+		)
+		values
+		(
+			#{deptId}, 
+			#{amortizePrice}, 
+			#{month}, 
+			#{shopCode}, 
+			#{shopId}, 
+			#{day}, 
+			#{createDate}, 
+			#{createBy}, 
+			#{delFlag}, 
+			#{total}, 
+			#{unpay}, 
+			#{payed}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.business.domain.AmortizeDO">
+		update shop_amortize 
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="amortizePrice != null">`amortize_price` = #{amortizePrice}, </if>
+			<if test="month != null">`month` = #{month}, </if>
+			<if test="shopCode != null">`shop_code` = #{shopCode}, </if>
+			<if test="shopId != null">`shop_id` = #{shopId}, </if>
+			<if test="day != null">`day` = #{day}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="contractor != null">`contractor` = #{contractor}, </if>
+			<if test="contractCode != null">`contract_code` = #{contractCode}, </if>
+			<if test="total != null">`total` = #{total}, </if>
+			<if test="unpay != null">`unpay` = #{unpay}, </if>
+			<if test="payed != null">`payed` = #{payed}</if>
+		</set>
+		where oid = #{oid}
+	</update>
+	<update id="updateForAmortize" parameterType="com.bootdo.business.domain.AmortizeDO">
+		update shop_amortize set
+			`amortize_price_zujin_received` = #{amortizePriceZujinReceived},
+			`amortize_price_guanli_received` = #{amortizePriceGuanliReceived},
+			`amortize_price_wuye_received` = #{amortizePriceWuyeReceived}
+		where id = #{id}
+	</update>
+	<update id="updateForPay" parameterType="com.bootdo.business.domain.AmortizeDO">
+		update shop_amortize
+		<set>
+			<if test="amortizePriceZujinReceived != null">`amortize_price_zujin_received` = #{amortizePriceZujinReceived}, </if>
+			<if test="amortizePriceGuanliReceived != null">`amortize_price_guanli_received` = #{amortizePriceGuanliReceived}, </if>
+			<if test="amortizePriceWuyeReceived != null">`amortize_price_wuye_received` = #{amortizePriceWuyeReceived} </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="remove">
+		delete from shop_amortize where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from shop_amortize where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="shopAmortizeList" resultType="com.bootdo.business.domain.AmortizeDO">
+		SELECT
+		saz.`contract_code` AS contractCode,
+		saz.`contractor` AS contractor,
+		saz.`brand` AS brand,
+		stc.`shop_code` AS shopCode,
+		IFNULL((SELECT SUM(sc.rent_area) FROM shop_to_contract sc WHERE sc.contract_code = saz.contract_code),0) AS rentArea,
+		IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_zujin)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		) AS totalZujinUn,
+		IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_guanli)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		) AS totalGuanliUn,
+		IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_wuye)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		) AS totalWuyeUn,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			IFNULL((SELECT
+			SUM(sa.amortize_price_zujin)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0) AS totalZujin${re.name},
+
+			IFNULL((SELECT
+			SUM(sa.amortize_price_guanli)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0) AS totalGuanli${re.name},
+			IFNULL((SELECT
+			SUM(sa.amortize_price_wuye)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0) AS totalWuye${re.name}
+		</foreach >
+		FROM
+		shop_to_contract stc LEFT JOIN
+		shop_contract saz ON stc.`contract_code` = saz.`contract_code`
+		where saz.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and saz.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and saz.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+	</select>
+	<select id="getForShoujiaolv" resultType="com.bootdo.business.domain.AmortizeDO">
+		SELECT
+		sc.`contract_code`,
+		sc.brand,
+		sa.`contractor`,
+		s.`code` AS shopCode,
+		CONCAT(s.`floor`, '楼') AS floors,
+		sa.`total`,
+		IFNULL(sa.`amortize_price_guanli_received`,0) + IFNULL(sa.`amortize_price_wuye_received`,0) + IFNULL(sa.`amortize_price_zujin_received`,0) AS payed,
+		IFNULL(sa.`total`,0) - IFNULL(sa.`amortize_price_guanli_received`,0) - IFNULL(sa.`amortize_price_wuye_received`,0) - IFNULL(sa.`amortize_price_zujin_received`,0)
+		 AS unpay,
+		IFNULL((IFNULL(sa.`amortize_price_guanli_received`,0)+IFNULL(sa.`amortize_price_wuye_received`,0)+IFNULL(sa.`amortize_price_zujin_received`,0))/IFNULL(sa.`total`,0),0) AS percent
+		FROM
+		`shop_contract` sc LEFT JOIN
+		`shop_to_contract` stc
+		ON sc.oid = stc.oid
+		LEFT JOIN `shop_amortize` sa
+		ON sc.`oid` = sa.`oid`
+		LEFT JOIN shop s ON s.`code` =stc.`shop_code`
+		WHERE sa.`dept_id` = #{deptId}
+		AND sa.`month` = #{findDate}
+		AND (sc.state ='0' OR sc.contract_chechang_date>#{findDate})
+		<if test="contractor != null and contractor != ''">
+			AND sc.`contractor` = #{contractor}
+		</if>
+		<if test="buildingId != null and buildingId != ''">
+			and
+			s.building_id in (select b.id from business_building b where
+			FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+			b.dept_id=#{deptId} )
+		</if>
+		<if test="brand != null and brand != ''">
+			and sa.brand like CONCAT('%',#{brand},'%')
+		</if>
+	</select>
+
+	<select id="getForShoujiaolvTotal" resultType="com.bootdo.business.domain.AmortizeDO">
+		SELECT
+		'' as contractCode,
+		'' as floors,
+		'' as shopCode,
+		'' as contractor,
+		'合计' AS brand,
+		SUM(sa.`total`) AS total,
+		SUM(IFNULL(sa.`amortize_price_guanli_received`,0) + IFNULL(sa.`amortize_price_wuye_received`,0) + IFNULL(sa.`amortize_price_zujin_received`,0)) AS payed,
+		SUM(IFNULL(sa.`total`,0) - IFNULL(sa.`amortize_price_guanli_received`,0) - IFNULL(sa.`amortize_price_wuye_received`,0) - IFNULL(sa.`amortize_price_zujin_received`,0))
+		AS unpay,
+		IFNULL(SUM((IFNULL(sa.`amortize_price_guanli_received`,0)+IFNULL(sa.`amortize_price_wuye_received`,0)+IFNULL(sa.`amortize_price_zujin_received`,0)))/SUM(IFNULL(sa.`total`,0)),0) AS percent
+		FROM
+		`shop_amortize` sa ,`shop_contract` sc,`shop` s
+		WHERE s.`code` =sc.`shop_code` and (sc.state ='0' OR sc.contract_chechang_date>#{findDate}) AND sc.`oid` = sa.`oid` AND sa.`dept_id` = #{deptId}
+		AND sa.`month` = #{findDate}
+		<if test="contractor != null and contractor != ''">
+			AND sc.`contractor` = #{contractor}
+		</if>
+		<if test="buildingId != null and buildingId != ''">
+			and
+			s.building_id in (select b.id from business_building b where
+			FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and
+			b.dept_id=#{deptId} )
+		</if>
+		<if test="brand != null and brand != ''">
+			and sa.brand like CONCAT('%',#{brand},'%')
+		</if>
+	</select>
+	<select id="getShopAmortizeReport" resultType="com.bootdo.business.domain.AmortizeDO">
+
+		SELECT
+		'',
+		'',
+		'',
+		'合计' AS brand,
+		SUM(IFNULL((SELECT SUM(sc.rent_area) FROM shop_to_contract sc WHERE sc.contract_code = saz.contract_code),0)) AS rentArea,
+		SUM(IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_zujin)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		)) AS totalZujinUn,
+		SUM(IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_guanli)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		)) AS totalGuanliUn,
+		SUM(IFNULL(
+		(SELECT
+		SUM(sa.amortize_price_wuye)
+		FROM
+		shop_amortize sa
+		WHERE sa.month > #{reportDOsin.lastMonth}
+		AND saz.contract_code = sa.contract_code),
+		0
+		)) AS totalWuyeUn,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			SUM(IFNULL((SELECT
+			SUM(sa.amortize_price_zujin)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0)) AS totalZujin${re.name},
+			SUM(IFNULL((SELECT
+			SUM(sa.amortize_price_guanli)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0)) AS totalGuanli${re.name},
+
+			SUM(IFNULL((SELECT
+			SUM(sa.amortize_price_wuye)
+			FROM
+			shop_amortize sa
+			WHERE sa.month = #{re.month}
+			AND saz.contract_code = sa.contract_code),0)) AS totalWuye${re.name}
+		</foreach >
+		FROM shop_contract saz where saz.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and saz.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+            and saz.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+	</select>
+	<select id="leaseList" resultType="com.bootdo.report.domain.LeaseReportDO">
+		SELECT
+		rc.`name` AS name,
+		r.`code` AS roomCode,
+		r.`unit` AS unit,
+		r.`floor` AS floor,
+		r.`building_area` AS buildingArea,
+		rc.`price` AS price,
+		rc.`total_price` AS totalPrice,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			IFNULL((select
+			CONCAT (
+			IFNULL(s.ying, 0) ,'-' ,IFNULL(s.unpay, 0) ,'-' ,IFNULL(s.payed, 0)
+			)
+			from leaseback s
+			where rc.`room_id` = s.room_id AND
+			DATE_FORMAT(s.month, '%Y-%m') = #{re.month} group by s.room_id,s.month),'0.00-0.00-0.00') as ying${re.name}
+
+		</foreach >
+		FROM
+		room r,
+		entrust l,
+		room_contract rc
+		where r.dept_id = #{reportDOsin.deptId}
+		and r.`id` = rc.`room_id`
+		AND rc.`del_flag`='0'
+		and r.`del_flag`='0'
+		AND l.`room_id`=r.id
+		AND l.`dept_id` = #{reportDOsin.deptId}
+		AND l.`building_id`  = #{reportDOsin.buildingId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and r.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and r.code like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+		order by r.floor,r.CODE
+	</select>
+</mapper>

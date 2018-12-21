@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm" autocomplete="off">
+						<input id="id" name="id" th:value="${room.id}"
+							   class="hidden">
+						<input id="delFlag" name="delFlag" th:value="${room.delFlag}"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">维修基金：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="weixiu" name="weixiu" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${room.weixiu}">
+
+							</div>
+							<label class="col-sm-3 control-label" >交易费：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="jiaoyifei" name="jiaoyifei" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${room.jiaoyifei}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">房产证：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="fangchanzheng" name="fangchanzheng" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${room.fangchanzheng}">
+							</div>
+							<label class="col-sm-3 control-label" >契税：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="qishui" name="qishui" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,4})?/)"
+										th:value="${room.qishui}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">代办费：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="daibanfei"name="daibanfei"  type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${room.daibanfei}">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="update()" style="margin: 20px 0 0 90px;" class="btn btn-primary">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/wuye/fangbenConfig/edit.js">
+</script>
+</body>
+</html>

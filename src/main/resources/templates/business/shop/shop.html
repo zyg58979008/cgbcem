@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="layui-row layui-col-space15" style="margin-bottom: 6px;">
+						<div class="layui-col-md3">
+							<div class="layui-card">
+								<div class="layui-card-header">A馆计租面积</div>
+								<div class="layui-card-body" id="buildingAreaA">
+									0.00
+								</div>
+							</div>
+						</div>
+						<div class="layui-col-md3">
+							<div class="layui-card">
+								<div class="layui-card-header">A馆实测面积</div>
+								<div class="layui-card-body" id="floorAreaA">
+									0.00
+								</div>
+							</div>
+						</div>
+						<div class="layui-col-md3">
+							<div class="layui-card">
+								<div class="layui-card-header">B馆计租面积</div>
+								<div class="layui-card-body" id="buildingAreaB">
+									0.00
+								</div>
+							</div>
+						</div>
+						<div class="layui-col-md3">
+							<div class="layui-card">
+								<div class="layui-card-header">B馆实测面积</div>
+								<div class="layui-card-body" id="floorAreaB">
+									0.00
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="fixed-table-toolbar">
+							<div class="columns pull-right">
+								<button class="btn btn-success" onclick="reLoad()" style="margin-top: 0px;">查询</button>
+							</div>
+							<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px;margin-top:10px;max-width:150px;">
+								<input type="text" id="code" name="code" class=" form-control" style="margin-top: 0px;background-color: #fff;"  placeholder="商铺编号"
+								/>
+							</div>
+						<div class="columns pull-left">
+							<form id="importForm" action='' method='post'/></form>
+								<button shiro:hasPermission="business:shop:add" type="button"
+										class="btn  btn-primary" onclick="add()">
+									<i class="fa fa-plus hidden" aria-hidden="true"></i>添加
+								</button>
+								<button shiro:hasPermission="business:shop:add" type="submit"
+										class="btn  btn-primary" onclick="download()">
+									<i class="fa fa-plus hidden" aria-hidden="true"></i>下载模板
+								</button>
+
+								<button shiro:hasPermission="business:shop:add" type="button" id="upload"
+										class="layui-btn" >
+									<i class="fa fa-cloud hidden" aria-hidden="true"></i>批量上传
+								</button>
+								<button shiro:hasPermission="business:shop:merge" type="button"
+										class="btn  btn-success" onclick="merge()">
+									<i class="fa fa-plus hidden" aria-hidden="true"></i>合并
+								</button>
+								<button shiro:hasPermission="business:shop:batchRemove" type="button"
+										class="btn  btn-danger" onclick="batchRemove()">
+									<i class="fa fa-trash hidden" aria-hidden="true"></i>批量删除
+								</button>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false" data-height="450">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_add_h = 'hidden';
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+		var s_merge_h = 'hidden';
+		var s_split_h = 'hidden';
+	</script>
+</div>
+<div shiro:hasPermission="business:shop:edit">
+	<script type="text/javascript">
+		s_edit_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:shop:add">
+	<script type="text/javascript">
+		s_add_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:shop:remove">
+	<script type="text/javascript">
+		var s_remove_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="business:shop:merge">
+	<script type="text/javascript">
+		var s_merge_h = '';
+	</script>
+</div>
+	<div shiro:hasPermission="business:shop:split">
+		<script type="text/javascript">
+			var s_split_h = '';
+		</script>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/business/shop/shop.js"></script>
+<script src="/js/layui.js"></script>
+<script src="/js/vue.min.js"></script>
+<script>
+	layui.use('upload', function () {
+		var upload = layui.upload;
+		//执行实例
+		var uploadInst = upload.render({
+			elem: '#upload', //绑定元素
+			url: prefix+'/upload', //上传接口
+			size: 1000,
+			accept: 'file',
+			done: function (r) {
+				layer.msg(r.msg);
+			},
+			error: function (r) {
+				layer.msg(r.msg);
+			}
+		});
+	});
+</script>
+</body>
+</html>

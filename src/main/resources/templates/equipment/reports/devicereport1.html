@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>百度ECHarts</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+</head>
+<body class="gray-bg">
+<div class="text" style=" text-align:center;margin-top: 25px;font-size: 20px;font-weight: bold">巡检分析报告</div>
+<div class="wrapper wrapper-content animated fadeInRight" >
+    <div class="row">
+
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>巡检区域统计图</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="echarts" id="aaaa"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>月度巡检统计图</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="echarts" id="bbbb"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="text" style=" text-align:center;font-size: 17px;">巡检月度统计表（次）</div>
+            <table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                <tbody>
+                <tr>
+                    <td align="center" height="31" >
+                        <font size="3">巡检地区/月份</font></td>
+
+                    <td align="center" height="31" >
+                        <font size="3">一月</font></td>
+                    <td align="center" height="31">
+                        <font size="3">二月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">三月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">四月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">五月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">六月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">七月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">八月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">九月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">十月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">十一月</font></b></td>
+                    <td align="center" height="31" >
+                        <font size="3">十二月</font></b></td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >双滦区</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >双桥区</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >8</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >8</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >4</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >丰宁县</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >9</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >11</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >围场县</td>
+                    <td align="center" height="31" >11</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >12</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >兴隆县</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >平泉县</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >7</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >11</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >13</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >9</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <div class="text" style=" text-align:center;font-size: 17px;">巡检月度故障统计表（次）</div>
+            <table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                <tbody>
+                <tr>
+                    <td align="center" height="31" >
+                        <font size="3">巡检地区/月份</font></td>
+
+                    <td align="center" height="31" >
+                        <font size="3">一月</font></td>
+                    <td align="center" height="31">
+                        <font size="3">二月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">三月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">四月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">五月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">六月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">七月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">八月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">九月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">十月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">十一月</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">十二月</font></td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >双滦区</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >0</td>
+                    <td align="center" height="31" >0</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >双桥区</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >0</td>
+                    <td align="center" height="31" >0</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >4</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >丰宁县</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >0</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >围场县</td>
+                    <td align="center" height="31" >11</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >12</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >10</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >兴隆县</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >平泉县</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >7</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >11</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >13</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >9</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>设备健康状况统计图</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content"style="height: 500px">
+
+                    <div class="echarts" id="ddd"style="height: 480px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="text" style=" text-align:center;font-size: 17px;">丰宁县巡检详细信息统计图</div>
+            <table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" height="172" width="100%">
+                <tbody>
+                <tr>
+                    <td align="center" height="31" >
+                        <font size="3">序号</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">巡检网点</font></td>
+
+                    <td align="center" height="31" >
+                        <font size="3">巡检次数</font></td>
+                    <td align="center" height="31">
+                        <font size="3">设备维修次数</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">设备更换次数</font></td>
+                    <td align="center" height="31" >
+                        <font size="3">故障总数</font></td>
+
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >大滩支行</td>
+                    <td align="center" height="31" >1</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >6</td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >窄岭支行</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >杨木栅子支行</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >9</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+
+                </tr>
+                <tr>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >石人沟支行</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >12</td>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >2</td>
+                </tr>
+                <tr>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >四岔口支行</td>
+                    <td align="center" height="31" >2</td>
+                    <td align="center" height="31" >4</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+
+                <tr>
+                    <td align="center" height="31" >6</td>
+                    <td align="center" height="31" >凤山支行</td>
+                    <td align="center" height="31" >5</td>
+                    <td align="center" height="31" >7</td>
+                    <td align="center" height="31" >3</td>
+                    <td align="center" height="31" >2</td>
+
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>设备故障对比统计图</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content"style="height: 500px">
+
+                    <div class="echarts" id="duibi"style="height: 480px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>巡检分析总结</h5>
+
+                </div>
+                <div class="ibox-content"style="height: 300px">
+
+                    <div style="text-indent: 2em;font-size:16px">
+                        <p>巡检具体情况：</p>
+                        <p>1.共点检支行及分社营业网点37处。对发电机、UPS、业务终端、打印机及配电系统进行巡检。统一规划修改柜台业务终端系统主机名称。记录UPS工作参数。核对更新业务设备台帐。</p>
+                        <p>2.此次巡检对31处营业网点共81台业务终端、24台办公网主机进行杀毒软件升级。对杀毒软件升级后提示中病毒的四岔口支行、鱼儿山支行、凤山支行、8分理9台业务终端进行查杀病毒处理。白塔支行1台业务终端因设备老旧、系统反映慢更新杀毒超时，建议更换终端处理。刘营支行、波罗诺支行2台业务终端因旧版本杀毒无法卸载，导致无法更新，建议重新安装6.0版本杀毒软件后在卸载安装新版本。</p>
+                        <p>3.测试28处营业网点办公网是否联通，检查ip地址配置是否正确。对3分理、4分理、6分理、7分理、8分理、9分理、石人沟支行7处营业网点查找校对办公网端口，布放网线。白塔支行因即将搬家未布放办公网；1分理因柜台无业空闲业务端口，需重新布放机房至业务柜台网线联网办公网主机。</p>
+                        <p>  4.	终端设备总体运行状态良好。部分终端已使用年限较长且配置低、硬盘较小，处理业务时缓慢，建议更换新终端。巡检时发现大阁支行、白塔支行、两间房支行存在一体机设备3台，告知用户按总行要求需拿回科技部更换为分体终端。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- ECharts -->
+<script src="/js/plugins/echarts/echarts-all.js"></script>
+
+<!-- 自定义js -->
+<script src="/js/content.js?v=1.0.0"></script>
+
+
+<!-- ECharts demo data -->
+<script src="/js/appjs/equipment/reports/devicereport.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+
+</body>
+
+
+</html>

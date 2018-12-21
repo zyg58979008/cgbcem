@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body class="with-heading-top with-heading-bottom"  style="background-color: white">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a  href="javascript:history.back(-1)"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >移库提交</strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <!--<div class="heading color-grey">
+        <div class="title" style="font-size: 20px"><strong>地址： 丰宁县土城子支行</strong></div>
+    </div>-->
+    <div class="color-grey" style="margin: 20px 10px 10px 10px;">
+        <div class="title"><strong>地址： 丰宁县土城子支行</strong></div>
+    </div>
+    <div style="overflow-y: auto; height: 380px; padding: .5rem; border: .05rem solid #ddd; margin-bottom: .5rem">
+    <table class="table" style="height: 200px">
+        <tbody>
+        <tr>
+            <td>
+            <div class="content">
+            <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+             <div class="subtitle">CD01201804135468</div>
+            </div>
+        </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+                    <div class="subtitle">CD01201804135468</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+                    <div class="subtitle">CD01201804135468</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+                    <div class="subtitle">CD01201804135468</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+                    <div class="subtitle">CD01201804135468</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="content">
+                    <div class="title" style="font-size: 15px;font-weight: bold;">打印机-佳能-LBP2900+</div>
+                    <div class="subtitle">CD01201804135468</div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    </div>
+    <div class="color-grey">
+        <div class="title"><strong>操作人：系统管理员</strong></div>
+    </div>
+    <div id="date1">
+
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+
+    <div class="title text-center" style="background-color: white;color: black" onclick="aa()">
+        <a><i class="icon-save"></i></a>
+        信息提交
+    </div>
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script>
+    var num=0;
+    function loadDept( deptId,deptName){
+        $("#deptId").val(deptId);
+        $("#deptName").val(deptName);
+    }
+    window.onload=function()
+    {
+        var now=new Date();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var sec = now.getSeconds();
+        var min =now.getMinutes();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (day >= 1 && day <= 9) {
+            day = "0" + day;
+        }
+        if (min >= 1 && min <= 9) {
+            min = "0" + min;
+        }
+        if (sec >= 0 && sec <= 9) {
+            sec = "0" + sec;
+        }
+        /* var html='<p align="center" style="font-size:14px;">'+message.data+'</p>'; */
+        var date =now.getFullYear()+"年"+month+"月"+day+"日"+" "+now.getHours() + ":" + min+ ":"+ sec;
+        $("#date1").append("<p style='font-weight: bold'>操作时间："+date+"</p>");
+    }
+    function aa() {
+        window.location.href="/mobile/move_detail";
+    }
+</script>
+</body>
+</html>

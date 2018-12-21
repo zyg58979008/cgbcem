@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="buildingId" name="buildingId"
+							   class="hidden">
+						<input id="roomType" name="roomType"
+							   class="hidden">
+						<input id="roomDOList" name="roomDOList"
+							   class="hidden">
+						<div class="card" id="card_1">
+							<label class="col-sm-3 control-label" class="cardLabel">1
+							</label>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">房间编码：</label>
+								<div class="col-sm-3">
+									<input  class="form-control code" type="text" onkeyup="this.value=this.value.replace(/^ +| +$/g,'')">
+
+								</div>
+								<label class="col-sm-3 control-label" >房间楼层：</label>
+								<div class="col-sm-3">
+									<input  class="form-control floor"
+										   type="number">
+								</div>
+							</div>
+							<div class="form-group buildingDiv">
+								<label class="col-sm-3 control-label">计租面积：</label>
+								<div class="col-sm-3">
+									<input class="form-control buildingArea"
+										   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+								</div>
+								<label class="col-sm-3 control-label">实测面积：</label>
+								<div class="col-sm-3">
+									<input class="form-control floorArea"
+										   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+								</div>
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 40px;">
+							<button type="button" onclick="add()" style="margin-left: 280px;" class="btn btn-primary">添加</button>
+							<button type="button" onclick="save()" style="margin-left: 40px;"  class="btn btn-success">提交</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/business/shop/merge.js">
+</script>
+</body>
+</html>

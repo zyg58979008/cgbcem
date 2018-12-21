@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wuye.dao.FangbenDao">
+
+	<select id="get" resultType="com.bootdo.realty.domain.RoomDO">
+		select `id`,`building_id`,`code`,`unit`,`floor`,`room_type`,`dept_id`,`building_area`,`floor_area`,`del_flag`,`wuyefei` from room where id = #{value}
+	</select>
+
+	<update id="update" parameterType="com.bootdo.realty.domain.RoomDO">
+		update room r
+		<set>
+			<if test="weixiu != null">r.weixiu = #{weixiu}</if>
+			<if test="jiaoyifei != null">r.jiaoyifei = #{jiaoyifei}</if>
+			<if test="fangchanzheng != null">r.fangchanzheng = #{fangchanzheng}</if>
+			<if test="qishui != null">r.qishui = #{qishui}</if>
+			<if test="daibanfei != null">r.daibanfei = #{daibanfei}</if>
+		</set>
+		where r.building_id = #{buildingId}
+		and r.room_type=#{roomType}
+		and r.floor>=#{startFloor} and #{endFloor}>=r.floor
+	</update>
+</mapper>

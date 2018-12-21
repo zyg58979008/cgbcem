@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+
+</head>
+<body class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/maintenance"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >设备更换申请</strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="heading color-grey">
+        <div class="title"  style="margin-top: 10px;"><strong>设备更换单</strong></div>
+    </div>
+    <div class="column " >
+        <div class="cell-8"  >
+            <div class="list "  id="list" style="width: 100%">
+
+            </div>
+        </div>
+        <div class="cell-2">
+            <textarea class="textarea" name="desc" id="miaoshu" rows="3" placeholder="备注"></textarea>
+        </div>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+                <div class="title text-center" style="background-color: white;color: black" onclick="aa(1)">
+                    <a>
+                        <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: -1px 0 0 5px;">
+                    </a>
+                    设备扫码
+                </div>
+                <div class="title text-center" style="background-color: white;color: black" onclick="aa(2)">
+                    <a><i class="icon-th-list"></i></a>
+                    设备列表
+                </div>
+                <div class="title text-center" style="background-color: white;color: black" onclick="aa(3)">
+                    <a><i class="icon-save"></i></a>
+                    保存记录
+                </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script>
+    var num=0;
+    var my;
+    function aa(i) {
+        if(i==1){
+            var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='line"+i+"'>"+
+                    "                    <div class=\"content\">"+
+                    "                        <div class=\"title\">打印机-佳能-LBP2900+</div>"+
+                    "                        <div class=\"subtitle\">CD01201804135468</div>"+
+                    "                    </div>"+
+                    "                    <a class=\"btn danger rounded-lg\" onclick='del("+i+")'>删除</a>"+
+                    "                </div>";
+            $("#list").append(html);
+            num++;
+        }
+        if(i==2){
+            var aaa = function(){
+                my = layer.open({
+                    type:2,
+                    title:"设备列表",
+                    area : [ '300px', '450px' ],
+                    content:"/mobile/list",
+                    maxmin: true
+                })
+                layer.full(my);
+            }
+            aaa();
+        }
+        if(i==3){
+            window.location.href="/mobile/maintenance";
+        }
+    }
+    function del(i) {
+        $("#line"+i).remove();
+    }
+    function del1(i) {
+        $("#lines"+i).remove();
+    }
+    var openDept = function(){
+        var index = layer.open({
+            type:2,
+            title:"选择分类",
+            area : [ '300px', '450px' ],
+            content:"/mobile/classTreeView",
+        maxmin: true
+        })
+        layer.full(index);
+    }
+    function close() {
+        layer.close(my);
+    }
+    function loadDept( deptId,deptName){
+        $("#deptId").val(deptId);
+        $("#deptName").val(deptName);
+    }
+    function addItem(html) {
+        $("#list").append(html);
+    }
+    function removeItem(i) {
+        $("#lines"+i).remove();
+    }
+</script>
+</body>
+</html>

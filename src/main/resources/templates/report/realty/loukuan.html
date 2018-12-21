@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="row" style="padding-left: 15px;">
+						<div class="input-group">
+							<div class="form-group">
+								<button type="button" id="download" style="float: left;margin-right: 100px;" id="btn_download"
+										class="btn btn-primary" onClick ="$('#exampleTable').tableExport({
+										type: 'excel', escape: 'false' ,fileName:'楼款汇总表'})">数据导出</button>
+							</div>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div th:include="include :: footer"></div>
+<script src="/js/plugins/bootstrap-table/tableExport.js"></script>
+<script type="text/javascript" src="/js/appjs/report/realty/loukuan.js"></script>
+</body>
+</html>

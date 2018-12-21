@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.base.dao.OwnerDao">
+
+	<select id="get" resultType="com.bootdo.base.domain.OwnerDO">
+	SELECT
+  `id`,
+  `owner_name`,
+  `id_card`,
+  `phone`,
+  `address`,
+  `opening_bank`,
+  `card_no`,
+  `dept_id`,
+  `create_date`,
+  `update_date`,
+  `create_by`,
+  `update_by`
+FROM
+  base_owner
+WHERE id = #{value} and del_flag = '0'
+</select>
+
+	<select id="list" resultType="com.bootdo.base.domain.OwnerDO">
+		SELECT
+		t.id AS id,
+		t.owner_name AS ownerName,
+		t.id_card AS idCard,
+		t.phone AS phone,
+		t.address AS address,
+		d.name AS openingBank,
+		t.card_no AS cardNo,
+		t.dept_id AS deptId,
+		t.create_date AS createDate,
+		t.update_date AS updateDate,
+		t.create_by AS createBy,
+		t.update_by AS updateBy
+		FROM
+		base_owner t left join sys_dict d on t.opening_bank = d.value AND d.type = 'bank'
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="ownerName != null and ownerName != ''"> and owner_name = #{ownerName} </if>
+		  		  <if test="idCard != null and idCard != ''"> and id_card = #{idCard} </if>
+		  		  <if test="phone != null and phone != ''"> and phone = #{phone} </if>
+		  		  <if test="address != null and address != ''"> and address = #{address} </if>
+		  		  <if test="openingBank != null and openingBank != ''"> and opening_bank = #{openingBank} </if>
+		  		  <if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by t.create_date desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from base_owner
+		 <where>
+			 del_flag = '0'
+			 <if test="id != null and id != ''"> and id = #{id} </if>
+			 <if test="ownerName != null and ownerName != ''"> and owner_name = #{ownerName} </if>
+			 <if test="idCard != null and idCard != ''"> and id_card = #{idCard} </if>
+			 <if test="phone != null and phone != ''"> and phone = #{phone} </if>
+			 <if test="address != null and address != ''"> and address = #{address} </if>
+			 <if test="openingBank != null and openingBank != ''"> and opening_bank = #{openingBank} </if>
+			 <if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+			 <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			 <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			 <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			 <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			 <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.base.domain.OwnerDO">
+		insert into base_owner
+		(
+			`owner_name`,`id_card`,`phone`,`address`,`opening_bank`,`card_no`,`dept_id`,`create_date`,`update_date`,`create_by`,`update_by`,`del_flag`
+		)
+		values
+		(
+		#{ownerName},
+		#{idCard},
+		#{phone},
+		#{address},
+		#{openingBank},
+	    #{cardNo},
+		#{deptId},
+		#{createDate},
+		#{updateDate},
+		#{createBy},
+		#{updateBy},
+		#{delFlag}
+		)
+	</insert>
+	<insert id="batchInsert" >
+		insert into base_owner_copy
+		(
+		`owner_name`,`id_card`,`phone`,`address`,`opening_bank`,`card_no`,`dept_id`,`del_flag`,order_id
+		)
+		values
+		<foreach collection ="ownerDOList" item="owner" separator =",">
+			(
+			#{owner.ownerName},
+			#{owner.idCard},
+			#{owner.phone},
+			#{owner.address},
+			#{owner.openingBank},
+			#{owner.cardNo},
+			#{owner.deptId},
+			'0',
+			#{owner.orderId}
+			)
+		</foreach >
+	</insert>
+	<insert id="synchronization" >
+		insert into base_owner
+		select
+		null,
+		`owner_name`,`id_card`,`phone`,`address`,`opening_bank`,`card_no`,`dept_id`, null,null,null,null,'0',`order_id` from base_owner_copy r where r.order_id=#{orderId} and r.del_flag='0' group by r.id_card
+	</insert>
+	<update id="update" parameterType="com.bootdo.base.domain.OwnerDO">
+		update base_owner
+		<set>
+			<if test="ownerName != null and ownerName != ''">owner_name = #{ownerName}, </if>
+			<if test="idCard != null and idCard != ''">id_card = #{idCard}, </if>
+			<if test="phone != null and phone != ''">phone = #{phone}, </if>
+			<if test="address != null and address != ''">address = #{address}, </if>
+			<if test="openingBank != null and openingBank != ''">opening_bank = #{openingBank}, </if>
+			<if test="cardNo != null and cardNo != ''">card_no = #{cardNo}, </if>
+			<if test="deptId != null and deptId != ''">dept_id = #{deptId}, </if>
+			<if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+			<if test="createDate != null and createDate != ''">create_date = #{createDate}, </if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+			<if test="updateDate != null and updateDate != ''">update_date = #{updateDate}, </if>
+			<if test="delFlag != null and delFlag != ''">del_flag = #{delFlag} </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="remove">
+		update base_owner set del_flag = '1' where id = #{value}
+	</update>
+	
+	<update id="batchRemove">
+		update base_owner set del_flag = '1' where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	<delete id="duplicate">
+		DELETE
+		FROM
+		base_owner_copy
+		WHERE id_card IN
+		(SELECT
+		a.id_card
+		FROM
+		(SELECT
+		c.id_card AS id_card
+		FROM
+		base_owner r,
+		base_owner_copy c
+		WHERE r.id_card = c.id_card
+		AND r.dept_id = c.dept_id
+		AND r.del_flag = '0'
+		AND c.`order_id` =#{orderId}) a)
+	</delete>
+	<delete id="removeCopy">
+		delete from base_owner_copy where order_id = #{orderId}
+	</delete>
+</mapper>

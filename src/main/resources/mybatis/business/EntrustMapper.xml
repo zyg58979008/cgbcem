@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.EntrustDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.EntrustDO">
+		select `id`,`dept_id`,`building_id`,`room_id`,`room_code`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`state`,`entrust_start_year`,`entrust_end_year`,`entrust_start_date`,`entrust_end_date`,`leaseback_start_year`,`leaseback_end_year`,`leaseback_start_date`,`leaseback_end_date`,`order_id`,`type` from entrust where id = #{value}
+	</select>
+	<select id="getLease" resultType="com.bootdo.business.domain.LeasebackDO">
+		select `id`,`start_date`,`end_date`,`day`,`order_id`,`room_id`,`building_id`,`dept_id`,`room_code`,`type`,`ying`,`unpay`,`payed`,`status`,`normal_start_date`,`normal_end_date`,`price`,`profit_id`,`month` from leaseback where id = #{value}
+	</select>
+	<select id="getId" resultType="String">
+		CALL `generate_fanzuNo`(#{id},#{deptId}, 8, @orderNo)
+	</select>
+	<select id="getPay" resultType="com.bootdo.common.domain.PayListDO">
+		select `id`,`dept_id`,`remark`,`dept_name`,`name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`room_id`,`room_code`,`unit`,`floor`,`type`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`type_name`,`print`,`date`,`pay_date` from pay_fanzu_list where id = #{id}
+	</select>
+	<select id="list" resultType="com.bootdo.business.domain.EntrustDO">
+		select e.id,e.dept_id,e.building_id,e.room_id,
+		(SELECT b.name FROM building b WHERE b.id=e.building_id AND b.del_flag='0') as buildingName,
+		r.unit,r.floor,rc.room_id,
+		r.code as roomCode,r.room_type,(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,rc.jiaofang_date,
+		r.building_area,r.floor_area,rc.price,rc.total_price,e.create_by,e.create_date,
+		e.update_by,e.update_date,e.del_flag,e.state,e.entrust_start_year,
+		entrust_end_year,e.entrust_start_date,e.entrust_end_date,e.leaseback_start_year,
+		leaseback_end_year,e.leaseback_start_date,e.leaseback_end_date,e.order_id,e.type,
+		(SELECT
+		CONCAT(
+		IFNULL(SUM(l.ying), 0),
+		'-',
+		IFNULL(SUM(l.payed), 0),
+		'-',
+		IFNULL(SUM(l.unpay), 0)
+		)
+		FROM
+		leaseback l
+		WHERE l.`room_id` = r.id) AS ying
+		from entrust e ,room r,room_contract rc
+		where r.id=e.room_id and r.del_flag='0' and r.id=rc.room_id and rc.del_flag='0'
+		and rc.state in ('0','1')
+			<if test="id != null and id != ''"> and e.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and e.dept_id = #{deptId} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				e.building_id =#{buildingId}
+			</if>
+			<if test="roomId != null and roomId != ''"> and e.room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')</if>
+			<if test="createBy != null and createBy != ''"> and e.create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and e.create_date = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and e.update_by = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and e.update_date = #{updateDate} </if>
+			<if test="delFlag != null and delFlag != ''"> and e.del_flag = #{delFlag} </if>
+			<if test="state != null and state != ''"> and e.state = #{state} </if>
+			<if test="startYear != null and startYear != ''"> and
+				(e.entrust_start_year >= #{startYear} AND
+				e.entrust_start_year <![CDATA[ <= ]]> #{endYear}) OR
+				(e.entrust_start_year <![CDATA[ <= ]]> #{startYear} AND
+				e.entrust_end_year >= #{endYear}) OR
+				(e.entrust_end_year>= #{startYear} AND
+				e.entrust_end_year <![CDATA[ <= ]]> #{endYear})
+			</if>
+			<if test="entrustStartDate != null and entrustStartDate != ''"> and e.entrust_start_date = #{entrustStartDate} </if>
+			<if test="entrustEndDate != null and entrustEndDate != ''"> and e.entrust_end_date = #{entrustEndDate} </if>
+			<if test="leasebackStartYear != null and leasebackStartYear != ''"> and e.leaseback_start_year = #{leasebackStartYear} </if>
+			<if test="leasebackEndYear != null and leasebackEndYear != ''"> and e.leaseback_end_year = #{leasebackEndYear} </if>
+			<if test="leasebackStartDate != null and leasebackStartDate != ''"> and e.leaseback_start_date = #{leasebackStartDate} </if>
+			<if test="leasebackEndDate != null and leasebackEndDate != ''"> and e.leaseback_end_date = #{leasebackEndDate} </if>
+			<if test="orderId != null and orderId != ''"> and e.order_id = #{orderId} </if>
+			<if test="type != null and type != ''"> and e.type = #{type} </if>
+			<if test="pay != null">AND (SELECT
+				IFNULL(SUM(l.unpay), 0)
+				FROM
+				leaseback l
+				WHERE l.`room_id` = r.id) >0</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by r.floor,r.CODE,r.unit desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from entrust e left join room r on r.id=e.room_id
+		<where>
+		<if test="id != null and id != ''"> and e.id = #{id} </if>
+		<if test="deptId != null and deptId != ''"> and e.dept_id = #{deptId} </if>
+		<if test="buildingId != null and buildingId != ''"> and
+			e.building_id =#{buildingId}
+		</if>
+		 <if test="roomId != null and roomId != ''"> and e.room_id = #{roomId} </if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')</if>
+		<if test="createBy != null and createBy != ''"> and e.create_by = #{createBy} </if>
+		<if test="createDate != null and createDate != ''"> and e.create_date = #{createDate} </if>
+		<if test="updateBy != null and updateBy != ''"> and e.update_by = #{updateBy} </if>
+		<if test="updateDate != null and updateDate != ''"> and e.update_date = #{updateDate} </if>
+		<if test="delFlag != null and delFlag != ''"> and e.del_flag = #{delFlag} </if>
+		<if test="state != null and state != ''"> and e.state = #{state} </if>
+		<if test="entrustStartYear != null and entrustStartYear != ''"> and
+			(e.start_year >= #{startYear} AND
+			e.start_year <![CDATA[ <= ]]> #{endYear}) OR
+			(e.start_year <![CDATA[ <= ]]> #{startYear} AND
+			e.end_year >= #{endYear}) OR
+			(e.end_year>= #{startYear} AND
+			e.end_year <![CDATA[ <= ]]> #{endYear})
+		</if>
+		<if test="entrustStartDate != null and entrustStartDate != ''"> and e.entrust_start_date = #{entrustStartDate} </if>
+		<if test="entrustEndDate != null and entrustEndDate != ''"> and e.entrust_end_date = #{entrustEndDate} </if>
+		<if test="leasebackStartYear != null and leasebackStartYear != ''"> and e.leaseback_start_year = #{leasebackStartYear} </if>
+		<if test="leasebackEndYear != null and leasebackEndYear != ''"> and e.leaseback_end_year = #{leasebackEndYear} </if>
+		<if test="leasebackStartDate != null and leasebackStartDate != ''"> and e.leaseback_start_date = #{leasebackStartDate} </if>
+		<if test="leasebackEndDate != null and leasebackEndDate != ''"> and e.leaseback_end_date = #{leasebackEndDate} </if>
+		<if test="orderId != null and orderId != ''"> and e.order_id = #{orderId} </if>
+		<if test="type != null and type != ''"> and e.type = #{type} </if>
+			<if test="pay != null">AND (SELECT
+				IFNULL(SUM(l.unpay), 0)
+				FROM
+				leaseback l
+				WHERE l.`room_id` = r.id) >0</if>
+		</where>
+	</select>
+	 <select id="getEntrustList" resultType="String">
+		 SELECT
+		   CONCAT(r.building_id,'_',r.room_code,'_',DATE_FORMAT(r.entrust_start_date,'%Y-%m-%d' )
+		   ,'_',DATE_FORMAT(r.entrust_end_date,'%Y-%m-%d' ))
+		FROM entrust r where r.dept_id = #{deptId}
+	 </select>
+	<select id="detailList" resultType="com.bootdo.business.domain.LeasebackDO">
+		select l.id,(select b.name from building b where b.id=l.building_id and b.del_flag='0') as buildingName,
+		 l.room_code,r.unit,r.floor,l.ying,l.payed,l.unpay,l.month
+		 from leaseback l,room r where r.id=l.room_id and r.del_flag='0'
+		 and r.id=#{id} and DATE_FORMAT(l.month,'%Y-%m' )>=#{leasebackStartDate}
+		<if test="pay != null">AND l.unpay>0</if>
+	</select>
+	<select id="detailCount" resultType="int">
+		select count(*)
+		from leaseback l,room r where r.id=l.room_id and r.del_flag='0'
+		and r.id=#{id} and DATE_FORMAT(l.month,'%Y-%m' )>=#{leasebackStartDate}
+		<if test="pay != null">AND l.unpay>0</if>
+	</select>
+	<select id="pay" resultType="com.bootdo.common.domain.PayListDO">
+		select p.id,p.remark,p.dept_id,p.dept_name,p.name,p.state,p.create_by,p.create_date,p.building_id,p.building_name,p.room_id,p.room_code,p.unit,p.floor,p.type,p.s_type,p.s_type_name,p.code,p.price,p.pay_type,p.receipt_by,p.pay_by,p.brand_receipt_by,p.card_no,p.bank,p.chongxiao_code,p.area,p.yewu_id,p.brand,p.type_name,p.print,p.date,p.pay_date
+
+		from pay_fanzu_list p
+		<where>
+			<if test="id != null and id != ''"> and p.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and p.dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and p.dept_name = #{deptName} </if>
+			<if test="state != null and state != ''"> and p.state = #{state} </if>
+			<if test="createBy != null and createBy != ''"> and p.create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and p.create_date = #{createDate} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				p.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="buildingName != null and buildingName != ''"> and p.building_name = #{buildingName} </if>
+			<if test="roomId != null and roomId != ''"> and p.room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+			<if test="unit != null and unit != ''"> and p.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and p.floor = #{floor} </if>
+			<if test="type != null and type != ''"> and p.type = #{type} </if>
+			<if test="sType != null and sType != ''"> and p.s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and p.s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+			<if test="price != null and price != ''"> and p.price = #{price} </if>
+			<if test="payType != null and payType != ''"> and p.pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and p.receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and p.pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and p.brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and p.card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and p.bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and p.chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and p.area = #{area} </if>
+			<if test="yewuId != null and yewuId != ''"> and p.yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and p.brand = #{brand} </if>
+			<if test="typeName != null and typeName != ''"> and p.type_name = #{typeName} </if>
+			<if test="print != null and print != ''"> and p.print = #{print} </if>
+			<if test="name != null and name != ''"> and p.name like CONCAT('%',#{name},'%') </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by p.pay_date desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="countPayList" resultType="int">
+		select count(*) from pay_fanzu_list
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+			<if test="roomId != null and roomId != ''"> and room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">and room_code like CONCAT('%',#{roomCode},'%')</if>            <if test="unit != null and unit != ''"> and unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and floor = #{floor} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+			<if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+			<if test="price != null and price != ''"> and price = #{price} </if>
+			<if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and area = #{area} </if>
+			<if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%') </if>
+			<if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and brand = #{brand} </if>
+			<if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+			<if test="print != null and print != ''"> and print = #{print} </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+		</where>
+	</select>
+	<insert id="save" parameterType="com.bootdo.business.domain.EntrustDO" useGeneratedKeys="true" keyProperty="id">
+		insert into entrust
+		(
+			`dept_id`, 
+			`building_id`, 
+			`room_id`, 
+			`room_code`,
+			`create_by`,
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`, 
+			`state`, 
+			`entrust_start_year`, 
+			`entrust_end_year`, 
+			`entrust_start_date`, 
+			`entrust_end_date`, 
+			`leaseback_start_year`, 
+			`leaseback_end_year`, 
+			`leaseback_start_date`, 
+			`leaseback_end_date`, 
+			`order_id`, 
+			`type`
+		)
+		values
+		(
+			#{deptId}, 
+			#{buildingId}, 
+			#{roomId}, 
+			#{roomCode},
+			#{createBy},
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}, 
+			#{state}, 
+			#{entrustStartYear}, 
+			#{entrustEndYear}, 
+			#{entrustStartDate}, 
+			#{entrustEndDate}, 
+			#{leasebackStartYear}, 
+			#{leasebackEndYear}, 
+			#{leasebackStartDate}, 
+			#{leasebackEndDate}, 
+			#{orderId}, 
+			#{type}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.business.domain.EntrustDO">
+		update entrust 
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="roomId != null">`room_id` = #{roomId}, </if>
+			<if test="roomCode != null">`room_code` = #{roomCode}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="entrustStartYear != null">`entrust_start_year` = #{entrustStartYear}, </if>
+			<if test="entrustEndYear != null">`entrust_end_year` = #{entrustEndYear}, </if>
+			<if test="entrustStartDate != null">`entrust_start_date` = #{entrustStartDate}, </if>
+			<if test="entrustEndDate != null">`entrust_end_date` = #{entrustEndDate}, </if>
+			<if test="leasebackStartYear != null">`leaseback_start_year` = #{leasebackStartYear}, </if>
+			<if test="leasebackEndYear != null">`leaseback_end_year` = #{leasebackEndYear}, </if>
+			<if test="leasebackStartDate != null">`leaseback_start_date` = #{leasebackStartDate}, </if>
+			<if test="leasebackEndDate != null">`leaseback_end_date` = #{leasebackEndDate}, </if>
+			<if test="orderId != null">`order_id` = #{orderId}, </if>
+			<if test="type != null">`type` = #{type}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<insert id="batchInsert" >
+		insert into entrust
+		(
+		`dept_id`,
+		`building_id`,
+		`room_id`,
+		`room_code`,
+		`create_by`,
+		`create_date`,
+		`update_by`,
+		`update_date`,
+		`del_flag`,
+		`state`,
+		`entrust_start_year`,
+		`entrust_end_year`,
+		`entrust_start_date`,
+		`entrust_end_date`,
+		`leaseback_start_year`,
+		`leaseback_end_year`,
+		`leaseback_start_date`,
+		`leaseback_end_date`,
+		`order_id`,
+		`type`
+		)
+		values
+		<foreach collection ="entrustDOs" item="e" separator =",">
+			(
+			#{e.deptId},
+			#{e.buildingId},
+			(select r.id from room r where r.building_id=#{e.buildingId} and
+			r.code=#{e.roomCode}),
+			#{e.roomCode},
+			#{e.createBy},
+			#{e.createDate},
+			#{e.updateBy},
+			#{e.updateDate},
+			'0',
+			#{e.state},
+			#{e.entrustStartYear},
+			#{e.entrustEndYear},
+			#{e.entrustStartDate},
+			#{e.entrustEndDate},
+			#{e.leasebackStartYear},
+			#{e.leasebackEndYear},
+			#{e.leasebackStartDate},
+			#{e.leasebackEndDate},
+			#{e.orderId},
+			#{e.type}
+			)
+		</foreach >
+	</insert>
+	<insert id="batchInsertLeaseback" >
+		insert into leaseback
+		(
+		`start_date`,
+		`end_date`,
+		`day`,
+		`order_id`,
+		`room_id`,
+		`building_id`,
+		`dept_id`,
+		`room_code`,
+		`type`,
+		`ying`,
+		`unpay`,
+		`payed`,
+		`status`,
+		`normal_start_date`,
+		`normal_end_date`,
+		`price`,
+		`entrust_id`,
+		`month`
+		)
+		values
+		<foreach collection ="leasebackDOs" item="e" separator =",">
+			(
+			#{e.startDate},
+			#{e.endDate},
+			#{e.day},
+			#{e.orderId},
+			(select r.id from room r where r.building_id=#{e.buildingId} and
+			r.code=#{e.roomCode}),
+			#{e.buildingId},
+			#{e.deptId},
+			#{e.roomCode},
+			#{e.type},
+			<if test='e.type == "2"'>
+				(SELECT
+				CONVERT(CONVERT(rc.total_price*2*0.07 /
+				#{e.dayFour},DECIMAL(10,2))*#{e.day},DECIMAL(10,2))
+				FROM room_contract rc where rc.room_code=#{e.roomCode}
+				and rc.building_id=#{e.buildingId} and rc.del_flag='0'),
+			</if>
+			<if test='e.type != "2"'>
+				#{e.ying},
+			</if>
+			<if test='e.type == "2"'>
+				(SELECT
+				CONVERT(CONVERT(rc.total_price*2*0.07 /
+				#{e.dayFour},DECIMAL(10,2))*#{e.day},DECIMAL(10,2))
+				FROM room_contract rc where rc.room_code=#{e.roomCode}
+				and rc.building_id=#{e.buildingId} and rc.del_flag='0'),
+			</if>
+			<if test='e.type != "2"'>
+				#{e.ying},
+			</if>
+			#{e.payed},
+			#{e.status},
+			#{e.normalStartDate},
+			#{e.normalEndDate},
+			<if test='e.type == "2"'>
+				(SELECT
+				CONVERT(rc.total_price*2*0.07 /
+				#{e.dayFour},DECIMAL(10,2))
+				FROM room_contract rc where rc.room_code=#{e.roomCode}
+				and rc.building_id=#{e.buildingId} and rc.del_flag='0'),
+			</if>
+			<if test='e.type != "2"'>
+				'0',
+			</if>
+			null,
+			#{e.month}
+			)
+		</foreach >
+	</insert>
+	<insert id="savePay" parameterType="com.bootdo.common.domain.PayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into pay_fanzu_list
+		(
+		`dept_id`,
+		`dept_name`,
+		`name`,
+		`date`,
+		`state`,
+		`create_by`,
+		`create_date`,
+		`building_id`,
+		`building_name`,
+		`room_id`,
+		`room_code`,
+		`unit`,
+		`floor`,
+		`type`,
+		`s_type`,
+		`s_type_name`,
+		`code`,
+		`price`,
+		`pay_type`,
+		`receipt_by`,
+		`pay_by`,
+		`brand_receipt_by`,
+		`card_no`,
+		`bank`,
+		`chongxiao_code`,
+		`area`,
+		`yewu_id`,
+		`brand`,
+		`type_name`,
+		`print`,
+		`remark`,
+		`pay_date`
+		)
+		values
+		(
+		#{deptId},
+		#{deptName},
+		#{name},
+		#{date},
+		#{state},
+		#{createBy},
+		#{createDate},
+		#{buildingId},
+		#{buildingName},
+		#{roomId},
+		#{roomCode},
+		#{unit},
+		#{floor},
+		#{type},
+		#{sType},
+		#{sTypeName},
+		#{code},
+		#{price},
+		#{payType},
+		#{receiptBy},
+		#{payBy},
+		#{brandReceiptBy},
+		#{cardNo},
+		#{bank},
+		#{chongxiaoCode},
+		#{area},
+		#{yewuId},
+		#{brand},
+		#{typeName},
+		#{print},
+		#{remark},
+		#{payDate}
+		)
+	</insert>
+	<update id="updateDetail">
+		update leaseback
+		set payed=#{payed},
+		unpay=#{unpay}
+		where id= #{id}
+	</update>
+	<update id="updatePay" parameterType="com.bootdo.common.domain.PayListDO">
+		update pay_fanzu_list
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId},</if>
+			<if test="deptName != null">`dept_name` = #{deptName},</if>
+			<if test="name != null">`name` = #{name},</if>
+			<if test="date != null">`date` = #{date},</if>
+			<if test="payDate != null">`pay_date` = #{payDate},</if>
+			<if test="state != null">`state` = #{state},</if>
+			<if test="createBy != null">`create_by` = #{createBy},</if>
+			<if test="createDate != null">`create_date` = #{createDate},</if>
+			<if test="buildingId != null">`building_id` = #{buildingId},</if>
+			<if test="buildingName != null">`building_name` = #{buildingName},</if>
+			<if test="roomId != null">`room_id` = #{roomId},</if>
+			<if test="roomCode != null">`room_code` = #{roomCode},</if>
+			<if test="unit != null">`unit` = #{unit},</if>
+			<if test="floor != null">`floor` = #{floor},</if>
+			<if test="type != null">`type` = #{type},</if>
+			<if test="sType != null">`s_type` = #{sType},</if>
+			<if test="sTypeName != null">`s_type_name` = #{sTypeName},</if>
+			<if test="code != null">`code` = #{code},</if>
+			<if test="price != null">`price` = #{price},</if>
+			<if test="payType != null">`pay_type` = #{payType},</if>
+			<if test="receiptBy != null">`receipt_by` = #{receiptBy},</if>
+			<if test="payBy != null">`pay_by` = #{payBy},</if>
+			<if test="brandReceiptBy != null">`brand_receipt_by` = #{brandReceiptBy},</if>
+			<if test="cardNo != null">`card_no` = #{cardNo},</if>
+			<if test="bank != null">`bank` = #{bank},</if>
+			<if test="chongxiaoCode != null">`chongxiao_code` = #{chongxiaoCode},</if>
+			<if test="area != null">`area` = #{area},</if>
+			<if test="yewuId != null">`yewu_id` = #{yewuId},</if>
+			<if test="brand != null">`brand` = #{brand},</if>
+			<if test="typeName != null">`type_name` = #{typeName},</if>
+			<if test="print != null">`print` = #{print},</if>
+			<if test="payDate != null">`pay_date` = #{payDate},</if>
+			<if test="remark != null">`remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<delete id="remove">
+		delete from entrust where id = #{value}
+	</delete>
+	<delete id="removeLeaseback">
+		delete from leaseback where room_id = #{roomId}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from entrust where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

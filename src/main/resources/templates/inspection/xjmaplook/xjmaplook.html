@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;}
+		#l-map{height:100%;width:100%;float:left;border-right:2px solid #bcbcbc;}
+		#l-map img {
+			max-width: inherit;
+		}
+		#r-result{height:100%;width:20%;float:left;}
+
+	</style>
+
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=i0pSF5a29dpE3H33wN6E3jmC"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerTool/1.2/src/MarkerTool_min.js"></script>
+	<!--
+        <script type="text/javascript" src="~/map-js/jquery-1.9.1.min.js"></script>
+    -->
+	<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=IDvNBsejl9oqMbPF316iKsXR"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+	<!--<script src="~/map-js/jquery-1.9.1.js" type="text/javascript"></script>
+
+	<script type="text/javascript" src="~/map-js/jquery-1.9.1.min.js"></script>-->
+	<link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+	<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerTool/1.2/src/MarkerTool_min.js"></script>
+	<title>巡检地图</title>
+</head>
+<body>
+<div id="l-map"></div>
+<!--<div id="r-result">
+	&lt;!&ndash;<input id="type1" type="radio" name="type" value="single" /><label for="type1">精准查找</label>
+	<input id="type2" type="radio" name="type" value="more" checked="checked" /><label for="type2">模糊查找</label><br />
+	<input type="button" onclick="reset()" value="重置数据" /></br>
+	<input id="keyword" type="text" style="width:150px;" value=""/>
+	<input type="button" value="搜索" onclick="search('type','keyword')"/>&ndash;&gt;
+	暂无巡检任务：<label><img src="../../../../../img/red_point.png" style="width: 30px;height: 30px"/></label>
+	<br/>
+	<br/>
+	正在进行巡检：<label><img src="../../../../../img/blue_point.png" style="width: 30px;height: 30px"/></label>
+</div>-->
+</body>
+</html>
+<script type="text/javascript">
+
+	//  标注点数组
+	window.map = new BMap.Map("l-map");
+	map.centerAndZoom(new BMap.Point(117.969018,40.958547),12);
+	map.enableScrollWheelZoom();
+
+	// 定义一个控件类,即function
+	function ZoomControl(){
+		// 默认停靠位置和偏移量
+		this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
+		this.defaultOffset = new BMap.Size(30, 10);
+	}
+
+	// 通过JavaScript的prototype属性继承于BMap.Control
+	ZoomControl.prototype = new BMap.Control();
+
+	// 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+	// 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+	ZoomControl.prototype.initialize = function(map){
+		// 创建一个DOM元素
+		var div = document.createElement("div");
+		// 添加文字说明
+		//div.appendChild(document.createTextNode("刷新地图"));
+		// 设置样式
+		div.style.cursor = "pointer";
+		div.style.border = "1px solid gray";
+		div.style.backgroundColor = "white";
+		// 绑定事件,点击一次放大两级
+		div.onclick = function(e){
+			initMap();
+		}
+		// 添加DOM元素到地图中
+		map.getContainer().appendChild(div);
+		// 将DOM元素返回
+		return div;
+	}
+	// 创建控件
+	var myZoomCtrl = new ZoomControl();
+	// 添加到地图当中
+	map.addControl(myZoomCtrl);
+
+	//创建和初始化地图函数：
+	function initMap(){
+		$.ajax({
+			type: "GET",
+			url: "/inspection/xjmap/getLook",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (data) {
+				if (data == "]") {
+
+				}
+				else {
+					var json=JSON.stringify(data);//区分大小写噢
+					var markerArr = eval('(' + json + ')');
+				/*	markerArr = [{title:"火神庙信2用社",content:"火神庙环岛转盘1号",point:"117.944836,40.986329",isOpen:0,icon:"../../../../../img/blue_point_mini.png"},
+					{title:"东大街信用社",content:"都统府大街12号",point:"117.947414,40.985032",isOpen:0,icon:"../../../../../img/red_point_mini.png"}
+					]*/
+					addMarker(markerArr);
+					console.log(markerArr);
+					map.addControl(new BMap.NavigationControl());
+					//创建自定义搜索类
+					window.searchClass = new SearchClass();
+					searchClass.setData(markerArr);
+					reset();
+					//BASEDATA = markerArr;
+
+					//	addMarker(markerArr);
+					//	map.addControl(new BMap.NavigationControl());
+					//创建自定义搜索类
+					//	window.searchClass = new SearchClass();
+					/*var BASEDATA = [
+					 {title:"火神庙信用社",content:"火神庙环岛转盘1号",point:"117.944836|40.986329",isOpen:0,icon:"../../../../../img/blue_point_mini.png"},
+					 {title:"东大街信用社",content:"都统府大街12号",point:"117.947414|40.985032",isOpen:0,icon:"../../../../../img/red_point_mini.png"}
+					 ];*/
+					//	searchClass.setData(markerArr);
+					//	reset();
+				}
+			},
+			error: function (err) {
+				alert("数据错误");
+			}
+		});
+
+	}
+	//搜索方法 param{searchTypeRadio_name：搜索radio的名字,keyword_name:搜索文本框的id}
+	window.search = function(searchTypeRadio_name,keyword_name){
+		//获取页面dom
+		var searchType = document.getElementsByName(searchTypeRadio_name);
+		var keyword = document.getElementById(keyword_name).value;
+		//获取dom的值
+		var isLikeSearch;
+		for(var i = 0; i < searchType.length; i++){
+			if(searchType[i].checked){
+				isLikeSearch = searchType[i].value;
+			}
+		}
+		//开始搜索
+		searchClass.trim(isLikeSearch) == "" && (t_v = "single"); //去掉搜索关键字的html标签
+		var dd = searchClass.search({k:"title",d:keyword,t:isLikeSearch,s:""});
+		addMarker(dd);//向地图中添加marker
+	}
+	//重置返回所有结果
+	window.reset = function(){
+		//s:{''只返回找到的结果|all返回所有的}
+		var dd = searchClass.search({k:"title",d:"显示全部",t:"single",s:"all"});
+		addMarker(dd);//向地图中添加marker
+	}
+
+	//创建marker
+	window.addMarker = function (data){
+		map.clearOverlays();
+		for(var i=0;i<data.length;i++){
+			var json = data[i];
+			var p0 = json.point.split(",")[0];
+			var p1 = json.point.split(",")[1];
+			var point = new BMap.Point(p0,p1);
+			var iconImg = new BMap.Icon(json.icon, new BMap.Size(36, 36));
+			var marker = new BMap.Marker(point,{icon:iconImg});
+			var iw = createInfoWindow(i);
+			var label = new BMap.Label(json.title,{"offset":new BMap.Size(22, 22)});
+			marker.setLabel(label);
+			map.addOverlay(marker);
+			label.setStyle({
+				borderColor:"#808080",
+				color:"#333",
+				cursor:"pointer"
+			});
+
+			(function(){
+				var _json = json;
+				var _iw = createInfoWindow(_json);
+				var _marker = marker;
+				_marker.addEventListener("click",function(){
+					this.openInfoWindow(_iw);
+				});
+				_iw.addEventListener("open",function(){
+					_marker.getLabel().hide();
+				})
+				_iw.addEventListener("close",function(){
+					_marker.getLabel().show();
+				})
+				label.addEventListener("click",function(){
+					_marker.openInfoWindow(_iw);
+				})
+				if(!!json.isOpen){
+					label.hide();
+					_marker.openInfoWindow(_iw);
+				}
+			})()
+		}
+	}
+	//创建InfoWindow
+	function createInfoWindow(json){
+		var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>"+json.content+"</div>");
+		return iw;
+	}
+	//创建一个Icon
+	function createIcon(json){
+		var icon = new BMap.Icon("http://dev.baidu.com/wiki/static/map/API/img/ico-marker.gif", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowAnchor:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
+		return icon;
+	}
+
+	function SearchClass(data){
+		this.datas = data;
+	}
+	// rule = {k:"title",d:"酒店",s:"all",t:"single"}=>t{single:(key=?),more:(key like[%?%])}//t:{single|more},s{all|!all}
+	// rule = {k:"名字",d:"搜索关键字",t:{single名字精确查找|more名字模糊匹配查找},s{''只返回找到的结果|all返回所有的}
+	SearchClass.prototype.search = function(rule){
+		if(this.datas == null){alert("数据不存在!");return false;}
+		if(this.trim(rule) == "" || this.trim(rule.d) == "" || this.trim(rule.k) == "" || this.trim(rule.t) == ""){alert("请指定要搜索内容!");return false;}
+		var reval = [];
+		var datas = this.datas;
+		var len = datas.length;
+		var me = this;
+		var ruleReg = new RegExp(this.trim(rule.d));
+		var hasOpen = false;
+
+		var addData = function(data,isOpen){
+			// 第一条数据打开信息窗口
+			if(isOpen && !hasOpen){
+				hasOpen = true;
+				data.isOpen = 1;
+			}else{
+				data.isOpen = 0;
+			}
+			reval.push(data);
+		}
+		var getData = function(data,key){
+			var ks = me.trim(key).split(/\./);
+			var i = null,s = "data";
+			if(ks.length == 0){
+				return data;
+			}else{
+				for(var i = 0; i < ks.length; i++){
+					s += '["' + ks[i] + '"]';
+				}
+				return eval(s);
+			}
+		}
+		for(var cnt = 0; cnt < len; cnt++){
+			var data = datas[cnt];
+			var d = getData(data,rule.k);
+			if(rule.t == "single" && rule.d == d){
+				addData(data,true);
+			}else if(rule.t != "single" && ruleReg.test(d)){
+				addData(data,true);
+			}else if(rule.s == "all"){
+				addData(data,false);
+			}
+		}
+		return reval;
+	}
+	SearchClass.prototype.setData = function(data){
+		this.datas = data;
+	}
+	SearchClass.prototype.trim = function(str){
+		if(str == null){str = "";}else{ str = str.toString();}
+		return str.replace(/(^[\s\t\xa0\u3000]+)|([\u3000\xa0\s\t]+$)/g, "");
+	}
+
+	initMap();//创建和初始化地图
+</script>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm" autocomplete="off">
+						<input id="id" name="id" th:value="${fangbenDO.id}"
+							   class="hidden">
+						<input id="weixiuUnpay" name="weixiuUnpay" th:value="${fangbenDO.weixiuUnpay}"
+							   class="hidden">
+						<input id="jiaoyiUnpay" name="jiaoyiUnpay" th:value="${fangbenDO.jiaoyiUnpay}"
+							   class="hidden">
+						<input id="fangbenUnpay" name="fangbenUnpay" th:value="${fangbenDO.fangbenUnpay}"
+							   class="hidden">
+						<input id="qishuiUnpay" name="qishuiUnpay" th:value="${fangbenDO.qishuiUnpay}"
+							   class="hidden">
+						<input id="daibanUnpay" name="daibanUnpay" th:value="${fangbenDO.daibanUnpay}"
+							   class="hidden">
+						<input id="payType" name="payType" th:value="${fangbenDO.payType}"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">维修基金：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="weixiuYing" name="weixiuYing" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${fangbenDO.weixiuYing}">
+
+							</div>
+							<label class="col-sm-3 control-label" >交易费：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="jiaoyiYing" name="jiaoyiYing" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${fangbenDO.jiaoyiYing}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">房产证：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="fangbenYing" name="fangbenYing" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${fangbenDO.fangbenYing}">
+							</div>
+							<label class="col-sm-3 control-label" >契税：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="qishuiYing" name="qishuiYing" type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${fangbenDO.qishuiYing}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">代办费：</label>
+							<div class="col-sm-3">
+								<input  class="form-control" id="daibanYing"name="daibanYing"  type="number" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+										th:value="${fangbenDO.daibanYing}">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="update()" style="margin: 20px 0 0 90px;" class="btn btn-primary">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/wuye/fangbenManage/edit.js">
+</script>
+</body>
+</html>

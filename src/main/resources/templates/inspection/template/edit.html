@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">模板名称：</label>
+								<div class="col-sm-4">
+									<input id="name" name="name" class="form-control" th:value="${template.name}" type="text">
+								</div>
+								<label class="col-sm-2 control-label">模板编号：</label>
+								<div class="col-sm-4">
+									<input id="id" name="id" class="form-control" th:value="${template.id}" type="text" readonly>
+								</div>
+
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">备注：</label>
+								<div class="col-sm-10">
+									<input id="remarks" name="remarks" class="form-control" type="text">
+								</div>
+							</div>
+
+
+						<div class="text" style=" text-align:center;margin-top: 25px;font-size: 20px;font-weight: bold">巡检记录表</div>
+
+							<div class="form-group"style="margin-top: 15px">
+								<label class="col-sm-2 control-label">巡检网点：</label>
+								<div class="col-sm-4">
+									<input id="store" name="storeroomId" class="form-control" type="text"readonly>
+								</div>
+								<label class="col-sm-2 control-label">巡检人：</label>
+								<div class="col-sm-4">
+									<input id="userid" name="storeroomId" class="form-control"type="text"readonly>
+								</div>
+
+							</div>
+
+
+						<div class="text" style=" text-align:center;font-size: 17px;">柜面设备信息</div>
+						<table  border="1" bordercolor="#000000" cellpadding="0" cellspacing="0"  width="100%">
+							<tbody>
+							<tr>
+								<td align="center" height="31" width="16%">
+									<b><font size="3">序号</font></b></td>
+
+								<td align="center" height="31" width="17%">
+									<b><font size="3">设备名称</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">品牌</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">型号</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">数量</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">设备状态</font></b></td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">1</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">2</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">3</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">4</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">5</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">柜面设备维修信息</div>
+						<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0"  width="100%">
+							<tbody>
+
+							<tr>
+								<td align="center" height="31" width="16%">
+									<b><font size="3">序号</font></b></td>
+
+								<td align="center" height="31" width="17%">
+									<b><font size="3">设备名称</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">序列号</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">已使用年限</font></b></td>
+								<td align="center" height="31" width="17%">
+									<b><font size="3">处理方式</font></b></td>
+
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">1</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%">现场维修/统一维修</td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">2</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%">现场维修/统一维修</td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">3</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%">现场维修/统一维修</td>
+							</tr>
+							<tr>
+								<td align="center" height="31" width="16%">4</td>
+								<td align="center" height="31" width="16%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%"></td>
+								<td align="center" height="31" width="17%">现场维修/统一维修</td>
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">发电机组检测</div>
+						<table id="exampleTable1"data-mobile-responsive="true">
+
+						</table>
+						<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">UPS机头及电池检测</div>
+						<table  id="exampleTable2"data-mobile-responsive="true">
+
+						</table>
+						<div class="text" style=" text-align:center;margin-top: 25px;font-size: 17px;">配电系统检查</div>
+						<table  id="exampleTable3"data-mobile-responsive="true">
+
+						</table>
+
+					<div class="form-group">
+						<div class="col-sm-8 col-sm-offset-5" >
+							<button type="submit" class="btn btn-primary">提交</button>
+						</div>
+					</div>
+
+					</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/inspection/template/edit.js">
+	</script>
+</body>
+</html>

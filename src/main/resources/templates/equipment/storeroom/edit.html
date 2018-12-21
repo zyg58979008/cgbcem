@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${storeroom.id}" type="hidden">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">库房名称：</label>
+                            <div class="col-sm-8">
+                                <input id="name" name="name" th:value="${storeroom.name}" class="form-control"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">库房类型：</label>
+                            <div class="col-sm-8">
+                                <input type="hidden" th:value="${storeroom.type}" id="type1"/>
+                                <select data-placeholder="--选择机构类型--" name="type" id="type"
+                                        th:value="${storeroom.type}"
+                                        class="form-control chosen-select" tabindex="2" required>
+                                    <option value="">--选择库房类型--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">所属机构：</label>
+                            <div class="col-sm-8">
+                                <input id="deptId" name="deptId" class="hidden" th:value="${storeroom.deptId}">
+                                <input id="deptName" name="deptName"
+                                       class="form-control" type="text" style="cursor: pointer;"
+                                       onclick="openDept()" readonly="readonly"  th:value="${storeroom.deptName}">
+                            </div>
+
+                        </div>
+                        <!-- <div class="form-group">
+                             <label class="col-sm-3 control-label">库房地址：</label>
+                             <div class="col-sm-8">
+                                 <input id="address" name="address" th:value="${storeroom.address}" class="form-control"
+                                        type="text">
+                             </div>
+                         </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">备注：</label>
+                            <div class="col-sm-8">
+                                <input id="remarks" name="remarks" th:value="${storeroom.remarks}" class="form-control"
+                                       type="text">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/equipment/storeroom/edit.js">
+</script>
+</body>
+</html>

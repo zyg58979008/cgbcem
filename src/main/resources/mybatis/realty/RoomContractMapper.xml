@@ -1,0 +1,1128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.realty.dao.RoomContractDao">
+
+	<select id="get" resultType="com.bootdo.realty.domain.RoomContractDO">
+		select `id`,`dept_id`,`building_id`,`room_id`,`room_code`,`jiaofang_date`,`unit`,`floor`,
+		deposit_payed,renchou_payed,
+		`room_type`,`building_area`,`floor_area`,`sell_type`,`price`,`total_price`,`weishou`,`yishou`,`pay_type`,
+		`first_pay`,`first_receive`,`first_own`,`loan`,`sell_by`,`sell_date`,`remark`,`code`,`balance_area`,
+		`balance_price`,`tax`,`total_price_no_tax`,`tax_method`,`taxed`,`name`,`id_card`,`phone`,`bank`,`card_no`,
+		`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`state` from room_contract where id = #{value}
+	</select>
+	<select id="getByRoomId" resultType="com.bootdo.realty.domain.RoomContractDO">
+		select rc.id,r.dept_id,r.building_id,b.name as buildingName,r.unit,r.floor,r.id as roomId,
+		r.code as roomCode,r.room_type,sd1.name as roomTypeName,rc.jiaofang_date,
+		r.building_area,r.floor_area,r.sell_type,sd2.name as sellTypeName,
+		IFNULL(rc.price,'0') as price,IFNULL(rc.total_price,'0') as totalPrice,
+		IFNULL(rc.weishou,'0') as weishou,IFNULL(rc.yishou,'0') as yishou,rc.pay_type,sd3.name as payTypeName,
+		IFNULL(rc.first_pay,'0') as firstPay,IFNULL(rc.first_receive,'0') as firstReceive,rc.first_own,rc.loan,rc.sell_by,rc.sell_date,
+		rc.remark,rc.code,rc.balance_area,rc.balance_price,rc.balance_payed,rc.balance_unpay
+		,rc.tax,rc.total_price_no_tax,rc.zhekou,
+		rc.tax_method,rc.taxed,rc.name,rc.id_card,rc.phone,rc.bank,rc.card_no,rc.create_by,
+		rc.create_date,rc.update_by,rc.update_date,rc.del_flag,rc.state,rc.bumen,rc.renyuan,
+		rc.leixing,rc.guishu,rc.beizhu,rc.deposit_ying,IFNULL(rc.deposit_payed,'0') as depositPayed,rc.renchou_ying,
+		IFNULL(rc.renchou_payed,'0') as renchouPayed from room r left join room_contract rc on
+		r.id=rc.room_id and rc.del_flag='0' left join building b on r.building_id=b.id
+		left join sys_dict sd1 on r.room_type=sd1.value and sd1.type='room_type'
+		left join sys_dict sd2 on r.sell_type=sd2.value and sd2.type='sell_type'
+		left join sys_dict sd3 on rc.pay_type=sd3.value and sd3.type='pay_type'
+		where r.id=#{id} and r.del_flag='0'
+	</select>
+	<select id="list" resultType="com.bootdo.realty.domain.RoomContractDO">
+		SELECT * FROM ((SELECT
+		rc.id,
+		rc.dept_id,
+		rc.building_id,
+		(SELECT b.name FROM building b WHERE b.id=r.building_id AND b.del_flag='0') AS buildingName,
+		r.unit,
+		r.floor,
+		rc.room_id,
+		r.code AS roomCode,
+		r.room_type,
+		(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,
+		r.building_area,
+		r.floor_area,
+		rc.sell_type,
+		(SELECT sd2.name FROM sys_dict sd2
+		WHERE rc.sell_type = sd2.value
+		AND sd2.type = 'sell_type') AS sellTypeName,
+		rc.price,
+		rc.total_price,
+		rc.weishou,
+		rc.yishou,
+		rc.pay_type,
+		(SELECT sd3.name FROM sys_dict sd3
+		WHERE rc.pay_type = sd3.value
+		AND sd3.type = 'pay_type') AS payTypeName,
+		rc.first_pay,
+		rc.first_receive,
+		rc.first_own,
+		rc.loan,
+		rc.sell_by,
+		rc.sell_date,
+		rc.jiaofang_date,
+		rc.remark,
+		rc.code,
+		rc.balance_area,
+		rc.balance_price,
+		rc.tax,
+		rc.total_price_no_tax,
+		rc.tax_method,
+		rc.taxed,
+		rc.name,
+		rc.id_card,
+		rc.phone,
+		rc.bank,
+		rc.card_no,
+		rc.create_by,
+		rc.create_date,
+		rc.update_by,
+		rc.update_date,
+		rc.del_flag,
+		rc.state,
+		rc.bumen,
+		rc.renyuan,
+		rc.leixing,
+		rc.guishu,
+		rc.beizhu
+		FROM
+		room r, room_contract rc
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id=rc.id AND rc.del_flag='0'
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')	</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		<if test="payType != null and payType != ''"> and rc.pay_type = #{payType} </if>
+		<if test="code != null and code != ''"> and rc.code like CONCAT('%',#{code},'%') </if>
+		<if test="name != null and name != ''"> and rc.name like CONCAT('%',#{name},'%') </if>
+		<if test="state != null and state != ''"> and rc.state = #{state} </if>
+		)
+		UNION
+		(SELECT
+		'',
+		r.dept_id,
+		r.building_id,
+		(SELECT
+		b.name
+		FROM
+		building b
+		WHERE b.id = r.building_id
+		AND b.del_flag = '0') AS buildingName,
+		r.unit,
+		r.floor,
+		r.id,
+		r.code AS roomCode,
+		r.room_type,
+		(SELECT
+		sd1.name
+		FROM
+		sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,
+		r.building_area,
+		r.floor_area,
+		r.sell_type,
+		(SELECT sd2.name FROM sys_dict sd2
+		WHERE r.sell_type = sd2.value
+		AND sd2.type = 'sell_type') AS sellTypeName,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		'' AS payTypeName,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+		FROM
+		room r
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id IS NULL
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		)) b
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by b.floor,b.CODE desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		SELECT
+		((SELECT
+		count(*)
+		FROM
+		room r, room_contract rc
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id=rc.id AND rc.del_flag='0'
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		<if test="payType != null and payType != ''"> and rc.pay_type = #{payType} </if>
+		<if test="code != null and code != ''"> and rc.code like CONCAT('%',#{code},'%') </if>
+		<if test="name != null and name != ''"> and rc.name like CONCAT('%',#{name},'%') </if>
+		<if test="state != null and state != ''"> and rc.state = #{state} </if>
+		)
+		+
+		(SELECT
+		count(*)
+		FROM
+		room r
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id IS NULL
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		)) FROM
+		DUAL
+	</select>
+	<select id="listPay" resultType="com.bootdo.realty.domain.RoomContractDO">
+		SELECT
+		rc.id,
+		rc.dept_id,
+		rc.building_id,
+		(SELECT b.name FROM building b WHERE b.id=r.building_id AND b.del_flag='0') AS buildingName,
+		r.unit,
+		r.floor,
+		rc.room_id,
+		r.code AS roomCode,
+		r.room_type,
+		(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,
+		r.building_area,
+		r.floor_area,
+		rc.sell_type,
+		(SELECT sd2.name FROM sys_dict sd2
+		WHERE rc.sell_type = sd2.value
+		AND sd2.type = 'sell_type') AS sellTypeName,
+		rc.price,
+		rc.total_price,
+		rc.weishou,
+		rc.yishou,
+		rc.pay_type,
+		(SELECT sd3.name FROM sys_dict sd3
+		WHERE rc.pay_type = sd3.value
+		AND sd3.type = 'pay_type') AS payTypeName,
+		rc.first_pay,
+		rc.first_receive,
+		rc.first_own,
+		rc.loan,
+		rc.sell_by,
+		rc.sell_date,
+		rc.jiaofang_date,
+		rc.remark,
+		rc.code,
+		rc.balance_area,
+		rc.balance_price,
+		rc.tax,
+		rc.total_price_no_tax,
+		rc.tax_method,
+		rc.taxed,
+		rc.name,
+		rc.id_card,
+		rc.phone,
+		rc.bank,
+		rc.card_no,
+		rc.create_by,
+		rc.create_date,
+		rc.update_by,
+		rc.update_date,
+		rc.del_flag,
+		rc.state,
+		rc.bumen,
+		rc.renyuan,
+		rc.leixing,
+		rc.guishu,
+		rc.beizhu
+		FROM
+		room r, room_contract rc
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id=rc.id AND rc.del_flag='0'
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')	</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		<if test="payType != null and payType != ''"> and rc.pay_type = #{payType} </if>
+		<if test="code != null and code != ''"> and rc.code like CONCAT('%',#{code},'%') </if>
+		<if test="name != null and name != ''"> and rc.name like CONCAT('%',#{name},'%') </if>
+		<if test="state != null and state != ''"> and rc.state = #{state} </if>
+
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by r.floor,r.code desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="countPay" resultType="int">
+		select count(*)
+		FROM
+		room r, room_contract rc
+		WHERE r.dept_id = #{deptId}
+		AND r.del_flag = '0' AND r.contract_id=rc.id AND rc.del_flag='0'
+		<if test="ids != null and ids != ''"> and
+			r.building_id in
+			<foreach item="i" collection="ids" open="(" separator="," close=")">
+				#{i}
+			</foreach>
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')	</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		<if test="payType != null and payType != ''"> and rc.pay_type = #{payType} </if>
+		<if test="code != null and code != ''"> and rc.code like CONCAT('%',#{code},'%') </if>
+		<if test="name != null and name != ''"> and rc.name like CONCAT('%',#{name},'%') </if>
+		<if test="state != null and state != ''"> and rc.state = #{state} </if>
+	</select>
+	<select id="contractList" resultType="com.bootdo.report.domain.RoomContractMoneyDO">
+	  SELECT
+		rc.id,
+		rc.dept_id,
+		rc.building_id,
+		(SELECT b.name FROM building b WHERE b.id=r.building_id AND b.del_flag='0') AS buildingName,
+		r.unit,
+		r.floor,
+		rc.room_id,
+		r.code AS roomCode,
+		r.room_type,
+		(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,
+		r.building_area,
+		r.floor_area,
+		rc.sell_type,
+		(SELECT sd2.name FROM sys_dict sd2
+		WHERE rc.sell_type = sd2.value
+		AND sd2.type = 'sell_type') AS sellTypeName,
+		rc.price,
+		rc.total_price,
+		rc.weishou,
+		rc.yishou,
+		rc.pay_type,
+		(SELECT sd3.name FROM sys_dict sd3
+		WHERE rc.sell_type = sd3.value
+		AND sd3.type = 'pay_type') AS payTypeName,
+		rc.first_pay,
+		rc.first_receive,
+		rc.first_own,
+		rc.loan,
+		rc.sell_by,
+		rc.sell_date,
+		rc.jiaofang_date,
+		rc.remark,
+		rc.code,
+		rc.balance_area,
+		rc.balance_price,
+		rc.tax,
+		rc.total_price_no_tax,
+		rc.tax_method,
+		rc.taxed,
+		rc.name,
+		rc.id_card,
+		rc.phone,
+		rc.bank,
+		rc.card_no,
+		rc.create_by,
+		rc.create_date,
+		rc.update_by,
+		update_date,
+		rc.del_flag,
+		rc.state,
+		rc.bumen,
+		rc.renyuan,
+		rc.leixing,
+		rc.guishu,
+		rc.beizhu,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			(SELECT
+			CONCAT(
+			GROUP_CONCAT(DATE_FORMAT(pdl.pay_date, '%d')),
+			'-',
+			SUM(IF(pdl.state='3',-1*pdl.price,pdl.price))
+			)
+			FROM
+			pay_dichan_list pdl
+			WHERE DATE_FORMAT(pdl.pay_date, '%Y-%m') = #{re.month}
+			and pdl.room_id=r.id and pdl.state in ('0','3')
+			GROUP BY pdl.room_id) as date${re.name}
+		</foreach >
+
+		FROM
+		room r, room_contract rc
+		WHERE r.dept_id = #{deptId} and r.id=rc.room_id
+		AND r.del_flag = '0' AND r.contract_id=rc.id AND rc.del_flag='0'
+		<if test="buildingId != null and buildingId != ''"> and
+			r.building_id = #{buildingId}
+		</if>
+		<if test="roomCode != null and roomCode != ''">and r.code like CONCAT('%',#{roomCode},'%')	</if>
+		<if test="roomId != null and roomId != ''"> and r.id = #{roomId} </if>
+		<if test="unit != null and unit != ''"> and r.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and r.floor = #{floor} </if>
+		<if test="roomType != null and roomType != ''"> and r.room_type = #{roomType} </if>
+		<if test="sellType != null and sellType != ''"> and r.sell_type = #{sellType} </if>
+		<if test="payType != null and payType != ''"> and rc.pay_type = #{payType} </if>
+		<if test="code != null and code != ''"> and rc.code like CONCAT('%',#{code},'%') </if>
+		<if test="name != null and name != ''"> and rc.name like CONCAT('%',#{name},'%') </if>
+		<if test="state != null and state != ''"> and rc.state = #{state} </if>
+
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by r.floor,r.CODE desc
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getIds" resultType="String">
+		SELECT
+		   CONCAT(r.building_id,'-',r.code)
+		FROM
+		  room_contract rc,
+		  room r
+		WHERE r.id = rc.`room_id`
+		  AND rc.dept_id = #{deptId}
+		  AND r.`del_flag` = '0'
+		  AND rc.`del_flag` = '0'
+		  AND rc.state in ('0','1');
+	</select>
+	<select id="getRoom" resultType="String">
+		SELECT
+		CONCAT(r.building_id,'-',r.code)
+		FROM
+		room r
+		WHERE r.dept_id = #{deptId}
+		AND r.`del_flag` = '0'
+	</select>
+	<select id="getId" resultType="String">
+		CALL `generate_dichanNo`(#{s},#{deptId}, 8, @orderNo)
+	</select>
+	<select id="getPaySum" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		select CONVERT(SUM(IF(p.type='1',p.price,0)),DECIMAL(10,2)) as xianjin,
+		CONVERT(SUM(IF(p.type='2',p.price,0)),DECIMAL(10,2)) as pos,
+		CONVERT(SUM(IF(p.type='3',p.price,0)),DECIMAL(10,2)) as zhuanzhang
+		from pay_dichan_list p
+		where p.state in ('0','3')
+		<if test="id != null and id != ''"> and p.id = #{id} </if>
+		<if test="deptId != null and deptId != ''"> and p.dept_id = #{deptId} </if>
+		<if test="deptName != null and deptName != ''"> and p.dept_name = #{deptName} </if>
+		<if test="state != null and state != ''"> and p.state = #{state} </if>
+		<if test="buildingId != null and buildingId != ''"> and
+			p.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+		</if>
+		<if test="buildingName != null and buildingName != ''"> and p.building_name = #{buildingName} </if>
+		<if test="roomId != null and roomId != ''"> and p.room_id = #{roomId} </if>
+		<if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+		<if test="unit != null and unit != ''"> and p.unit = #{unit} </if>
+		<if test="floor != null and floor != ''"> and p.floor = #{floor} </if>
+		<if test="type != null and type != ''"> and p.type = #{type} </if>
+		<if test="sType != null and sType != ''"> and p.s_type = #{sType} </if>
+		<if test="sTypeName != null and sTypeName != ''"> and p.s_type_name = #{sTypeName} </if>
+		<if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+		<if test="price != null and price != ''"> and p.price = #{price} </if>
+		<if test="payType != null and payType != ''"> and p.pay_type = #{payType} </if>
+		<if test="receiptBy != null and receiptBy != ''"> and p.receipt_by = #{receiptBy} </if>
+		<if test="payBy != null and payBy != ''"> and p.pay_by = #{payBy} </if>
+		<if test="brandReceiptBy != null and brandReceiptBy != ''"> and p.brand_receipt_by = #{brandReceiptBy} </if>
+		<if test="cardNo != null and cardNo != ''"> and p.card_no = #{cardNo} </if>
+		<if test="bank != null and bank != ''"> and p.bank = #{bank} </if>
+		<if test="chongxiaoCode != null and chongxiaoCode != ''"> and p.chongxiao_code = #{chongxiaoCode} </if>
+		<if test="area != null and area != ''"> and p.area = #{area} </if>
+		<if test="yewuId != null and yewuId != ''"> and p.yewu_id = #{yewuId} </if>
+		<if test="brand != null and brand != ''"> and p.brand = #{brand} </if>
+		<if test="typeName != null and typeName != ''"> and p.type_name = #{typeName} </if>
+		<if test="print != null and print != ''"> and p.print = #{print} </if>
+		<if test="name != null and name != ''"> and p.name like CONCAT('%',#{name},'%') </if>
+		<if test="startDate != null and startDate != ''"> and
+			DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+		</if>
+	</select>
+	<select id="checkRoom" resultType="int">
+		select count(*) from room_contract where del_flag='0'
+		and state in ('0','1') and room_id in
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	<insert id="save" parameterType="com.bootdo.realty.domain.RoomContractDO" useGeneratedKeys="true" keyProperty="id">
+		insert into room_contract
+		(
+			`dept_id`, 
+			`building_id`, 
+			`room_id`, 
+			`room_code`,
+			`unit`,
+			`floor`, 
+			`room_type`, 
+			`building_area`, 
+			`floor_area`, 
+			`sell_type`, 
+			`price`, 
+			`total_price`, 
+			`pay_type`, 
+			`first_pay`, 
+			`first_receive`, 
+			`first_own`, 
+			`loan`, 
+			`sell_by`, 
+			`sell_date`, 
+			`remark`, 
+			`code`, 
+			`balance_area`, 
+			`balance_price`, 
+			`balance_payed`,
+			`balance_unpay`,
+			`tax`,
+			`total_price_no_tax`, 
+			`tax_method`, 
+			`taxed`, 
+			`name`, 
+			`id_card`, 
+			`phone`, 
+			`bank`, 
+			`card_no`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`, 
+			`bumen`,
+			`renyuan`,
+			`leixing`,
+			`guishu`,
+			`beizhu`,
+			`yishou`,
+			`weishou`,
+			`zhekou`,
+			`deposit_payed`,
+			`renchou_payed`,
+			`state`
+		)
+		values
+		(
+			#{deptId}, 
+			#{buildingId}, 
+			#{roomId}, 
+			#{roomCode},
+			#{unit},
+			#{floor}, 
+			#{roomType}, 
+			#{buildingArea}, 
+			#{floorArea}, 
+			#{sellType}, 
+			#{price}, 
+			#{totalPrice}, 
+			#{payType}, 
+			#{firstPay}, 
+			#{firstReceive}, 
+			#{firstOwn}, 
+			#{loan}, 
+			#{sellBy}, 
+			#{sellDate}, 
+			#{remark}, 
+			#{code}, 
+			#{balanceArea}, 
+			#{balancePrice}, 
+			#{balancePayed},
+			#{balanceUnpay},
+			#{tax},
+			#{totalPriceNoTax}, 
+			#{taxMethod}, 
+			#{taxed}, 
+			#{name}, 
+			#{idCard}, 
+			#{phone}, 
+			#{bank}, 
+			#{cardNo}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}, 
+			#{bumen},
+			#{renyuan},
+			#{leixing},
+			#{guishu},
+			#{beizhu},
+			#{yishou},
+			#{weishou},
+			#{zhekou},
+			#{depositPayed},
+			#{renchouPayed},
+			#{state}
+		)
+	</insert>
+	<insert id="batchInsert" >
+		insert into room_contract
+		(
+		`dept_id`,
+		`building_id`,
+		`room_id`,
+		`room_code`,
+		`unit`,
+		`floor`,
+		`room_type`,
+		`building_area`,
+		`floor_area`,
+		`sell_type`,
+		`price`,
+		`total_price`,
+		`pay_type`,
+		`first_pay`,
+		`first_receive`,
+		`first_own`,
+		`loan`,
+		`sell_by`,
+		`sell_date`,
+		`remark`,
+		`code`,
+		`balance_area`,
+		`balance_price`,
+		`balance_payed`,
+		`balance_unpay`,
+		`tax`,
+		`total_price_no_tax`,
+		`tax_method`,
+		`taxed`,
+		`name`,
+		`id_card`,
+		`phone`,
+		`bank`,
+		`card_no`,
+		`create_by`,
+		`create_date`,
+		`update_by`,
+		`update_date`,
+		`jiaofang_date`,
+		`del_flag`,
+		`bumen`,
+		`renyuan`,
+		`leixing`,
+		`guishu`,
+		`beizhu`,
+		`yishou`,
+		`weishou`,
+		`state`,
+		`deposit_ying`,
+		`deposit_payed`,
+		`renchou_ying`,
+		`renchou_payed`,
+		`zhekou`,
+		`order_id`
+		)
+		values
+		<foreach collection ="roomContractDOList" item="room" separator =",">
+			(
+			#{room.deptId},
+			#{room.buildingId},
+			(select r.id from room r where r.building_id=#{room.buildingId} and
+			r.code=#{room.roomCode}),
+			#{room.roomCode},
+			#{room.unit},
+			#{room.floor},
+			(select r.room_type from room r where r.building_id=#{room.buildingId} and
+			r.code=#{room.roomCode}),
+			#{room.buildingArea},
+			#{room.floorArea},
+			#{room.sellType},
+			#{room.price},
+			#{room.totalPrice},
+			#{room.payType},
+			#{room.firstPay},
+			#{room.firstReceive},
+			#{room.firstOwn},
+			#{room.loan},
+			#{room.sellBy},
+			#{room.sellDate},
+			#{room.remark},
+			#{room.code},
+			#{room.balanceArea},
+			#{room.balancePrice},
+			#{room.balancePayed},
+			#{room.balanceUnpay},
+			#{room.tax},
+			#{room.totalPriceNoTax},
+			#{room.taxMethod},
+			#{room.taxed},
+			#{room.name},
+			#{room.idCard},
+			#{room.phone},
+			#{room.bank},
+			#{room.cardNo},
+			#{room.createBy},
+			#{room.createDate},
+			#{room.updateBy},
+			#{room.updateDate},
+			null,
+			#{room.delFlag},
+			#{room.bumen},
+			#{room.renyuan},
+			#{room.leixing},
+			#{room.guishu},
+			#{room.beizhu},
+			'0',
+			#{room.totalPrice},
+			#{room.state},
+			'0',
+			'0',
+			'0',
+			'0',
+			'0',
+			#{room.orderId}
+			)
+		</foreach >
+	</insert>
+	<insert id="saveLog">
+		insert into room_contract_log
+		select null,#{name},#{createBy},#{createDate},id from room_contract
+		where order_id=#{orderId}
+	</insert>
+	<insert id="savePayLog" parameterType="com.bootdo.realty.domain.RoomContractLog" useGeneratedKeys="true" keyProperty="id">
+		insert into room_contract_log
+		(
+		`name`,
+		`create_by`,
+		`create_date`,
+		`contract_id`
+		) values
+		(#{name},#{createBy},#{createDate},#{contractId})
+	</insert>
+	<insert id="savePay" parameterType="com.bootdo.common.domain.PayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into pay_dichan_list
+		(
+		`dept_id`,
+		`dept_name`,
+		`name`,
+		`state`,
+		`create_by`,
+		`create_date`,
+		`building_id`,
+		`building_name`,
+		`room_id`,
+		`room_code`,
+		`unit`,
+		`floor`,
+		`type`,
+		`s_type`,
+		`s_type_name`,
+		`code`,
+		`price`,
+		`pay_type`,
+		`receipt_by`,
+		`pay_by`,
+		`brand_receipt_by`,
+		`card_no`,
+		`bank`,
+		`chongxiao_code`,
+		`area`,
+		`yewu_id`,
+		`brand`,
+		`type_name`,
+		`print`,
+		`remark`,
+		`pay_date`
+		)
+		values
+		(
+		#{deptId},
+		#{deptName},
+		#{name},
+		#{state},
+		#{createBy},
+		#{createDate},
+		#{buildingId},
+		#{buildingName},
+		#{roomId},
+		#{roomCode},
+		#{unit},
+		#{floor},
+		#{type},
+		#{sType},
+		#{sTypeName},
+		#{code},
+		#{price},
+		#{payType},
+		#{receiptBy},
+		#{payBy},
+		#{brandReceiptBy},
+		#{cardNo},
+		#{bank},
+		#{chongxiaoCode},
+		#{area},
+		#{yewuId},
+		#{brand},
+		#{typeName},
+		#{print},
+		#{remark},
+		#{payDate}
+		)
+	</insert>
+	<update id="updatePay" parameterType="com.bootdo.common.domain.PayListDO">
+		update pay_dichan_list
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="deptName != null">`dept_name` = #{deptName}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="buildingName != null">`building_name` = #{buildingName}, </if>
+			<if test="roomId != null">`room_id` = #{roomId}, </if>
+			<if test="roomCode != null">`room_code` = #{roomCode}, </if>
+			<if test="unit != null">`unit` = #{unit}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="sType != null">`s_type` = #{sType}, </if>
+			<if test="sTypeName != null">`s_type_name` = #{sTypeName}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="receiptBy != null">`receipt_by` = #{receiptBy}, </if>
+			<if test="payBy != null">`pay_by` = #{payBy}, </if>
+			<if test="brandReceiptBy != null">`brand_receipt_by` = #{brandReceiptBy}, </if>
+			<if test="cardNo != null">`card_no` = #{cardNo}, </if>
+			<if test="bank != null">`bank` = #{bank}, </if>
+			<if test="chongxiaoCode != null">`chongxiao_code` = #{chongxiaoCode}, </if>
+			<if test="area != null">`area` = #{area}, </if>
+			<if test="yewuId != null">`yewu_id` = #{yewuId}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="typeName != null">`type_name` = #{typeName}, </if>
+			<if test="payDate != null">`pay_date` = #{payDate}, </if>
+			<if test="print != null">`print` = #{print},</if>
+			<if test="remark != null">`remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="update" parameterType="com.bootdo.realty.domain.RoomContractDO">
+		update room_contract 
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="roomId != null">`room_id` = #{roomId}, </if>
+			<if test="unit != null">`unit` = #{unit}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="roomType != null">`room_type` = #{roomType}, </if>
+			<if test="buildingArea != null">`building_area` = #{buildingArea}, </if>
+			<if test="floorArea != null">`floor_area` = #{floorArea}, </if>
+			<if test="sellType != null">`sell_type` = #{sellType}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="totalPrice != null">`total_price` = #{totalPrice}, </if>
+			<if test="yishou != null">`yishou` = #{yishou}, </if>
+			<if test="weishou != null">`weishou` = #{weishou}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="firstPay != null">`first_pay` = #{firstPay}, </if>
+			<if test="firstReceive != null">`first_receive` = #{firstReceive}, </if>
+			<if test="firstOwn != null">`first_own` = #{firstOwn}, </if>
+			<if test="loan != null">`loan` = #{loan}, </if>
+			<if test="sellBy != null">`sell_by` = #{sellBy}, </if>
+			<if test="sellDate != null">`sell_date` = #{sellDate}, </if>
+			<if test="remark != null">`remark` = #{remark}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="balanceArea != null">`balance_area` = #{balanceArea}, </if>
+			<if test="balancePrice != null">`balance_price` = #{balancePrice}, </if>
+			<if test="balancePayed != null">`balance_payed` = #{balancePayed}, </if>
+			<if test="balanceUnpay != null">`balance_unpay` = #{balanceUnpay}, </if>
+			<if test="tax != null">`tax` = #{tax}, </if>
+			<if test="totalPriceNoTax != null">`total_price_no_tax` = #{totalPriceNoTax}, </if>
+			<if test="taxMethod != null">`tax_method` = #{taxMethod}, </if>
+			<if test="taxed != null">`taxed` = #{taxed}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="idCard != null">`id_card` = #{idCard}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="bank != null">`bank` = #{bank}, </if>
+			<if test="bumen != null">`bumen` = #{bumen}, </if>
+			<if test="renyuan != null">`renyuan` = #{renyuan}, </if>
+			<if test="guishu != null">`guishu` = #{guishu}, </if>
+			<if test="leixing != null">`leixing` = #{leixing}, </if>
+			<if test="beizhu != null">`beizhu` = #{beizhu}, </if>
+			<if test="cardNo != null">`card_no` = #{cardNo}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="jiaofangDate != null">`jiaofang_date` = #{jiaofangDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="state != null">`state` = #{state},</if>
+			<if test="depositYing != null">`deposit_ying` = #{depositYing},</if>
+			<if test="depositPayed != null">`deposit_payed` = #{depositPayed},</if>
+			<if test="renchouYing != null">`renchou_ying` = #{renchouYing},</if>
+			<if test="renchouPayed != null">`renchou_payed` = #{renchouPayed}</if>
+		</set>
+		where id = #{id} and del_flag='0'
+	</update>
+	
+	<delete id="remove">
+		update room_contract set del_flag='1' where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from room_contract where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="log" resultType="com.bootdo.realty.domain.RoomContractLog">
+		SELECT r.id,r.name,s.name AS createByName,r.create_date FROM room_contract_log r LEFT JOIN sys_user s ON r.create_by=s.user_id where r.contract_id=#{contractId}
+		order by r.create_date desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="pay" resultType="com.bootdo.common.domain.PayListDO">
+		select `id`,`dept_id`,`dept_name`,`remark`,`name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`room_id`,`room_code`,`unit`,`floor`,`type`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`type_name`,`print`,`pay_date` from pay_dichan_list
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+			<if test="roomId != null and roomId != ''"> and room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">  and room_code like CONCAT('%',#{roomCode},'%')</if>
+			<if test="unit != null and unit != ''"> and unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and floor = #{floor} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+			<if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''"> and code like CONCAT('%',#{code},'%')</if>
+			<if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%')</if>
+			<if test="price != null and price != ''"> and price = #{price} </if>
+			<if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and area = #{area} </if>
+			<if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and brand = #{brand} </if>
+			<if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+			<if test="print != null and print != ''"> and print = #{print} </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by create_date desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="countPayList" resultType="int">
+		select count(*) from pay_dichan_list
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+			<if test="roomId != null and roomId != ''"> and room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">  and room_code like CONCAT('%',#{roomCode},'%')</if>
+			<if test="unit != null and unit != ''"> and unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and floor = #{floor} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+			<if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''"> and code like CONCAT('%',#{code},'%')</if>
+			<if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%')</if>
+			<if test="price != null and price != ''"> and price = #{price} </if>
+			<if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and area = #{area} </if>
+			<if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and brand = #{brand} </if>
+			<if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+			<if test="print != null and print != ''"> and print = #{print} </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+			</if>
+			<if test="endDate != null and endDate != ''">
+			and DATE_FORMAT(pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+		</where>
+	</select>
+	<select id="getPay" resultType="com.bootdo.common.domain.PayListDO">
+		select `id`,`dept_id`,`remark`,`dept_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`room_id`,`room_code`,`unit`,`floor`,`type`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`type_name`,`name`,`print`,`pay_date`,`remark` from pay_dichan_list where id = #{value}
+	</select>
+	<select id="countLog" resultType="int">
+		SELECT count(*) FROM room_contract_log r  where r.contract_id=#{contractId}
+	</select>
+	<select id="paymentList" resultType="com.bootdo.report.domain.Payment">
+		SELECT
+		  DATE_FORMAT(p.pay_date, '%Y-%m-%d')  DATE,
+		  (SELECT
+			CONVERT(IFNULL(SUM(IF(p1.state='3',-1*p1.price,p1.price)), '0'),DECIMAL(15,2))
+		  FROM
+			pay_dichan_list p1
+		  WHERE p1.dept_id = p.dept_id
+			AND p1.type = '1' and p1.state in ('0','3')
+			AND DATE_FORMAT(p1.pay_date, '%Y-%m-%d') = DATE) AS xianjin,
+			  (SELECT
+			CONVERT(IFNULL(SUM(IF(p1.state='3',-1*p1.price,p1.price)),'0'),DECIMAL(15,2))
+		  FROM
+			pay_dichan_list p1
+		  WHERE p1.dept_id = p.dept_id
+			AND p1.type = '2' and p1.state in ('0','3')
+			AND DATE_FORMAT(p1.pay_date, '%Y-%m-%d') = DATE) AS pos,
+			  (SELECT
+			CONVERT(IFNULL(SUM(IF(p1.state='3',-1*p1.price,p1.price)), '0'),DECIMAL(15,2))
+		  FROM
+			pay_dichan_list p1
+		  WHERE p1.dept_id = p.dept_id
+			AND p1.type = '3' and p1.state in ('0','3')
+			AND DATE_FORMAT(p1.pay_date, '%Y-%m-%d') = DATE) AS zhuanzhang
+		FROM
+			`pay_dichan_list` p
+		   WHERE p.dept_id = #{deptId}
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+
+		  GROUP BY DATE
+
+	</select>
+	<update id="updateRoomSellType">
+		 UPDATE
+			room r
+			INNER JOIN
+			  (SELECT
+				room_id,
+				sell_type
+			  FROM
+				room_contract) rc
+			  ON r.id = rc.room_id SET r.sell_type = rc.sell_type
+		  WHERE r.id IN
+			(SELECT
+			  c.room_id
+			FROM
+			  room_contract c
+			WHERE c.`order_id` = #{orderId})
+	</update>
+</mapper>

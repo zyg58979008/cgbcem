@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<link href="/css/layui.css" rel="stylesheet">
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm"  autocomplete="off">
+						<input id="id" name="id" th:value="${wuyefeiDetailDO.id}"
+							   class="hidden">
+						<input id="WuyefeiId" name="WuyefeiId" th:value="${wuyefeiDetailDO.WuyefeiId}"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">建筑面积：</label>
+							<div class="col-sm-3">
+								<input id="buildingArea" name="buildingArea" class="form-control" type="text"
+									   th:value="${wuyefeiDetailDO.buildingArea}" disabled>
+							</div>
+							<label class="col-sm-3 control-label">物业费单价：</label>
+							<div class="col-sm-3">
+								<input id="price" name="price" class="form-control" type="text"
+									   th:value="${wuyefeiDetailDO.wuyefei}" disabled>
+							</div>
+						</div>
+						<div class="form-group">
+							<input type="hidden" id="s" th:value="${wuyefeiDetailDO.startDate}">
+							<input type="hidden" id="e" th:value="${wuyefeiDetailDO.endDate}" >
+							<label class="col-sm-3 control-label">开始日期：</label>
+							<div class="col-sm-3">
+								<input type="text" class="layui-input"  id="startDate" placeholder="yyyy年MM月dd日">
+							</div>
+							<label class="col-sm-3 control-label">结束日期：</label>
+							<div class="col-sm-3">
+								<input type="text" class="layui-input" id="endDate" placeholder="yyyy年MM月dd日">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">折扣：</label>
+							<div class="col-sm-3">
+								<input id="zhekou" name="zhekou" class="form-control" th:value="${wuyefeiDetailDO.zhekou}"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+							<label class="col-sm-3 control-label">应收物业费：</label>
+							<div class="col-sm-3">
+								<input id="yingpay" name="yingpay" class="form-control" type="text"
+									   th:value="${wuyefeiDetailDO.yingpay}">
+								<input id="w"    type="hidden"
+									   th:value="${wuyefeiDetailDO.yingpay}" >
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 40px;">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="calculate()"style="margin-left:40px;margin-right: 20px;" class="btn btn-primary">计算</button>
+								<button type="button" onclick="c()" style="margin-right: 20px;"class="btn btn-primary">恢复物业费</button>
+								<button type="button" onclick="save()" class="btn btn-primary">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/appjs/wuye/wuyefeiManage/editDetail.js">
+</script>
+<script>
+	laydate.render({
+		elem: '#startDate'
+		,format: 'yyyy-MM-dd'
+	});
+	laydate.render({
+		elem: '#endDate'
+		,format: 'yyyy-MM-dd'
+	});
+	var s=$("#s").val();
+	var e=$("#e").val();
+	$("#startDate").val(dateFormat(s,"yyyy-MM-dd"));
+	$("#endDate").val(dateFormat(e,"yyyy-MM-dd"));
+
+	function dateFormat(date, format) {
+
+		date = new Date(date);
+
+		var o = {
+			'M+' : date.getMonth() + 1, //month
+			'd+' : date.getDate(), //day
+			'H+' : date.getHours(), //hour
+			'm+' : date.getMinutes(), //minute
+			's+' : date.getSeconds(), //second
+			'q+' : Math.floor((date.getMonth() + 3) / 3), //quarter
+			'S' : date.getMilliseconds() //millisecond
+		};
+
+		if (/(y+)/.test(format))
+			format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+
+		for (var k in o)
+			if (new RegExp('(' + k + ')').test(format))
+				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+
+		return format;
+	}
+</script>
+</body>
+</html>

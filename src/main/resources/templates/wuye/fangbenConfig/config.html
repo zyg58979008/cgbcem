@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.layui-btn {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 15px;
+		background-color: #1ab394;
+		color: #fff;
+		white-space: nowrap;
+		text-align: center;
+		font-size: 14px;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+	.chosen-container{
+		float: left;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<button shiro:hasPermission="wuye:fangbenConfig:add" type="button"
+									class="btn  btn-primary" onclick="add()" style="float: left;margin-right: 100px;">
+								<i class="fa fa-plus hidden" aria-hidden="true"></i>配置房本费
+							</button>
+							<input id="code" type="text" class="layui-input"
+								   placeholder="房屋编号" style="width: 150px;float: left">
+							<input type="hidden" class="roomType" id="roomType1">
+							<select data-placeholder="--选择房屋类型--"  id="roomType"
+									style="width: 150px;float: left"
+									class="layui-input chosen-select" tabindex="2">
+								<option value="">--选择房屋类型--</option>
+							</select>
+							<button class="btn btn-success" style="float: left" onclick="reLoad()">查询</button>
+							<button class="btn btn-primary" style="float: left" onclick="c()">清空</button>
+
+						</div>
+
+					</div>
+					<table id="exampleTable" data-mobile-responsive="false">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_add_h = 'hidden';
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+		var s_merge_h = 'hidden';
+		var s_split_h = 'hidden';
+	</script>
+</div>
+<div shiro:hasPermission="wuye:fangbenConfig:edit">
+	<script type="text/javascript">
+		s_edit_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="wuye:fangbenConfig:add">
+	<script type="text/javascript">
+		s_add_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="realty:wuyefeiConfig:remove">
+	<script type="text/javascript">
+		var s_remove_h = '';
+	</script>
+</div>
+<div shiro:hasPermission="realty:wuyefeiConfig:merge">
+	<script type="text/javascript">
+		var s_merge_h = '';
+	</script>
+</div>
+	<div shiro:hasPermission="realty:wuyefeiConfig:split">
+		<script type="text/javascript">
+			var s_split_h = '';
+		</script>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/wuye/fangbenConfig/config.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body  class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar"><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title "><strong>巡检任务</strong></div>
+</header>
+<div class="section container"  style="margin-top: 10px;">
+    <div class="list with-divider">
+        <div class="item shadow-2 rounded-lg"  id="w">
+            <div class="title">围场县四合永镇网点</div>
+            <span class="label success rounded">待领取</span>
+            <a id="o" data-display data-backdrop="false" data-target="#target4" data-placement="center" class="btn success rounded">领取任务</a>
+        </div>
+        <div class="item shadow-2 rounded-lg" id="l">
+            <div class="title">滦平县巴克什营镇网点</div>
+            <span class="label primary rounded">待巡检</span>
+            <a id="c" data-display data-backdrop="true" data-target="#target3" data-placement="center" class="btn danger rounded">撤销任务</a>
+        </div>
+        <div class="item shadow-2 rounded-lg" id="s">
+            <div class="title">双滦区滦河镇网点</div>
+            <span class="label warning rounded">完成</span>
+        </div>
+    </div>
+</div>
+<div id="target4" class="affix dock-bottom modal hidden">
+    <div class="heading">
+        <div class="title"><strong>选择巡检人员</strong></div>
+        <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+    </div>
+    <div class="content article box">
+        <div class="row">
+            <div class="select multiple cell-8 ">
+                <select name="gifts" id="gifts" multiple="">
+                    <option value="apple">张三</option>
+                    <option value="orange">李四</option>
+                    <option value="banana">王五</option>
+                </select>
+            </div>
+            <div class="cell-4"><a href="javascript:;" onclick="ok()" class="btn primary">确定</a></div>
+        </div>
+
+    </div>
+</div>
+<div id="target3" class="affix dock-bottom modal hidden">
+    <div class="heading">
+        <div class="title"><strong>是否确定撤销？</strong></div>
+        <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+    </div>
+    <div class="content article box">
+        <div class="row">
+            <div class="cell flex-center">
+                <a href="javascript:;" onclick="ok1()" class="btn btn-lg primary">确   定</a>
+            </div>
+            <div class="cell flex-center"><a href="javascript:;" onclick="cancel()" class="btn primary btn-lg ">取   消</a></div>
+        </div>
+
+    </div>
+</div>
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script>
+    $().ready(function() {
+        ok=function () {
+            $("#w").empty();
+            var html='<div class="title">围场县四合永镇网点</div>'
+                    +'<span class="label text-primary">待巡检</span>'
+                    +'<a id="c" data-display data-backdrop="true" ' +
+                    'data-target="#target3" data-placement="center" class="btn success">撤销任务</a>';
+            $("#w").append(html);
+            $("#target4").hide();
+        }
+        ok1=function() {
+            var myDisplay = $('#c').data('mzui.display');
+            myDisplay.hide()
+            $("#l").empty();
+            var html='<div class="title">滦平县巴克什营镇网点</div>'
+                    +'<span class="label text-primary">待领取</span>'
+                    +'<a id="o" data-display data-backdrop="true" ' +
+                    'data-target="#target4" data-placement="center" class="btn primary">领取任务</a>';
+            $("#l").append(html);
+
+        }
+        cancel=function () {
+            var myDisplay = $('#c').data('mzui.display');
+            myDisplay.hide()
+        }
+        $(".item").click(function () {
+            window.location.href="/mobile/ditu";
+        })
+    });
+
+</script>
+</body>
+</html>

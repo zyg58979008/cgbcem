@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<style>
+    input,button {
+        border:none;
+        outline:none;
+    }
+    input {
+        height:42px;
+        padding-left:13px;
+    }
+    button {
+        height:40px;
+        width:42px;
+        cursor:pointer;
+    }
+    .bar6 input {
+        border:2px solid #3280fc;
+        border-radius:5px;
+        top:0;
+        right:0;
+        height:40px;
+    }
+    .bar6 button {
+        background:#3280fc;
+        border-radius:0 5px 5px 0;
+        font-size:15px;
+        top:0;
+        right:0;
+    }
+    .bar6 button:before {
+        content:"搜索";
+        font-size:15px;
+        color:#F9F0DA;
+    }
+</style>
+<body class="with-heading-bottom">
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="heading color-grey">
+        <div class="title bar6">
+            <div class="row">
+                    <input id="deptId" name="deptId" class="hidden"> <input
+                        id="deptName" name="deptName" class="form-control rounded-lg" type="text"
+                        style="cursor: pointer;width: 40%" onclick="openDept()"
+                        placeholder="设备分类">
+                    <input type="text" placeholder="请输入设备名称" style="width: 44%;margin-left: 10px;float: right" name="cname">
+                    <button type="button" style="margin-left: -2px;float: right"></button>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="list "  id="list" style="width: 100%">
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom rounded-lg">
+    <div class="title text-center " id="ok" onclick="ok()"><strong >完成</strong></div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/jsTree/jstree.min.js"></script>
+<script>
+    var types=["打印机","打印机","服务器","服务器","交换机","交换机","交换机"];
+    var brand=["佳能","佳能","惠普","惠普","思科","思科","思科"];
+    var code=["CD01201804135468","CD01201804139857","CD01201804131238","CD01201804135408","CD01201804134321","CD01201804134462","CD01201804135234"];
+    var model=["LBP2900+","LBP2900+","DL388 Gen9系列","DL388 Gen9系列","WS-C2960-24TT-L","WS-C3560V2-24TS-S","WS-C3850-24S-S"];
+    var index=[];
+    var num=0;
+    for(var i=0;i<7;i++){
+        $("#list").append(html(i,1));
+    }
+    function html(i,type) {
+        var html;
+        if(type==1){
+            html="<div class=\"item multi-lines shadow-2  rounded-lg\" id='lines"+i+"'>"+
+                    "                    <div class=\"content\">"+
+                    "                        <div class=\"title\">"+types[i]+"-"+brand[i]+"-"+model[i]+"+</div>"+
+                    "                        <div class=\"subtitle\">"+code[i]+"</div>"+
+                    "                    </div>"+
+                    "                    <a class=\"btn success rounded-lg \" id='btn"+i+"' onclick='add("+i+")'>添加</a>"+
+                    "                </div>";
+        }
+        if(type==2){
+            html="<div class=\"item multi-lines shadow-2  rounded-lg\" id='lines"+i+"'>"+
+                    "                    <div class=\"content\">"+
+                    "                        <div class=\"title\">"+types[i]+"-"+brand[i]+"-"+model[i]+"+</div>"+
+                    "                        <div class=\"subtitle\">"+code[i]+"</div>"+
+                    "                    </div>"+
+                    "                    <a class=\"btn danger rounded-lg\" id='btn"+i+"' onclick='del1("+i+")'>删除</a>"+
+                    "                </div>";
+        }
+
+        return html;
+    }
+    function ok() {
+        parent.close();
+    }
+    function add(i) {
+        $("#btn"+i).removeAttr("onclick");
+        $("#btn"+i).removeClass("primary");
+        $("#btn"+i).addClass("red");
+        $("#btn"+i).text("取消");
+        $("#btn"+i).attr("onclick","cancel("+i+");");
+        num++;
+        $("#ok").text("完成（已选"+num+"个）");
+        parent.addItem(html(i,2));
+    }
+    function cancel(i) {
+        $("#btn"+i).removeAttr("onclick");
+        $("#btn"+i).addClass("primary");
+        $("#btn"+i).removeClass("red");
+        $("#btn"+i).text("添加");
+        $("#btn"+i).attr("onclick","add("+i+");");
+        num--;
+        $("#ok").text("完成（已选"+num+"个）");
+        parent.removeItem(i);
+    }
+    var openDept = function(){
+        var index = layer.open({
+            type:2,
+            title:"选择分类",
+            area : [ '300px', '450px' ],
+            content:"/mobile/classTreeView",
+        maxmin: true
+        })
+        layer.full(index);
+    }
+    function loadDept( deptId,deptName){
+        $("#deptId").val(deptId);
+        $("#deptName").val(deptName);
+    }
+</script>
+</body>
+</html>

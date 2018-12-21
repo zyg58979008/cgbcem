@@ -1,0 +1,1972 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.PayCountDao">
+
+	<select id="getBeforeChechangTotal" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		IFNULL(SUM(spc.`contract_pay_total`),0) AS contractPayTotal,
+		IFNULL(SUM(spc.`contract_pay_total_received`),0) AS contractPayTotalReceived,
+		IFNULL(SUM(spc.`contract_pay_total_unreceived`),0) AS contractPayTotalUnreceived,
+		spc.`pay_type`,
+		IFNULL(SUM(spc.`fenlei_zujin`),0) AS fenleiZujin,
+		IFNULL(SUM(spc.`fenlei_zujin_received`),0) AS fenleiZujinReceived,
+		IFNULL(SUM(spc.`fenlei_zujin_unreceived`),0) AS fenleiZujinUnreceived,
+		IFNULL(SUM(spc.`fenlei_wuye`),0) AS fenleiWuye,
+		IFNULL(SUM(spc.`fenlei_wuye_received`),0) AS fenleiWuyeReceived,
+		IFNULL(SUM(spc.`fenlei_wuye_unreceived`),0) AS fenleiWuyeUnreceived,
+		IFNULL(SUM(spc.`fenlei_guanli`),0) AS fenleiGuanli,
+		IFNULL(SUM(spc.`fenlei_guanli_received`),0) AS fenleiGuanliReceived,
+		IFNULL(SUM(spc.`fenlei_guanli_unreceived`),0) AS fenleiGuanliUnreceived
+		FROM
+		shop_pay_count_final spc
+		WHERE #{countStartDate} > spc.count_end_date and spc.oid = #{oid}
+	</select>
+
+	<select id="getNowChechangTotal" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+  spc.`id`,
+  spc.`contract_code`,
+  spc.`floor`,
+  spc.`shop_code`,
+  spc.`rent_area`,
+  spc.`brand`,
+  spc.`contract_pay_total` AS contractPayTotal,
+  spc.`contract_pay_total_received` AS contractPayTotalReceived,
+  spc.`contract_pay_total_unreceived` AS contractPayTotalUnreceived,
+  spc.`unit_price`,
+  spc.`pay_type`,
+  spc.`fenlei_zujin`,
+  spc.`fenlei_zujin_received`,
+  spc.`fenlei_zujin_unreceived`,
+  spc.`fenlei_wuye`,
+  spc.`fenlei_wuye_received`,
+  spc.`fenlei_wuye_unreceived`,
+  spc.`fenlei_guanli`,
+  spc.`fenlei_guanli_received`,
+  spc.`fenlei_guanli_unreceived`,
+  spc.`count_start_date`,
+  spc.`count_end_date`,
+  spc.`amortize_months`,
+  spc.`receivable_lvyue`,
+  spc.`receivable_zhiliang`,
+  spc.`receivable_fuwu`,
+  spc.`receivable_zhuangxiu`,
+  spc.`received_lvyue`,
+  spc.`received_zhiliang`,
+  spc.`received_fuwu`,
+  spc.`received_zhuangxiu`,
+  spc.`discrepancy`,
+  spc.`remarks`,
+  spc.`create_date`,
+  spc.`create_by`,
+  spc.`youhui_unit_price`,
+  spc.`amortize_price`,
+  spc.`discount`,
+  spc.`building_id`,
+  spc.`state`,
+  spc.`oid`,
+  spc.`del_flag`
+FROM
+  shop_pay_count_final spc
+WHERE #{countStartDate} >= spc.count_start_date and
+spc.count_end_date >= #{countStartDate} and
+ spc.oid = #{oid}
+	</select>
+
+	<select id="get" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+  spc.`id`,
+  spc.`contract_code`,
+  spc.`floor`,
+  spc.`shop_code`,
+  spc.`rent_area`,
+  spc.`brand`,
+  spc.`contract_pay_total` AS contractPayTotal,
+  spc.`contract_pay_total_received` AS contractPayTotalReceived,
+  spc.`contract_pay_total_unreceived` AS contractPayTotalUnreceived,
+  spc.`unit_price`,
+  spc.`pay_type`,
+  spc.`fenlei_zujin`,
+  spc.`fenlei_zujin_received`,
+  spc.`fenlei_zujin_unreceived`,
+  spc.`fenlei_wuye`,
+  spc.`fenlei_wuye_received`,
+  spc.`fenlei_wuye_unreceived`,
+  spc.`fenlei_guanli`,
+  spc.`fenlei_guanli_received`,
+  spc.`fenlei_guanli_unreceived`,
+  spc.`count_start_date`,
+  spc.`count_end_date`,
+  spc.`amortize_months`,
+  spc.`receivable_lvyue`,
+  spc.`receivable_zhiliang`,
+  spc.`receivable_fuwu`,
+  spc.`receivable_zhuangxiu`,
+  spc.`received_lvyue`,
+  spc.`received_zhiliang`,
+  spc.`received_fuwu`,
+  spc.`received_zhuangxiu`,
+  spc.`discrepancy`,
+  spc.`remarks`,
+  spc.`create_date`,
+  spc.`create_by`,
+  spc.`youhui_unit_price`,
+  spc.`amortize_price`,
+  spc.`discount`,
+  spc.`building_id`,
+  spc.`state`,
+  spc.`oid`,
+  spc.`del_flag`
+FROM
+  shop_pay_count_final spc
+WHERE spc.id = #{value}
+	</select>
+
+	<select id="getByCo" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+  spc.`id`,
+  spc.`oid`,
+  spc.`contract_code`,
+  sc.`contractor`,
+  sc.`contract_true_area`,
+  sc.`contract_rent_area`,
+  sc.`youhui`,
+  sc.`kaidan_code`,
+  sc.`kaidan_name`,
+  sc.`payee`,
+  sc.`contract_date`,
+  sc.`contract_start_date`,
+  sc.`contract_end_date`,
+  sc.`id_card`,
+  spc.`shop_code`,
+  sc.`rent_area`,
+  sc.`brand`,
+  spc.`contract_pay_total`,
+  spc.`contract_pay_total_received`,
+  spc.`contract_pay_total_unreceived`,
+  sc.`unit_price`,
+  spc.`fenlei_zujin`,
+  spc.`fenlei_zujin_received`,
+  spc.`fenlei_zujin_unreceived`,
+  spc.`fenlei_wuye`,
+  spc.`fenlei_wuye_received`,
+  spc.`fenlei_wuye_unreceived`,
+  spc.`fenlei_guanli`,
+  sd.`name` AS payType,
+  spc.`fenlei_guanli_received`,
+  spc.`fenlei_guanli_unreceived`,
+  spc.`count_start_date`,
+  spc.`count_end_date`,
+  sc.`amortize_months`,
+  spc.`receivable_lvyue`,
+  spc.`receivable_zhiliang`,
+  spc.`receivable_fuwu`,
+  spc.`receivable_zhuangxiu`,
+  spc.`received_lvyue`,
+  spc.`received_zhiliang`,
+  spc.`received_fuwu`,
+  spc.`received_zhuangxiu`,
+  spc.`discrepancy`,
+  spc.`remarks`,
+  spc.`create_date`,
+  spc.`create_by`,
+  sc.`youhui_unit_price`,
+  sc.`amortize_price`,
+  sc.`discount`,
+  spc.`building_id`
+FROM
+  shop_pay_count_final spc
+  LEFT JOIN shop_contract sc
+    ON sc.contract_code = spc.contract_code
+    AND sc.del_flag = '0'
+  LEFT JOIN sys_dict sd
+    ON sc.pay_type = sd.value
+    AND sd.type = 'shop_pay_cycle'
+  LEFT JOIN shop s
+    ON s.`code` = sc.`shop_code`
+WHERE spc.id = #{contractCode} GROUP BY spc.`contract_code`
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		spc.`id`,
+		spc.`contract_code`,
+		sc.`contractor`,
+		sc.`contract_true_area`,
+		sc.`contract_rent_area`,
+		sc.`youhui`,
+		sc.`rent_area`,
+		sc.`payee`,
+		sc.`contract_date`,
+		sc.`contract_start_date`,
+		sc.`contract_end_date`,
+		sc.`id_card`,
+		spc.`brand`,
+		spc.`contract_pay_total`,
+		spc.`contract_pay_total_received`,
+		spc.`contract_pay_total_unreceived`,
+		spc.`fenlei_zujin`,
+		spc.`fenlei_zujin_received`,
+		spc.`fenlei_zujin_unreceived`,
+		spc.`fenlei_wuye`,
+		spc.`fenlei_wuye_received`,
+		spc.`fenlei_wuye_unreceived`,
+		spc.`fenlei_guanli`,
+		sd.`name` AS payType,
+		spc.`fenlei_guanli_received`,
+		spc.`fenlei_guanli_unreceived`,
+		spc.`count_start_date`,
+		spc.`count_end_date`,
+		spc.`amortize_months`,
+		spc.`receivable_lvyue`,
+		spc.`receivable_zhiliang`,
+		spc.`receivable_fuwu`,
+		spc.`receivable_zhuangxiu`,
+		spc.`received_lvyue`,
+		spc.`received_zhiliang`,
+		spc.`received_fuwu`,
+		spc.`received_zhuangxiu`,
+		spc.`discrepancy`,
+		spc.`remarks`,
+		spc.`create_date`,
+		spc.`create_by`,
+		sc.`youhui_unit_price`,
+		spc.`building_id`
+		FROM
+		shop_pay_count_final spc
+		, shop_contract sc ,sys_dict sd
+		<where> sc.contract_code = spc.contract_code
+		AND sc.del_flag = '0'
+		AND sc.total != 0
+		AND sc.state != '2'
+		AND sc.pay_type = sd.value
+		AND sd.type = 'shop_pay_cycle'
+		AND (
+		spc.`fenlei_zujin_unreceived` != 0
+		OR spc.`fenlei_guanli_unreceived` != 0
+		OR spc.`fenlei_wuye_unreceived` != 0
+		OR spc.`discrepancy` != 0
+		)
+
+		<if test="id != null and id != ''"> and spc.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and spc.dept_id = #{deptId} </if>
+		  		  <if test="contractCode != null and contractCode != ''"> and spc.contract_code = #{contractCode} </if>
+		  		  <if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+		  		  <if test="rentArea != null and rentArea != ''"> and rent_area = #{rentArea} </if>
+			<if test="brand != null and brand != ''"> and spc.brand like CONCAT('%',#{brand},'%') </if>
+			<if test="contractor != null and contractor != ''"> and sc.contractor like CONCAT('%',#{contractor},'%') </if>
+		  		  <if test="contractPayTotal != null and contractPayTotal != ''"> and contract_pay_total = #{contractPayTotal} </if>
+		  		  <if test="contractPayTotalReceived != null and contractPayTotalReceived != ''"> and contract_pay_total_received = #{contractPayTotalReceived} </if>
+		  		  <if test="contractPayTotalUnreceived != null and contractPayTotalUnreceived != ''"> and contract_pay_total_unreceived = #{contractPayTotalUnreceived} </if>
+		  		  <if test="unitPrice != null and unitPrice != ''"> and unit_price = #{unitPrice} </if>
+		  		  <if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+		  		  <if test="fenleiZujin != null and fenleiZujin != ''"> and fenlei_zujin = #{fenleiZujin} </if>
+		  		  <if test="fenleiZujinReceived != null and fenleiZujinReceived != ''"> and fenlei_zujin_received = #{fenleiZujinReceived} </if>
+		  		  <if test="fenleiZujinUnreceived != null and fenleiZujinUnreceived != ''"> and fenlei_zujin_unreceived = #{fenleiZujinUnreceived} </if>
+		  		  <if test="fenleiWuye != null and fenleiWuye != ''"> and fenlei_wuye = #{fenleiWuye} </if>
+		  		  <if test="fenleiWuyeReceived != null and fenleiWuyeReceived != ''"> and fenlei_wuye_received = #{fenleiWuyeReceived} </if>
+		  		  <if test="fenleiWuyeUnreceived != null and fenleiWuyeUnreceived != ''"> and fenlei_wuye_unreceived = #{fenleiWuyeUnreceived} </if>
+		  		  <if test="fenleiGuanli != null and fenleiGuanli != ''"> and fenlei_guanli = #{fenleiGuanli} </if>
+		  		  <if test="fenleiGuanliReceived != null and fenleiGuanliReceived != ''"> and fenlei_guanli_received = #{fenleiGuanliReceived} </if>
+		  		  <if test="fenleiGuanliUnreceived != null and fenleiGuanliUnreceived != ''"> and fenlei_guanli_unreceived = #{fenleiGuanliUnreceived} </if>
+		  		  <if test="countStartDate != null and countStartDate != ''"> and count_start_date = #{countStartDate} </if>
+		  		  <if test="countEndDate != null and countEndDate != ''"> and count_end_date = #{countEndDate} </if>
+		  		  <if test="amortizeMonths != null and amortizeMonths != ''"> and amortize_months = #{amortizeMonths} </if>
+		  		  <if test="receivableLvyue != null and receivableLvyue != ''"> and receivable_lvyue = #{receivableLvyue} </if>
+		  		  <if test="receivableZhiliang != null and receivableZhiliang != ''"> and receivable_zhiliang = #{receivableZhiliang} </if>
+		  		  <if test="receivableFuwu != null and receivableFuwu != ''"> and receivable_fuwu = #{receivableFuwu} </if>
+		  		  <if test="receivableZhuangxiu != null and receivableZhuangxiu != ''"> and receivable_zhuangxiu = #{receivableZhuangxiu} </if>
+		  		  <if test="receivedLvyue != null and receivedLvyue != ''"> and received_lvyue = #{receivedLvyue} </if>
+		  		  <if test="receivedZhiliang != null and receivedZhiliang != ''"> and received_zhiliang = #{receivedZhiliang} </if>
+		  		  <if test="receivedFuwu != null and receivedFuwu != ''"> and received_fuwu = #{receivedFuwu} </if>
+		  		  <if test="receivedZhuangxiu != null and receivedZhuangxiu != ''"> and received_zhuangxiu = #{receivedZhuangxiu} </if>
+		  		  <if test="discrepancy != null and discrepancy != ''"> and discrepancy = #{discrepancy} </if>
+		  		  <if test="remarks != null and remarks != ''"> and remarks = #{remarks} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="youhuiUnitPrice != null and youhuiUnitPrice != ''"> and youhui_unit_price = #{youhuiUnitPrice} </if>
+		  		  <if test="amortizePrice != null and amortizePrice != ''"> and amortize_price = #{amortizePrice} </if>
+		  		  <if test="discount != null and discount != ''"> and discount = #{discount} </if>
+			<if test="contractStartDate != null and contractStartDate != ''">and spc.contract_start_date =
+				#{contractStartDate}
+			</if>
+			<if test="contractEndDate != null and contractEndDate != ''">and spc.contract_end_date = #{contractEndDate}
+			</if>
+			<if test="buildingId != null and buildingId != ''"> and
+				s.building_id in (select b.id from business_building b  where FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and spc.del_flag = '0' </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+				order by spc.count_start_date ASC
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="getCode" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		spc.`id`,
+		spc.`contract_code`,
+		spc.`contract_pay_total`,
+		spc.`contract_pay_total_received`,
+		spc.`contract_pay_total_unreceived`,
+		spc.`fenlei_zujin`,
+		spc.`fenlei_zujin_received`,
+		spc.`fenlei_zujin_unreceived`,
+		spc.`fenlei_wuye`,
+		spc.`fenlei_wuye_received`,
+		spc.`fenlei_wuye_unreceived`,
+		spc.`fenlei_guanli`,
+		spc.`fenlei_guanli_received`,
+		spc.`fenlei_guanli_unreceived`,
+		spc.`receivable_lvyue`,
+		spc.`receivable_zhiliang`,
+		spc.`receivable_fuwu`,
+		spc.`receivable_zhuangxiu`,
+		spc.`received_lvyue`,
+		spc.`received_zhiliang`,
+		spc.`received_fuwu`,
+		spc.`received_zhuangxiu`,
+		spc.`discrepancy`
+		FROM
+		shop_pay_count_final spc where spc.contract_code=#{contractCode}
+		ORDER BY spc.`count_start_date` ASC
+	</select>
+
+ 	<select id="count" resultType="int">
+		select count(*)
+		FROM
+		shop_pay_count_final spc
+		, shop_contract sc ,sys_dict sd
+		<where> sc.contract_code = spc.contract_code
+			AND sc.del_flag = '0'
+			AND sc.total != 0
+			AND sc.state != '2'
+			AND sc.pay_type = sd.value
+			AND sd.type = 'shop_pay_cycle'
+			AND (
+			spc.`fenlei_zujin_unreceived` != 0
+			OR spc.`fenlei_guanli_unreceived` != 0
+			OR spc.`fenlei_wuye_unreceived` != 0
+			OR spc.`discrepancy` != 0
+			)
+			<if test="id != null and id != ''"> and spc.id = #{id} </if>
+			<if test="contractCode != null and contractCode != ''"> and spc.contract_code = #{contractCode} </if>
+			<if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+			<if test="rentArea != null and rentArea != ''"> and rent_area = #{rentArea} </if>
+			<if test="brand != null and brand != ''"> and spc.brand like CONCAT('%',#{brand},'%') </if>
+			<if test="contractor != null and contractor != ''"> and sc.contractor like CONCAT('%',#{contractor},'%') </if>
+			<if test="contractPayTotal != null and contractPayTotal != ''"> and contract_pay_total = #{contractPayTotal} </if>
+			<if test="contractPayTotalReceived != null and contractPayTotalReceived != ''"> and contract_pay_total_received = #{contractPayTotalReceived} </if>
+			<if test="contractPayTotalUnreceived != null and contractPayTotalUnreceived != ''"> and contract_pay_total_unreceived = #{contractPayTotalUnreceived} </if>
+			<if test="unitPrice != null and unitPrice != ''"> and unit_price = #{unitPrice} </if>
+			<if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+			<if test="fenleiZujin != null and fenleiZujin != ''"> and fenlei_zujin = #{fenleiZujin} </if>
+			<if test="fenleiZujinReceived != null and fenleiZujinReceived != ''"> and fenlei_zujin_received = #{fenleiZujinReceived} </if>
+			<if test="fenleiZujinUnreceived != null and fenleiZujinUnreceived != ''"> and fenlei_zujin_unreceived = #{fenleiZujinUnreceived} </if>
+			<if test="fenleiWuye != null and fenleiWuye != ''"> and fenlei_wuye = #{fenleiWuye} </if>
+			<if test="fenleiWuyeReceived != null and fenleiWuyeReceived != ''"> and fenlei_wuye_received = #{fenleiWuyeReceived} </if>
+			<if test="fenleiWuyeUnreceived != null and fenleiWuyeUnreceived != ''"> and fenlei_wuye_unreceived = #{fenleiWuyeUnreceived} </if>
+			<if test="fenleiGuanli != null and fenleiGuanli != ''"> and fenlei_guanli = #{fenleiGuanli} </if>
+			<if test="fenleiGuanliReceived != null and fenleiGuanliReceived != ''"> and fenlei_guanli_received = #{fenleiGuanliReceived} </if>
+			<if test="fenleiGuanliUnreceived != null and fenleiGuanliUnreceived != ''"> and fenlei_guanli_unreceived = #{fenleiGuanliUnreceived} </if>
+			<if test="countStartDate != null and countStartDate != ''"> and count_start_date = #{countStartDate} </if>
+			<if test="countEndDate != null and countEndDate != ''"> and count_end_date = #{countEndDate} </if>
+			<if test="amortizeMonths != null and amortizeMonths != ''"> and amortize_months = #{amortizeMonths} </if>
+			<if test="receivableLvyue != null and receivableLvyue != ''"> and receivable_lvyue = #{receivableLvyue} </if>
+			<if test="receivableZhiliang != null and receivableZhiliang != ''"> and receivable_zhiliang = #{receivableZhiliang} </if>
+			<if test="receivableFuwu != null and receivableFuwu != ''"> and receivable_fuwu = #{receivableFuwu} </if>
+			<if test="receivableZhuangxiu != null and receivableZhuangxiu != ''"> and receivable_zhuangxiu = #{receivableZhuangxiu} </if>
+			<if test="receivedLvyue != null and receivedLvyue != ''"> and received_lvyue = #{receivedLvyue} </if>
+			<if test="receivedZhiliang != null and receivedZhiliang != ''"> and received_zhiliang = #{receivedZhiliang} </if>
+			<if test="receivedFuwu != null and receivedFuwu != ''"> and received_fuwu = #{receivedFuwu} </if>
+			<if test="receivedZhuangxiu != null and receivedZhuangxiu != ''"> and received_zhuangxiu = #{receivedZhuangxiu} </if>
+			<if test="discrepancy != null and discrepancy != ''"> and discrepancy = #{discrepancy} </if>
+			<if test="remarks != null and remarks != ''"> and remarks = #{remarks} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="youhuiUnitPrice != null and youhuiUnitPrice != ''"> and youhui_unit_price = #{youhuiUnitPrice} </if>
+			<if test="amortizePrice != null and amortizePrice != ''"> and amortize_price = #{amortizePrice} </if>
+			<if test="discount != null and discount != ''"> and discount = #{discount} </if>
+			<if test="contractStartDate != null and contractStartDate != ''">and spc.contract_start_date =
+				#{contractStartDate}
+			</if>
+			<if test="contractEndDate != null and contractEndDate != ''">and spc.contract_end_date = #{contractEndDate}
+			</if>
+			<if test="buildingId != null and buildingId != ''"> and
+				spc.building_id in (select b.id from business_building b  where FIND_IN_SET(b.id,getBuilding1ChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="delFlag != null and delFlag != ''"> and spc.del_flag = '0' </if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.business.domain.PayCountDO" useGeneratedKeys="true" keyProperty="id">
+		insert into shop_pay_count
+		(
+			`contract_code`, 
+			`floor`, 
+			`shop_code`, 
+			`rent_area`, 
+			`brand`, 
+			`contract_pay_total`, 
+			`contract_pay_total_received`, 
+			`contract_pay_total_unreceived`, 
+			`unit_price`, 
+			`pay_type`, 
+			`fenlei_zujin`, 
+			`fenlei_zujin_received`, 
+			`fenlei_zujin_unreceived`, 
+			`fenlei_wuye`, 
+			`fenlei_wuye_received`, 
+			`fenlei_wuye_unreceived`, 
+			`fenlei_guanli`, 
+			`fenlei_guanli_received`, 
+			`fenlei_guanli_unreceived`, 
+			`count_start_date`, 
+			`count_end_date`, 
+			`amortize_months`, 
+			`receivable_lvyue`, 
+			`receivable_zhiliang`, 
+			`receivable_fuwu`, 
+			`receivable_zhuangxiu`, 
+			`received_lvyue`, 
+			`received_zhiliang`, 
+			`received_fuwu`, 
+			`received_zhuangxiu`, 
+			`discrepancy`, 
+			`remarks`, 
+			`create_date`, 
+			`create_by`, 
+			`youhui_unit_price`, 
+			`amortize_price`, 
+			`discount`, 
+			`building_id`, 
+			`state`, 
+			`del_flag`,
+			`oid`
+		)
+		values
+		(
+			#{contractCode}, 
+			#{floor}, 
+			#{shopCode}, 
+			#{rentArea}, 
+			#{brand}, 
+			#{contractPayTotal}, 
+			#{contractPayTotalReceived}, 
+			#{contractPayTotalUnreceived}, 
+			#{unitPrice}, 
+			#{payType}, 
+			#{fenleiZujin}, 
+			#{fenleiZujinReceived}, 
+			#{fenleiZujinUnreceived}, 
+			#{fenleiWuye}, 
+			#{fenleiWuyeReceived}, 
+			#{fenleiWuyeUnreceived}, 
+			#{fenleiGuanli}, 
+			#{fenleiGuanliReceived}, 
+			#{fenleiGuanliUnreceived}, 
+			#{countStartDate}, 
+			#{countEndDate}, 
+			#{amortizeMonths}, 
+			#{receivableLvyue}, 
+			#{receivableZhiliang}, 
+			#{receivableFuwu}, 
+			#{receivableZhuangxiu}, 
+			#{receivedLvyue}, 
+			#{receivedZhiliang}, 
+			#{receivedFuwu}, 
+			#{receivedZhuangxiu}, 
+			#{discrepancy}, 
+			#{remarks}, 
+			#{createDate}, 
+			#{createBy}, 
+			#{youhuiUnitPrice}, 
+			#{amortizePrice}, 
+			#{discount}, 
+			#{buildingId}, 
+			#{state}, 
+			#{delFlag},
+			#{oid}
+		)
+	</insert>
+
+	<update id="updateNowChechangTotal" parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		<set>
+			<if test="contractCode != null">`contract_code` = #{contractCode}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="contractor != null">`contractor` = #{contractor}, </if>
+			<if test="shopCode != null">`shop_code` = #{shopCode}, </if>
+			<if test="rentArea != null">`rent_area` = #{rentArea}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal}, </if>
+			<if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived}, </if>
+			<if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` = #{contractPayTotalUnreceived}, </if>
+			<if test="unitPrice != null">`unit_price` = #{unitPrice}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="fenleiZujin != null">`fenlei_zujin` = #{fenleiZujin}, </if>
+			<if test="fenleiZujinReceived != null">`fenlei_zujin_received` = #{fenleiZujinReceived}, </if>
+			<if test="fenleiZujinUnreceived != null">`fenlei_zujin_unreceived` = #{fenleiZujinUnreceived}, </if>
+			<if test="fenleiWuye != null">`fenlei_wuye` = #{fenleiWuye}, </if>
+			<if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = #{fenleiWuyeReceived}, </if>
+			<if test="fenleiWuyeUnreceived != null">`fenlei_wuye_unreceived` = #{fenleiWuyeUnreceived}, </if>
+			<if test="fenleiGuanli != null">`fenlei_guanli` = #{fenleiGuanli}, </if>
+			<if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = #{fenleiGuanliReceived}, </if>
+			<if test="fenleiGuanliUnreceived != null">`fenlei_guanli_unreceived` = #{fenleiGuanliUnreceived}, </if>
+			<if test="countStartDate != null">`count_start_date` = #{countStartDate}, </if>
+			<if test="countEndDate != null">`count_end_date` = #{countEndDate}, </if>
+			<if test="amortizeMonths != null">`amortize_months` = #{amortizeMonths}, </if>
+			<if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue}, </if>
+			<if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang}, </if>
+			<if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu}, </if>
+			<if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu}, </if>
+			<if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue}, </if>
+			<if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang}, </if>
+			<if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu}, </if>
+			<if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu}, </if>
+			<if test="discrepancy != null">`discrepancy` = #{discrepancy}, </if>
+			<if test="remarks != null">`remarks` = #{remarks}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice}, </if>
+			<if test="amortizePrice != null">`amortize_price` = #{amortizePrice}, </if>
+			<if test="discount != null">`discount` = #{discount}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="getUnpayedCount" resultType="int">
+		select count(*) from shop_pay_count_final where oid = #{oid}
+		and #{countStartDate} > count_start_date
+		and (fenlei_zujin_unreceived != 0.00 or fenlei_wuye_unreceived != 0.00 or fenlei_guanli_unreceived != 0.00)
+	</select>
+
+	<update id="update" parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		<set>
+			<if test="contractCode != null">`contract_code` = #{contractCode}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="contractor != null">`contractor` = #{contractor}, </if>
+			<if test="shopCode != null">`shop_code` = #{shopCode}, </if>
+			<if test="rentArea != null">`rent_area` = #{rentArea}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal}, </if>
+			<if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived}, </if>
+			<if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` = #{contractPayTotalUnreceived}, </if>
+			<if test="unitPrice != null">`unit_price` = #{unitPrice}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="fenleiZujin != null">`fenlei_zujin` = #{fenleiZujin}, </if>
+			<if test="fenleiZujinReceived != null">`fenlei_zujin_received` = #{fenleiZujinReceived}, </if>
+			<if test="fenleiZujinUnreceived != null">`fenlei_zujin_unreceived` = #{fenleiZujinUnreceived}, </if>
+			<if test="fenleiWuye != null">`fenlei_wuye` = #{fenleiWuye}, </if>
+			<if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = #{fenleiWuyeReceived}, </if>
+			<if test="fenleiWuyeUnreceived != null">`fenlei_wuye_unreceived` = #{fenleiWuyeUnreceived}, </if>
+			<if test="fenleiGuanli != null">`fenlei_guanli` = #{fenleiGuanli}, </if>
+			<if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = #{fenleiGuanliReceived}, </if>
+			<if test="fenleiGuanliUnreceived != null">`fenlei_guanli_unreceived` = #{fenleiGuanliUnreceived}, </if>
+			<if test="countStartDate != null">`count_start_date` = #{countStartDate}, </if>
+			<if test="countEndDate != null">`count_end_date` = #{countEndDate}, </if>
+			<if test="amortizeMonths != null">`amortize_months` = #{amortizeMonths}, </if>
+			<if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue}, </if>
+			<if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang}, </if>
+			<if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu}, </if>
+			<if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu}, </if>
+			<if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue}, </if>
+			<if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang}, </if>
+			<if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu}, </if>
+			<if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu}, </if>
+			<if test="discrepancy != null">`discrepancy` = #{discrepancy}, </if>
+			<if test="remarks != null">`remarks` = #{remarks}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice}, </if>
+			<if test="amortizePrice != null">`amortize_price` = #{amortizePrice}, </if>
+			<if test="discount != null">`discount` = #{discount}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where oid = #{oid}
+	</update>
+
+	<update id="updatePrice" parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		<set>
+			<if test="contractCode != null">`contract_code` = #{contractCode}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="contractor != null">`contractor` = #{contractor}, </if>
+			<if test="shopCode != null">`shop_code` = #{shopCode}, </if>
+			<if test="rentArea != null">`rent_area` = #{rentArea}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal}, </if>
+			<if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived}, </if>
+			<if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` = #{contractPayTotalUnreceived}, </if>
+			<if test="unitPrice != null">`unit_price` = #{unitPrice}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="fenleiZujin != null">`fenlei_zujin` = #{fenleiZujin}, </if>
+			<if test="fenleiZujinReceived != null">`fenlei_zujin_received` = #{fenleiZujinReceived}, </if>
+			<if test="fenleiZujinUnreceived != null">`fenlei_zujin_unreceived` = #{fenleiZujinUnreceived}, </if>
+			<if test="fenleiWuye != null">`fenlei_wuye` = #{fenleiWuye}, </if>
+			<if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = #{fenleiWuyeReceived}, </if>
+			<if test="fenleiWuyeUnreceived != null">`fenlei_wuye_unreceived` = #{fenleiWuyeUnreceived}, </if>
+			<if test="fenleiGuanli != null">`fenlei_guanli` = #{fenleiGuanli}, </if>
+			<if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = #{fenleiGuanliReceived}, </if>
+			<if test="fenleiGuanliUnreceived != null">`fenlei_guanli_unreceived` = #{fenleiGuanliUnreceived}, </if>
+			<if test="countStartDate != null">`count_start_date` = #{countStartDate}, </if>
+			<if test="countEndDate != null">`count_end_date` = #{countEndDate}, </if>
+			<if test="amortizeMonths != null">`amortize_months` = #{amortizeMonths}, </if>
+			<if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue}, </if>
+			<if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang}, </if>
+			<if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu}, </if>
+			<if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu}, </if>
+			<if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue}, </if>
+			<if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang}, </if>
+			<if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu}, </if>
+			<if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu}, </if>
+			<if test="discrepancy != null">`discrepancy` = #{discrepancy}, </if>
+			<if test="remarks != null">`remarks` = #{remarks}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice}, </if>
+			<if test="amortizePrice != null">`amortize_price` = #{amortizePrice}, </if>
+			<if test="discount != null">`discount` = #{discount}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updatePriceChechang" parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		<set>
+			<if test="fenleiZujinReceived != null">`fenlei_zujin_received` = `fenlei_zujin`, </if>
+			<if test="fenleiZujinReceived != null">`fenlei_zujin_unreceived` = 0.00, </if>
+			<if test="fenleiWuyeReceived != null">`fenlei_wuye_received` = `fenlei_wuye`, </if>
+			<if test="fenleiWuyeReceived != null">`fenlei_wuye_unreceived` = 0.00, </if>
+			<if test="fenleiGuanliReceived != null">`fenlei_guanli_received` = `fenlei_guanli`, </if>
+			<if test="fenleiGuanliReceived != null">`fenlei_guanli_unreceived` = 0.00, </if>
+			<if test="youhuiUnitPrice != null">`youhui_unit_price` = #{youhuiUnitPrice}, </if>
+			<if test="amortizePrice != null">`amortize_price` = #{amortizePrice}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where oid = #{oid}
+	</update>
+	<update id="updateFourOther" parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		<set>
+			<if test="contractPayTotal != null">`contract_pay_total` = #{contractPayTotal}, </if>
+			<if test="contractPayTotalReceived != null">`contract_pay_total_received` = #{contractPayTotalReceived}, </if>
+			<if test="contractPayTotalUnreceived != null">`contract_pay_total_unreceived` = #{contractPayTotalUnreceived}, </if>
+			<if test="receivableLvyue != null">`receivable_lvyue` = #{receivableLvyue}, </if>
+			<if test="receivableZhiliang != null">`receivable_zhiliang` = #{receivableZhiliang}, </if>
+			<if test="receivableFuwu != null">`receivable_fuwu` = #{receivableFuwu}, </if>
+			<if test="receivableZhuangxiu != null">`receivable_zhuangxiu` = #{receivableZhuangxiu}, </if>
+			<if test="receivedLvyue != null">`received_lvyue` = #{receivedLvyue}, </if>
+			<if test="receivedZhiliang != null">`received_zhiliang` = #{receivedZhiliang}, </if>
+			<if test="receivedFuwu != null">`received_fuwu` = #{receivedFuwu}, </if>
+			<if test="receivedZhuangxiu != null">`received_zhuangxiu` = #{receivedZhuangxiu}, </if>
+			<if test="discrepancy != null">`discrepancy` = #{discrepancy}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where oid = #{oid}
+	</update>
+	
+	<delete id="remove">
+		delete from shop_pay_count where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from shop_pay_count where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="batchInsert">
+		insert into shop_pay_count
+		(
+		`contract_code`,
+		`floor`,
+		`shop_code`,
+		`rent_area`,
+		`brand`,
+		`contract_pay_total`,
+		`contract_pay_total_received`,
+		`contract_pay_total_unreceived`,
+		`unit_price`,
+		`pay_type`,
+		`fenlei_zujin`,
+		`fenlei_zujin_received`,
+		`fenlei_zujin_unreceived`,
+		`fenlei_wuye`,
+		`fenlei_wuye_received`,
+		`fenlei_wuye_unreceived`,
+		`fenlei_guanli`,
+		`fenlei_guanli_received`,
+		`fenlei_guanli_unreceived`,
+		`count_start_date`,
+		`count_end_date`,
+		`amortize_months`,
+		`receivable_lvyue`,
+		`receivable_zhiliang`,
+		`receivable_fuwu`,
+		`receivable_zhuangxiu`,
+		`received_lvyue`,
+		`received_zhiliang`,
+		`received_fuwu`,
+		`received_zhuangxiu`,
+		`discrepancy`,
+		`remarks`,
+		`create_date`,
+		`create_by`,
+		`youhui_unit_price`,
+		`amortize_price`,
+		`discount`,
+		`building_id`,
+		`state`,
+		`del_flag`,
+		`contractor`,
+		`dept_id`,
+		`oid`
+		)
+		values
+		<foreach collection ="payCountDOList" item="pay" separator =",">
+			(
+			#{pay.contractCode},
+			#{pay.floor},
+			#{pay.shopCode},
+			#{pay.rentArea},
+			#{pay.brand},
+			#{pay.contractPayTotal},
+			#{pay.contractPayTotalReceived},
+			#{pay.contractPayTotalUnreceived},
+			#{pay.unitPrice},
+			#{pay.payType},
+			#{pay.fenleiZujin},
+			#{pay.fenleiZujinReceived},
+			#{pay.fenleiZujinUnreceived},
+			#{pay.fenleiWuye},
+			#{pay.fenleiWuyeReceived},
+			#{pay.fenleiWuyeUnreceived},
+			#{pay.fenleiGuanli},
+			#{pay.fenleiGuanliReceived},
+			#{pay.fenleiGuanliUnreceived},
+			#{pay.countStartDate},
+			#{pay.countEndDate},
+			#{pay.amortizeMonths},
+			#{pay.receivableLvyue},
+			#{pay.receivableZhiliang},
+			#{pay.receivableFuwu},
+			#{pay.receivableZhuangxiu},
+			#{pay.receivedLvyue},
+			#{pay.receivedZhiliang},
+			#{pay.receivedFuwu},
+			#{pay.receivedZhuangxiu},
+			#{pay.discrepancy},
+			#{pay.remarks},
+			#{pay.createDate},
+			#{pay.createBy},
+			#{pay.youhuiUnitPrice},
+			#{pay.amortizePrice},
+			#{pay.discount},
+			#{pay.buildingId},
+			#{pay.state},
+			'0',
+			#{pay.contractor},
+			#{pay.deptId},
+			#{pay.oid}
+			)
+		</foreach >
+	</insert>
+	<insert id="batchInsertFinal">
+		insert into shop_pay_count_final
+		(
+		`contract_code`,
+		`floor`,
+		`shop_code`,
+		`rent_area`,
+		`brand`,
+		`contract_pay_total`,
+		`contract_pay_total_received`,
+		`contract_pay_total_unreceived`,
+		`unit_price`,
+		`pay_type`,
+		`fenlei_zujin`,
+		`fenlei_zujin_received`,
+		`fenlei_zujin_unreceived`,
+		`fenlei_wuye`,
+		`fenlei_wuye_received`,
+		`fenlei_wuye_unreceived`,
+		`fenlei_guanli`,
+		`fenlei_guanli_received`,
+		`fenlei_guanli_unreceived`,
+		`count_start_date`,
+		`count_end_date`,
+		`amortize_months`,
+		`receivable_lvyue`,
+		`receivable_zhiliang`,
+		`receivable_fuwu`,
+		`receivable_zhuangxiu`,
+		`received_lvyue`,
+		`received_zhiliang`,
+		`received_fuwu`,
+		`received_zhuangxiu`,
+		`discrepancy`,
+		`remarks`,
+		`create_date`,
+		`create_by`,
+		`youhui_unit_price`,
+		`amortize_price`,
+		`discount`,
+		`building_id`,
+		`state`,
+		`del_flag`,
+		`contractor`,
+		`dept_id`,
+		`oid`
+		)
+		values
+		<foreach collection ="payCountDOList" item="pay" separator =",">
+			(
+			#{pay.contractCode},
+			#{pay.floor},
+			#{pay.shopCode},
+			#{pay.rentArea},
+			#{pay.brand},
+			#{pay.contractPayTotal},
+			#{pay.contractPayTotalReceived},
+			#{pay.contractPayTotalUnreceived},
+			#{pay.unitPrice},
+			#{pay.payType},
+			#{pay.fenleiZujin},
+			#{pay.fenleiZujinReceived},
+			#{pay.fenleiZujinUnreceived},
+			#{pay.fenleiWuye},
+			#{pay.fenleiWuyeReceived},
+			#{pay.fenleiWuyeUnreceived},
+			#{pay.fenleiGuanli},
+			#{pay.fenleiGuanliReceived},
+			#{pay.fenleiGuanliUnreceived},
+			#{pay.countStartDate},
+			#{pay.countEndDate},
+			#{pay.amortizeMonths},
+			#{pay.receivableLvyue},
+			#{pay.receivableZhiliang},
+			#{pay.receivableFuwu},
+			#{pay.receivableZhuangxiu},
+			#{pay.receivedLvyue},
+			#{pay.receivedZhiliang},
+			#{pay.receivedFuwu},
+			#{pay.receivedZhuangxiu},
+			#{pay.discrepancy},
+			#{pay.remarks},
+			#{pay.createDate},
+			#{pay.createBy},
+			#{pay.youhuiUnitPrice},
+			#{pay.amortizePrice},
+			#{pay.discount},
+			#{pay.buildingId},
+			#{pay.state},
+			'0',
+			#{pay.contractor},
+			#{pay.deptId},
+			#{pay.oid}
+			)
+		</foreach >
+	</insert>
+	<insert id="savePayFinal">
+		INSERT INTO shop_pay_count_final (
+		`contract_code`,
+		`count_start_date`,
+		`count_end_date`,
+		`contract_pay_total`,
+		`contract_pay_total_received`,
+		`contract_pay_total_unreceived`,
+		`unit_price`,
+		`fenlei_zujin`,
+		`fenlei_zujin_received`,
+		`fenlei_zujin_unreceived`,
+		`fenlei_wuye`,
+		`fenlei_wuye_received`,
+		`fenlei_wuye_unreceived`,
+		`fenlei_guanli`,
+		`fenlei_guanli_received`,
+		`fenlei_guanli_unreceived`,
+		`receivable_lvyue`,
+		`receivable_zhiliang`,
+		`receivable_fuwu`,
+		`receivable_zhuangxiu`,
+		`received_lvyue`,
+		`received_zhiliang`,
+		`received_fuwu`,
+		`received_zhuangxiu`,
+		`discrepancy`,
+		`create_date`,
+		`create_by`,
+		`building_id`,
+		`state`,
+		`del_flag`,
+		`brand`,
+		`contractor`,
+		`dept_id`,
+		`oid`
+		)
+		SELECT DISTINCT
+		s.`contract_code` AS contract_code,
+		s.count_start_date,
+		s.`count_end_date`,
+		IFNULL(
+		(SELECT
+		SUM(sa.contract_pay_total)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS contract_pay_total,
+		IFNULL(
+		(SELECT
+		SUM(sa.contract_pay_total_received)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS contract_pay_total_received,
+		IFNULL(
+		(SELECT
+		SUM(
+		sa.contract_pay_total_unreceived
+		)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS contract_pay_total_unreceived,
+		IFNULL(
+		(SELECT
+		SUM(sa.unit_price)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS unit_price,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_zujin)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_zujin,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_zujin_received)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_zujin_received,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_zujin_unreceived)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_zujin_unreceived,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_wuye)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_wuye,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_wuye_received)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_wuye_received,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_wuye_unreceived)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_wuye_unreceived,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_guanli)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_guanli,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_guanli_received)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_guanli_received,
+		IFNULL(
+		(SELECT
+		SUM(sa.fenlei_guanli_unreceived)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS fenlei_guanli_unreceived,
+		IFNULL(
+		(SELECT
+		SUM(sa.receivable_lvyue)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS receivable_lvyue,
+		IFNULL(
+		(SELECT
+		SUM(sa.receivable_zhiliang)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS receivable_zhiliang,
+		IFNULL(
+		(SELECT
+		SUM(sa.receivable_fuwu)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS receivable_fuwu,
+		IFNULL(
+		(SELECT
+		SUM(sa.receivable_zhuangxiu)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS receivable_zhuangxiu,
+		IFNULL(
+		(SELECT
+		SUM(sa.received_lvyue)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS received_lvyue,
+		IFNULL(
+		(SELECT
+		SUM(sa.received_zhiliang)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS received_zhiliang,
+		IFNULL(
+		(SELECT
+		SUM(sa.received_fuwu)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS received_fuwu,
+		IFNULL(
+		(SELECT
+		SUM(sa.received_zhuangxiu)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS received_zhuangxiu,
+		IFNULL(
+		(SELECT
+		SUM(sa.discrepancy)
+		FROM
+		shop_pay_count sa
+		WHERE sa.count_start_date = s.count_start_date
+		AND sa.count_end_date = s.count_end_date
+		AND sa.contract_code = s.contract_code),
+		0
+		) AS discrepancy,
+		NOW(),
+		s.`create_by`,
+		s.`building_id`,
+		s.`state`,
+		s.`del_flag`,
+		s.`brand`,
+		s.`contractor`,
+		s.`dept_id`,
+		s.`oid`
+		FROM
+		shop_pay_count s
+	</insert>
+	<delete id="deleteCount">
+		DELETE FROM `shop_pay_count`
+	</delete>
+	<select id="shopContractList" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		bb.name AS buildingName,
+		sc.contract_code,
+		sc.`contractor` AS contractor,
+		sc.`brand` AS brand,
+		DATE_FORMAT(sc.`contract_start_date`, '%Y-%m-%d') as contractStartDateString,
+		DATE_FORMAT(sc.`contract_end_date`, '%Y-%m-%d') as contractEndDateString,
+		IFNULL(
+		(SELECT
+		SUM(stc.rent_area)
+		FROM
+		shop_to_contract stc
+		WHERE stc.contract_code = sc.contract_code),
+		0
+		) AS rentArea,
+		sc.`contract_pay_total`,
+		sc.`contract_pay_total_received`,
+		IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS contractPayTotalPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS contractPayTotalReceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE  #{reportDOsin.endDate} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS contractPayTotalUnreceivedPart,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			(SELECT
+			spcc.contract_pay_total
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS contractPayTotal${re.name},
+			(SELECT
+			spcc.contract_pay_total_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS contractPayTotalReceived${re.name},
+			(SELECT
+			spcc.contract_pay_total_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS contractPayTotalUnreceived${re.name},
+			(SELECT
+			DATE_FORMAT(spcc.count_start_date, '%Y-%m-%d')
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS startDate${re.name},
+			(SELECT
+			DATE_FORMAT(spcc.count_end_date, '%Y-%m-%d')
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS endDate${re.name}
+		</foreach>
+		FROM
+		`shop_contract` sc
+		LEFT JOIN `business_building` bb ON bb.id=sc.`building_id`
+		WHERE sc.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and sc.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and sc.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+		<if test="reportDOsin.contractor != null and reportDOsin.contractor != ''">
+			and sc.contractor like CONCAT('%',#{reportDOsin.contractor},'%')
+		</if>
+		GROUP BY sc.oid
+	</select>
+
+	<select id="getShopContractReport" resultType="com.bootdo.business.domain.PayCountDO">
+
+		SELECT
+		'',
+		'',
+		'',
+		'合计' AS brand,
+		'',
+		'',
+		SUM(IFNULL((SELECT SUM(stc.rent_area) FROM shop_to_contract stc WHERE stc.contract_code = sc.contract_code),0)) AS rentArea,
+		SUM(IFNULL(sc.`contract_pay_total`,0)) AS contractPayTotal,
+		SUM(IFNULL(sc.`contract_pay_total_received`,0)) AS contractPayTotalReceived,
+
+		SUM(IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0))
+		AS contractPayTotalPart,
+		SUM(IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0))
+		AS contractPayTotalReceivedPart,
+		SUM(IFNULL
+		((SELECT
+		SUM(spc1.contract_pay_total_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0))
+		AS contractPayTotalUnreceivedPart,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			SUM(IFNULL((SELECT
+			spcc.contract_pay_total
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0)) AS contractPayTotal${re.name},
+			SUM(IFNULL((SELECT
+			spcc.contract_pay_total_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0)) AS contractPayTotalReceived${re.name},
+			SUM(IFNULL((SELECT
+			spcc.contract_pay_total_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0)) AS contractPayTotalUnreceived${re.name},
+			null AS startDate${re.name},
+			null AS endDate${re.name}
+		</foreach >
+		FROM
+		`shop_contract` sc
+		LEFT JOIN `business_building` bb ON bb.id=sc.`building_id`
+		WHERE sc.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and sc.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and sc.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+		<if test="reportDOsin.contractor != null and reportDOsin.contractor != ''">
+			and sc.contractor like CONCAT('%',#{reportDOsin.contractor},'%')
+		</if>
+	</select>
+
+	<update id="updateAfterChechang"  parameterType="com.bootdo.business.domain.PayCountDO">
+		update shop_pay_count_final
+		set
+		fenlei_zujin = 0.00,
+		fenlei_zujin_unreceived = 0.00,
+		fenlei_wuye = 0.00,
+		fenlei_wuye_unreceived = 0.00,
+		fenlei_guanli = 0.00,
+		fenlei_guanli_unreceived = 0.00,
+		contract_pay_total = 0.00,
+		contract_pay_total_unreceived = 0.00
+		  where oid = #{oid} and count_start_date > #{countStartDate}
+	</update>
+
+	<select id="shopContractTypeList" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		@rownum:=@rownum+1 AS rowNum,
+		bb.name AS buildingName,
+		sc.unit_code as unitCode,
+		sc.kaidan_name as kaidanName,
+		sc.kaidan_code as kaidanCode,
+		sc.payee as payee,
+		sc.contract_code,
+		sc.account,
+		sd3.name as bank,
+		sc.`contractor` AS contractor,
+		sc.`brand` AS brand,
+		DATE_FORMAT(sc.`contract_start_date`, '%Y-%m-%d') as contractStartDateString,
+		DATE_FORMAT(sc.`contract_end_date`, '%Y-%m-%d') as contractEndDateString,
+		IFNULL(
+		(SELECT
+		SUM(stc.rent_area)
+		FROM
+		shop_to_contract stc
+		WHERE stc.contract_code = sc.contract_code),
+		0
+		) AS rentArea,
+		sc.`contract_pay_total`,
+		sc.`contract_pay_total_received`,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_zujin)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiZujinPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_zujin_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiZujinReceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_zujin_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE  #{reportDOsin.endDate} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiZujinUnreceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_guanli)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiGuanliPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_guanli_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiGuanliReceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_guanli_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE  #{reportDOsin.endDate} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiGuanliUnreceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_wuye)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiWuyePart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_wuye_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{reportDOsin.endDate}>= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiWuyeReceivedPart,
+		IFNULL
+		((SELECT
+		SUM(spc1.fenlei_wuye_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE  #{reportDOsin.endDate} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0)
+		AS fenleiWuyeUnreceivedPart,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			IFNULL
+			((SELECT
+			spcc.fenlei_zujin
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiZujin${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_zujin_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiZujinReceived${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_zujin_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiZujinUnreceived${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_guanli
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiGuanli${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_guanli_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiGuanliReceived${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_guanli_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiGuanliUnreceived${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_wuye
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiWuye${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_wuye_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiWuyeReceived${re.name},
+			IFNULL
+			((SELECT
+			spcc.fenlei_wuye_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),0) AS fenleiWuyeUnreceived${re.name},
+			(SELECT
+			DATE_FORMAT(spcc.count_start_date, '%Y-%m-%d')
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS startDate${re.name},
+			(SELECT
+			DATE_FORMAT(spcc.count_end_date, '%Y-%m-%d')
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid) AS endDate${re.name}
+		</foreach>
+		FROM
+		(SELECT @rownum :=0) b,
+		`shop_contract` sc
+		LEFT JOIN `business_building` bb ON bb.id=sc.`building_id`
+		LEFT JOIN sys_dict sd3
+		ON sc.bank = sd3.value
+		AND sd3.type = 'bank'
+		WHERE sc.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and sc.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and sc.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+	</select>
+
+	<select id="getShopContractTypeReport" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		'',
+		'',
+		'',
+		'合计' AS brand,
+		'',
+		'',
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(stc.rent_area)
+		FROM
+		shop_to_contract stc
+		WHERE stc.contract_code = sc.contract_code),
+		0
+		)
+		) AS rentArea,
+		SUM(
+		IFNULL(sc.`contract_pay_total`, 0)
+		) AS contractPayTotal,
+		SUM(
+		IFNULL(
+		sc.`contract_pay_total_received`,
+		0
+		)
+		) AS contractPayTotalReceived,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_zujin)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiZujinPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_zujin_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiZujinReceivedPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_zujin_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiZujinUnreceivedPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_guanli)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiGuanliPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_guanli_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiGuanliReceivedPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_guanli_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiGuanliUnreceivedPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_wuye)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiWuyePart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_wuye_received)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiWuyeReceivedPart,
+		SUM(
+		IFNULL(
+		(SELECT
+		SUM(spc1.fenlei_wuye_unreceived)
+		FROM
+		shop_pay_count_final spc1
+		WHERE #{re.month} >= DATE_FORMAT(
+		spc1.`count_start_date`,
+		'%Y-%m'
+		)
+		AND spc1.oid = sc.oid),
+		0
+		)
+		) AS fenleiWuyeUnreceivedPart,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_zujin
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiZujin${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_zujin_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiZujinReceived${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_zujin_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiZujinUnreceived${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_guanli
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiGuanli${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_guanli_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiGuanliReceived${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_guanli_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiGuanliUnreceived${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_wuye
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiWuye${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_wuye_received
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiWuyeReceived${re.name},
+			SUM(
+			IFNULL(
+			(SELECT
+			spcc.fenlei_wuye_unreceived
+			FROM
+			`shop_pay_count_final` spcc
+			WHERE DATE_FORMAT(
+			spcc.`count_start_date`,
+			'%Y-%m'
+			) = #{re.month}
+			AND spcc.oid = sc.oid),
+			0
+			)
+			) AS fenleiWuyeUnreceived${re.name},
+			NULL AS startDate${re.name},
+			NULL AS endDate${re.name}
+		</foreach >
+		FROM
+		`shop_contract` sc
+		LEFT JOIN `business_building` bb ON bb.id=sc.`building_id`
+		WHERE sc.dept_id = #{reportDOsin.deptId}
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and sc.building_id=#{reportDOsin.buildingId}
+		</if>
+		<if test="reportDOsin.brand != null and reportDOsin.brand != ''">
+			and sc.brand like CONCAT('%',#{reportDOsin.brand},'%')
+		</if>
+	</select>
+
+	<select id="getNumForContractEnd" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		<foreach collection ="reportDOs" item="re" separator =",">
+			IFNULL((SELECT
+			COUNT(*)
+			FROM
+			shop_contract
+			WHERE dept_id = #{reportDOsin.deptId} AND (DATE_FORMAT(contract_end_date, '%Y-%m') = #{re.month}
+			)),0) AS num${re.name}
+		</foreach>
+	</select>
+
+	<select id="getNumForAmortizeMonth" resultType="com.bootdo.business.domain.PayCountDO">
+		SELECT
+		<foreach collection ="reportDOs" item="re" separator =",">
+			IFNULL((SELECT
+			SUM(total)
+			FROM
+			shop_amortize
+			WHERE dept_id = #{reportDOsin.deptId} AND month = #{re.month}
+			),0) AS num${re.name}
+		</foreach>
+	</select>
+</mapper>

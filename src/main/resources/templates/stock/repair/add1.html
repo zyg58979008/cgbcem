@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<style>
+	.clearfix {
+		display: none;
+	}
+	.fixed-table-pagination{
+		display: none !important;
+	}
+</style>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<h2 style="text-align: center">设备报修单</h2>
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="type"  value="路由器" name="type" type="hidden">
+							<input id="brand"  value="思科" name="brand" type="hidden">
+							<input id="model"  value="TP4521" name="model" type="hidden">
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">单据编号：</label>
+								<div class="col-sm-4">
+									<input id="id" readonly value="BX20180313000252" name="id" class="form-control" type="text">
+								</div>
+								<label class="col-sm-2 control-label">报修机构：</label>
+								<div class="col-sm-4">
+									<input id="deptId" readonly value="杨木栅子支行" name="deptId" class="form-control" type="text">
+
+									<!--
+                                                                    <input id="storeroomId" name="storeroomId" class="form-control" type="text">
+                                    -->
+								</div>
+							</div>
+
+							<div class="form-group">
+								<table id="exampleTable" data-mobile-responsive="true">
+								</table>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">备注：</label>
+								<div class="col-sm-10">
+									<input id="remarks" name="remarks" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">申请日期：</label>
+								<div class="col-sm-4">
+									<input id="deptId1" readonly value="杨木栅子支行" name="deptId" class="form-control" type="text">
+
+								</div>
+								<label class="col-sm-2 control-label">申请人：</label>
+								<div class="col-sm-4">
+									<input id="deptId11" readonly value="张三" name="deptId" class="form-control" type="text">
+
+									<!--
+                                                                    <input id="inboundBy" name="inboundBy" class="form-control" type="text">
+                                    -->
+								</div>
+								</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/stock/repair/add1.js">
+	</script>
+</body>
+</html>

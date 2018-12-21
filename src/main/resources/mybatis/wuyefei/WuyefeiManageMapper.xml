@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wuye.dao.WuyefeiManageDao">
+
+	<select id="get" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		select `id`,`dept_id`,`name`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`state`,`start_year`,`end_year`,`start_date`,`end_date`,`unpay`,`payed` from wuyefei where id = #{value}
+	</select>
+	<select id="getDetail" resultType="com.bootdo.wuye.domain.WuyefeiDetailDO">
+		select wd.id,wd.dept_id,wd.state,wd.start_year as startYear,wd.end_year as endYear,
+		wd.start_date as startDate,wd.end_date as endDate,wd.unpay,wd.payed,wd.building_id,
+		r.code as roomCode,r.id as roomId,r.wuyefei as wuyefei,r.unit,r.floor,
+		r.building_area as buildingArea,wd.yingpay,wd.wuyefei_id,wd.zhekou,wd.months,wd.type
+		 from wuyefei_detail wd left join room r on wd.room_id=r.id  where wd.id = #{value}
+	</select>
+	<select id="getDetailByRoom" resultType="com.bootdo.wuye.domain.WuyefeiDetailDO">
+		select wd.id,wd.dept_id,wd.state,wd.start_year as startYear,wd.end_year as endYear,
+		wd.start_date as startDate,wd.end_date as endDate,wd.unpay,wd.payed,wd.building_id,
+		wd.yingpay,wd.wuyefei_id,wd.zhekou,wd.months,wd.type,wd.room_id,wd.room_code
+		from wuyefei_detail wd where wd.room_code=#{roomCode} and
+		wd.building_id=#{buildingId} and wd.wuyefei_id=#{wuyefeiId}
+	</select>
+	<select id="getId" resultType="String">
+		CALL `generate_wuyeNo`(#{value}, 8, @orderNo)
+	</select>
+	<select id="getPay" resultType="com.bootdo.common.domain.PayListDO">
+		select `id`,`dept_id`,`dept_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`room_id`,`room_code`,`unit`,`floor`,`type`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`type_name`,`print`,`date`,`pay_date`,`status` from pay_wuye_list where id = #{value}
+	</select>
+	<select id="list" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		select `id`,`dept_id`,`name`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag`,`state`,`start_year`,`end_year`,`start_date`,`end_date`,`unpay`,`payed`,`money_ying`,`money_unpay`,`money_payed`,`status` from wuyefei
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%') </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+				  <if test="startYear != null and endYear != ''">and
+					(start_year >= #{startYear} AND
+					start_year <![CDATA[ <= ]]> #{endYear}) OR
+					(start_year <![CDATA[ <= ]]> #{startYear} AND
+					end_year >= #{endYear}) OR
+					(end_year>= #{startYear} AND
+					end_year <![CDATA[ <= ]]> #{endYear})
+				  </if>
+		  		  <if test="startDate != null and startDate != ''"> and start_date = #{startDate} </if>
+		  		  <if test="endDate != null and endDate != ''"> and end_date = #{endDate} </if>
+		  		  <if test="unpay != null and unpay != ''"> and unpay = #{unpay} </if>
+		  		  <if test="start != null and start != ''"> and start_year = #{start} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="payed != null and payed != ''"> and payed = #{payed} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by start_date desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	<select id="detailList" resultType="com.bootdo.wuye.domain.WuyefeiDetailDO">
+		SELECT
+		wd.id,
+		wd.dept_id,
+		wd.state,
+		wd.start_year,
+		wd.end_year,
+		wd.start_date,
+		wd.end_date,
+		wd.months,
+		wd.type,
+		rc.name,
+		r.id AS roomId,
+		(SELECT b.name FROM building b WHERE b.id=r.building_id AND b.del_flag='0') AS buildingName,
+		wd.unpay,
+		wd.payed,
+		wd.building_id,
+		r.code AS roomCode,
+		r.unit,
+		r.floor,
+		r.wuyefei,
+		r.building_area AS buildingArea,
+		(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomType,
+		wd.yingpay,
+		wd.wuyefei_id,
+		wd.zhekou,
+		rc.id_card AS idCard
+		FROM
+		wuyefei_detail wd,room r,room_contract rc
+		WHERE wd.room_id = r.id AND r.del_flag='0'
+		AND rc.room_id = wd.room_id AND rc.id=r.`contract_id`
+		AND rc.state = '1'
+		AND rc.del_flag = '0'
+			<if test="id != null and id != ''"> and wd.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and wd.dept_id = #{deptId} </if>
+			<if test="state != null and state != ''"> and wd.state = #{state} </if>
+			<if test="startYear != null and startYear != ''"> and wd.start_year = #{startYear} </if>
+			<if test="endYear != null and endYear != ''"> and wd.end_year = #{endYear} </if>
+			<if test="startDate != null and startDate != ''"> and wd.start_date = #{startDate} </if>
+			<if test="endDate != null and endDate != ''"> and wd.end_date = #{endDate} </if>
+			<if test="unpay != null and unpay != ''"> and wd.unpay = #{unpay} </if>
+			<if test="payed != null and payed != ''"> and wd.payed = #{payed} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				wd.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="roomId != null and roomId != ''"> and wd.room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''"> and wd.room_code  like CONCAT('%',#{roomCode},'%') </if>
+			<if test="yingpay != null and yingpay != ''"> and wd.yingpay = #{yingpay} </if>
+			<if test="wuyefeiId != null and wuyefeiId != ''"> and wd.wuyefei_id = #{wuyefeiId} </if>
+			<if test="zhekou != null and zhekou != ''"> and wd.zhekou = #{zhekou} </if>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by r.floor,r.code,r.unit desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+ 	<select id="count" resultType="int">
+		select count(*) from wuyefei
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="name != null and name != ''"> and name like CONCAT('%',#{name},'%') </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="startYear != null and startYear != ''">and
+                (start_year >= #{startYear} AND
+                start_year <![CDATA[ <= ]]> #{endYear}) OR
+                (start_year <![CDATA[ <= ]]> #{startYear} AND
+                end_year >= #{endYear}) OR
+                (end_year>= #{startYear} AND
+                end_year <![CDATA[ <= ]]> #{endYear})
+			</if>
+			<if test="startDate != null and startDate != ''"> and start_date = #{startDate} </if>
+			<if test="endDate != null and endDate != ''"> and end_date = #{endDate} </if>
+			<if test="unpay != null and unpay != ''"> and unpay = #{unpay} </if>
+			<if test="payed != null and payed != ''"> and payed = #{payed} </if>
+		</where>
+	</select>
+	<select id="countDetail" resultType="int">
+		select count(*) from wuyefei_detail wd
+		<where>
+			<if test="id != null and id != ''"> and wd.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and wd.dept_id = #{deptId} </if>
+			<if test="state != null and state != ''"> and wd.state = #{state} </if>
+			<if test="startYear != null and startYear != ''"> and wd.start_year = #{startYear} </if>
+			<if test="endYear != null and endYear != ''"> and wd.end_year = #{endYear} </if>
+			<if test="startDate != null and startDate != ''"> and wd.start_date = #{startDate} </if>
+			<if test="endDate != null and endDate != ''"> and wd.end_date = #{endDate} </if>
+			<if test="unpay != null and unpay != ''"> and wd.unpay = #{unpay} </if>
+			<if test="payed != null and payed != ''"> and wd.payed = #{payed} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				wd.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="roomId != null and roomId != ''"> and wd.room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''"> and wd.room_code  like CONCAT('%',#{roomCode},'%') </if>
+			<if test="yingpay != null and yingpay != ''"> and wd.yingpay = #{yingpay} </if>
+			<if test="wuyefeiId != null and wuyefeiId != ''"> and wd.wuyefei_id = #{wuyefeiId} </if>
+			<if test="zhekou != null and zhekou != ''"> and wd.zhekou = #{zhekou} </if>
+		</where>
+	</select>
+	<select id="getWuyefeiDetail" resultType="String">
+		SELECT
+		  CONCAT(wd.building_id, '|', wd.room_code, '|', IFNULL(wd.unpay,0))
+		FROM
+		  wuyefei_detail wd
+		WHERE wd.`wuyefei_id` = #{id}
+		GROUP BY wd.room_id
+	</select>
+	<select id="checkWuyefei" resultType="int">
+		select count(*) from wuyefei_detail wd where wd.wuyefei_id=#{id} and wd.payed>0
+	</select>
+	<select id="checkHasWuyefei" resultType="int">
+		select count(*) from wuyefei_amortize wa where
+		((LEFT(wa.month,4)+0)*12+(RIGHT(wa.month,2)+1))>=((#{startYear}+0)*12+#{startMonth})
+		and ((#{endYear}+0)*12+#{endMonth})<![CDATA[ <= ]]>((LEFT(wa.month,4)+0)*12+(RIGHT(wa.month,2)+1))
+		<if test="ids != null"> and wa.`building_id` IN
+			<foreach item="id" collection="ids" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+		<if test="roomId != null"> and wa.`room_id` = #{roomId}
+		</if>
+	</select>
+	<select id="getWuyeAmortize" resultType="com.bootdo.wuye.domain.WuyeAmortize">
+		select id,building_id,room_id,dept_id,wuyefei_id,month,ying,unpay,payed from wuyefei_amortize  where
+		room_id=#{roomId} and wuyefei_id=#{wuyefeiId} ORDER BY MONTH
+	</select>
+	<select id="getWuyeAmortizeByCode" resultType="com.bootdo.wuye.domain.WuyeAmortize">
+		select id,building_id,room_id,dept_id,wuyefei_id,month,ying,unpay,payed from wuyefei_amortize
+		where
+		room_code=#{roomCode} and building_id=#{buildingId} and wuyefei_id=#{wuyefeiId} ORDER BY MONTH
+	</select>
+	<select id="getSum" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		SELECT
+		  IFNULL((SUM(wd.`unpay`) + SUM(wd.payed)), '0') AS moneyYing,
+		  IFNULL(SUM(wd.payed), '0') AS moneyPayed,
+		  IFNULL(SUM(wd.`unpay`), '0') AS moneyUnpay
+		FROM
+		  wuyefei_detail wd
+		WHERE  wd.wuyefei_id=#{id}
+		<if test="buildingId != null and buildingId != ''"> and
+			wd.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+		</if>
+		<if test="roomCode != null and roomCode != ''">and wd.room_code like CONCAT('%',#{roomCode},'%')</if>
+	</select>
+	<select id="getExport" resultType="com.bootdo.wuye.domain.ExportDO">
+		SELECT
+		code,name
+		FROM
+		export_wuye e
+		WHERE  dept_id=#{value}
+	</select>
+	<select id="getPaySum" resultType="com.bootdo.wuye.domain.WuyefeiDO">
+		select CONVERT(SUM(IF(p.type='1',p.price,0)),DECIMAL(10,2)) as xianjin,
+		CONVERT(SUM(IF(p.type='2',p.price,0)),DECIMAL(10,2)) as pos,
+		CONVERT(SUM(IF(p.type='3',p.price,0)),DECIMAL(10,2)) as zhuanzhang
+		from pay_wuye_list p
+		where p.state='0' and p.s_type ='1'
+			<if test="id != null and id != ''"> and p.id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and p.dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and p.dept_name = #{deptName} </if>
+			<if test="state != null and state != ''"> and p.state = #{state} </if>
+			<if test="buildingId != null and buildingId != ''"> and
+				p.building_id in (select b.id from building b  where FIND_IN_SET(b.id,getBuildingChildList(#{buildingId})) and b.del_flag='0' and b.type='2' and b.dept_id=#{deptId} )
+			</if>
+			<if test="buildingName != null and buildingName != ''"> and p.building_name = #{buildingName} </if>
+			<if test="roomId != null and roomId != ''"> and p.room_id = #{roomId} </if>
+			<if test="roomCode != null and roomCode != ''">and p.room_code like CONCAT('%',#{roomCode},'%')</if>
+			<if test="unit != null and unit != ''"> and p.unit = #{unit} </if>
+			<if test="floor != null and floor != ''"> and p.floor = #{floor} </if>
+			<if test="type != null and type != ''"> and p.type = #{type} </if>
+			<if test="sType != null and sType != ''"> and p.s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and p.s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''">and code like CONCAT('%',#{code},'%')</if>
+			<if test="price != null and price != ''"> and p.price = #{price} </if>
+			<if test="payType != null and payType != ''"> and p.pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and p.receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and p.pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and p.brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and p.card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and p.bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and p.chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and p.area = #{area} </if>
+			<if test="yewuId != null and yewuId != ''"> and p.yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and p.brand = #{brand} </if>
+			<if test="typeName != null and typeName != ''"> and p.type_name = #{typeName} </if>
+			<if test="print != null and print != ''"> and p.print = #{print} </if>
+			<if test="name != null and name != ''"> and p.name like CONCAT('%',#{name},'%') </if>
+			<if test="startDate != null and startDate != ''"> and
+				DATE_FORMAT(p.pay_date,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d' )
+
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and DATE_FORMAT(p.pay_date,'%Y-%m-%d') <![CDATA[ <= ]]>DATE_FORMAT(#{endDate},'%Y-%m-%d' )
+			</if>
+	</select>
+	 <select id="checkRoomNum" resultType="int">
+		SELECT
+		  COUNT(*)
+		FROM
+		  room r,
+		  room_contract c
+		WHERE r.`building_id` = c.`building_id`
+		  AND r.`id` = c.`room_id`
+		  AND r.`del_flag` = '0'
+		  AND c.`del_flag` = '0'
+		  AND r.`dept_id` = c.`dept_id`
+		  AND r.`dept_id` = #{deptId}
+		  AND c.state = '1'
+		  AND r.`building_id` IN
+		 <foreach item="id" collection="ids" open="(" separator="," close=")">
+			 #{id}
+		 </foreach>
+	 </select>
+	<select id="getWuyefeiRoom"  resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,r.dept_id,
+		r.building_area,r.floor_area,r.del_flag,r.wuyefei
+		FROM
+		room r where r.id in (select wd.room_id from
+		wuyefei_detail wd where wd.wuyefei_id=#{id} and wd.type='0')
+		AND r.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+	</select>
+	<select id="getWuyefeiRoomHas"  resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,
+		r.dept_id,r.building_area,r.floor_area,r.del_flag,r.wuyefei,
+		wd.start_date,wd.end_date
+		FROM
+		wuyefei_detail wd left join room r on r.id=wd.room_id where
+		wd.room_id=r.id and wd.wuyefei_id=#{id}
+		and wd.type='1' AND wd.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+	</select>
+	<select id="getWuyefeiRoomByRoom"  resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,r.dept_id,
+		r.building_area,r.floor_area,r.del_flag,r.wuyefei
+		FROM
+		room r where r.id in (select wd.room_id from
+		wuyefei_detail wd where wd.wuyefei_id=#{id} and wd.type='0')
+		AND r.`id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+	</select>
+	<select id="getWuyefeiRoomHasByRoom"  resultType="com.bootdo.realty.domain.RoomDO">
+		select r.id,r.building_id,r.code,r.unit,r.floor,r.room_type,
+		r.dept_id,r.building_area,r.floor_area,r.del_flag,r.wuyefei,
+		wd.start_date,wd.end_date
+		FROM
+		wuyefei_detail wd left join room r on r.id=wd.room_id where
+		wd.room_id=r.id and wd.wuyefei_id=#{id}
+		and wd.type='1' AND wd.`room_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+	</select>
+	<select id="wuyeAmortizeList" resultType="com.bootdo.report.domain.AmortizeReportDO">
+
+		  SELECT
+			r.id,
+			r.code as code,
+			r.unit,
+			r.floor,
+			r.room_type,
+		(SELECT sd1.name FROM sys_dict sd1
+		WHERE r.room_type = sd1.value
+		AND sd1.type = 'room_type') AS roomTypeName,
+			r.building_area,
+			rc.name,
+		<foreach collection ="reportDOs" item="re" separator =",">
+			(SELECT
+			CONCAT(IFNULL(SUM(wa.ying), 0),
+			'-',IFNULL(SUM(wa.payed), 0))
+			FROM
+			wuyefei_amortize wa
+			WHERE wa.month = #{re.month}
+			AND wa.room_id = r.id) AS ying${re.name}
+
+		</foreach >
+		,r.floor_area
+		FROM
+		room r, room_contract rc
+    where rc.del_flag='0' and rc.dept_id=#{reportDOsin.deptId}
+		and rc.state='1'  AND r.wuyefei>0 and r.id=rc.room_id
+		AND r.del_flag = '0' AND r.contract_id=rc.id
+		<if test="reportDOsin.buildingId != null and reportDOsin.buildingId != ''">
+			and r.building_id=#{reportDOsin.buildingId}
+		</if>
+	</select>
+	<insert id="save" parameterType="com.bootdo.wuye.domain.WuyefeiDO" useGeneratedKeys="true" keyProperty="id">
+		insert into wuyefei
+		(
+			`dept_id`, 
+			`name`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`, 
+			`state`, 
+			`start_year`, 
+			`end_year`, 
+			`start_date`, 
+			`end_date`, 
+			`unpay`, 
+			`payed`,
+			`status`
+		)
+		values
+		(
+			#{deptId}, 
+			#{name}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}, 
+			'0',
+			#{startYear},
+			#{endYear},
+			#{startDate}, 
+			#{endDate}, 
+			#{unpay}, 
+			#{payed},
+			#{status}
+		)
+	</insert>
+	<insert id="batchInsert">
+		insert into wuyefei_detail
+		select
+		null,
+		r.dept_id,
+		'0',
+		#{startYear},
+		#{endYear},
+		#{startDate},
+		#{endDate},
+		round(r.building_area*r.wuyefei*#{months}),
+		'0',
+		r.building_id,
+		r.id,
+		round(r.building_area*r.wuyefei*#{months}),
+		#{id},
+		'0',
+		r.code,
+		#{months},
+		'0'
+		from room r
+		where  r.del_flag='0' and r.id in
+		( SELECT
+		r.id
+		FROM
+		room r,
+		room_contract c
+		WHERE r.`building_id` = c.`building_id`
+		AND r.`id` = c.`room_id`
+		AND r.`del_flag` = '0'
+		AND c.`del_flag` = '0'
+		AND r.`dept_id` = c.`dept_id`
+		AND r.`dept_id` = #{deptId}
+		AND r.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+		AND c.state = '1' and r.wuyefei>0)
+		and r.id not in (select wd.room_id from
+		wuyefei_detail wd where wd.end_year=#{startYear}
+		AND wd.`dept_id` = #{deptId}
+		AND wd.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+		and r.id not in (select e.room_id from entrust e where e.dept_id = #{deptId}
+		AND e.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+	</insert>
+	<insert id="batchInsertByRoom">
+		insert into wuyefei_detail
+		select
+		null,
+		r.dept_id,
+		'0',
+		#{startYear},
+		#{endYear},
+		#{startDate},
+		#{endDate},
+		round(r.building_area*r.wuyefei*#{months}),
+		'0',
+		r.building_id,
+		r.id,
+		round(r.building_area*r.wuyefei*#{months}),
+		#{id},
+		'0',
+		r.code,
+		#{months},
+		'0'
+		from room r
+		where  r.del_flag='0' and r.id in
+		( SELECT
+		r.id
+		FROM
+		room r,
+		room_contract c
+		WHERE r.`building_id` = c.`building_id`
+		AND r.`id` = c.`room_id`
+		AND r.`del_flag` = '0'
+		AND c.`del_flag` = '0'
+		AND r.`dept_id` = c.`dept_id`
+		AND r.`dept_id` = #{deptId}
+		AND r.`id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+		AND c.state = '1' and r.wuyefei>0)
+		and r.id not in (select wd.room_id from
+		wuyefei_detail wd where wd.end_year=#{startYear}
+		AND wd.`dept_id` = #{deptId}
+		AND wd.`room_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+		and r.id not in (select e.room_id from entrust e where e.dept_id = #{deptId}
+		AND e.`room_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+	</insert>
+	<insert id="batchInsertLastYear">
+		INSERT INTO `wuyefei_detail` (
+		dept_id,
+		state,
+		start_year,
+		end_year,
+		start_date,
+		end_date,
+		unpay,
+		payed,
+		building_id,
+		room_id,
+		yingpay,
+		wuyefei_id,
+		zhekou,
+		room_code,
+		months,
+		type
+		)
+		(SELECT
+		wd.dept_id,
+		wd.state,
+		wd.start_year+1,
+		wd.end_year+1,
+		DATE_ADD(wd.start_date, INTERVAL 1 YEAR),
+		DATE_ADD(wd.end_date, INTERVAL 1 YEAR),
+		round(r.building_area*r.wuyefei*wd.months),
+		'0',
+		wd.building_id,
+		wd.room_id,
+		round(r.building_area*r.wuyefei*wd.months),
+		#{id},
+		'0',
+		wd.room_code,
+		wd.months,
+		'1'
+		FROM
+		wuyefei_detail wd LEFT JOIN room r on wd.room_id=r.id
+		WHERE wd.end_year = #{startYear} AND wd.`dept_id` = #{deptId}
+		AND wd.`building_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+	</insert>
+	<insert id="batchInsertLastYearByRoom">
+		INSERT INTO `wuyefei_detail` (
+		dept_id,
+		state,
+		start_year,
+		end_year,
+		start_date,
+		end_date,
+		unpay,
+		payed,
+		building_id,
+		room_id,
+		yingpay,
+		wuyefei_id,
+		zhekou,
+		room_code,
+		months,
+		type
+		)
+		(SELECT
+		wd.dept_id,
+		wd.state,
+		wd.start_year+1,
+		wd.end_year+1,
+		DATE_ADD(wd.start_date, INTERVAL 1 YEAR),
+		DATE_ADD(wd.end_date, INTERVAL 1 YEAR),
+		round(r.building_area*r.wuyefei*wd.months),
+		'0',
+		wd.building_id,
+		wd.room_id,
+		round(r.building_area*r.wuyefei*wd.months),
+		#{id},
+		'0',
+		wd.room_code,
+		wd.months,
+		'1'
+		FROM
+		wuyefei_detail wd LEFT JOIN room r on wd.room_id=r.id
+		WHERE wd.end_year = #{startYear} AND wd.`dept_id` = #{deptId}
+		AND wd.`room_id` IN
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>)
+	</insert>
+	<insert id="insertDetail">
+		insert into wuyefei_detail
+		select
+		null,
+		r.dept_id,
+		'0',
+        #{startYear},
+        #{endYear},
+		#{startDate},
+		#{endDate},
+		CONVERT((r.building_area*r.wuyefei*#{month}),DECIMAL(10,2)),
+		'0',
+		r.building_id,
+		r.id,
+		CONVERT((r.building_area*r.wuyefei*#{month}),DECIMAL(10,2)),
+		#{id},
+		'0',r.code,
+		#{month},'0' from room r where  r.del_flag='0'
+		and r.id  = #{roomId}
+	</insert>
+	<insert id="batchUpdate">
+		insert into wuyefei_detail
+		select
+		null,
+		r.dept_id,
+		'0',
+        #{startYear},
+        #{endYear},
+		#{startDate},
+		#{endDate},
+		CONVERT(((r.building_area*r.wuyefei*#{newMonth})/#{month}),DECIMAL(10,2)),
+		'0',
+		r.building_id,
+		r.id,
+		CONVERT(((r.building_area*r.wuyefei*#{newMonth})/#{month}),DECIMAL(10,2)),
+		#{id},
+		'0',r.code from room r where  r.del_flag='0' and r.id in
+		( SELECT
+		r.id
+		FROM
+		room r,
+		room_contract c
+		WHERE r.`building_id` = c.`building_id`
+		AND r.`id` = c.`room_id`
+		AND r.`del_flag` = '0'
+		AND c.`del_flag` = '0'
+		AND r.`dept_id` = c.`dept_id`
+		AND r.`dept_id` = #{deptId}
+		AND c.state = '1'
+		AND r.`building_id` in
+		<foreach item="i" collection="ids" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+		and r.id not in (select wd.room_id from wuyefei_detail wd where wd.wuyefei_id=#{id})
+	</insert>
+	<insert id="batchAmortizes" >
+		insert into wuyefei_amortize
+		(
+		`building_id`,
+		`room_id`,
+		`dept_id`,
+		`wuyefei_id`,
+		`month`,
+		`ying`,
+		`unpay`,
+		`payed`
+		)
+		values
+		<foreach collection ="wuyeAmortizes" item="r" separator =",">
+			(
+			#{r.buildingId},
+			#{r.roomId},
+			#{r.deptId},
+			#{r.wuyefeiId},
+			#{r.month},
+			#{r.ying},
+			#{r.unpay},
+			#{r.payed}
+			)
+		</foreach >
+	</insert>
+	<insert id="savePay" parameterType="com.bootdo.common.domain.PayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into pay_wuye_list
+		(
+		`dept_id`,
+		`dept_name`,
+		`name`,
+		`date`,
+		`state`,
+		`create_by`,
+		`create_date`,
+		`building_id`,
+		`building_name`,
+		`room_id`,
+		`room_code`,
+		`unit`,
+		`floor`,
+		`type`,
+		`s_type`,
+		`s_type_name`,
+		`code`,
+		`price`,
+		`pay_type`,
+		`receipt_by`,
+		`pay_by`,
+		`brand_receipt_by`,
+		`card_no`,
+		`bank`,
+		`chongxiao_code`,
+		`area`,
+		`yewu_id`,
+		`brand`,
+		`type_name`,
+		`print`,
+		`remark`,
+		`pay_date`
+		)
+		values
+		(
+		#{deptId},
+		#{deptName},
+		#{name},
+		#{date},
+		#{state},
+		#{createBy},
+		#{createDate},
+		#{buildingId},
+		#{buildingName},
+		#{roomId},
+		#{roomCode},
+		#{unit},
+		#{floor},
+		#{type},
+		#{sType},
+		#{sTypeName},
+		#{code},
+		#{price},
+		#{payType},
+		#{receiptBy},
+		#{payBy},
+		#{brandReceiptBy},
+		#{cardNo},
+		#{bank},
+		#{chongxiaoCode},
+		#{area},
+		#{yewuId},
+		#{brand},
+		#{typeName},
+		#{print},
+		#{remark},
+		#{payDate}
+		)
+	</insert>
+	<insert id="saveExport" parameterType="com.bootdo.wuye.domain.ExportDO" useGeneratedKeys="true" keyProperty="id">
+	insert into export_wuye
+	(
+		`code`,
+		`name`,
+		`dept_id`
+	)
+	values
+		(
+		#{code},
+		#{name},
+		#{deptId}
+		)
+	</insert>
+	<update id="updatePay" parameterType="com.bootdo.common.domain.PayListDO">
+		update pay_wuye_list
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="deptName != null">`dept_name` = #{deptName}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="date != null">`date` = #{date}, </if>
+			<if test="payDate != null">`pay_date` = #{payDate}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="buildingName != null">`building_name` = #{buildingName}, </if>
+			<if test="roomId != null">`room_id` = #{roomId}, </if>
+			<if test="roomCode != null">`room_code` = #{roomCode}, </if>
+			<if test="unit != null">`unit` = #{unit}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="sType != null">`s_type` = #{sType}, </if>
+			<if test="sTypeName != null">`s_type_name` = #{sTypeName}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="receiptBy != null">`receipt_by` = #{receiptBy}, </if>
+			<if test="payBy != null">`pay_by` = #{payBy}, </if>
+			<if test="brandReceiptBy != null">`brand_receipt_by` = #{brandReceiptBy}, </if>
+			<if test="cardNo != null">`card_no` = #{cardNo}, </if>
+			<if test="bank != null">`bank` = #{bank}, </if>
+			<if test="chongxiaoCode != null">`chongxiao_code` = #{chongxiaoCode}, </if>
+			<if test="area != null">`area` = #{area}, </if>
+			<if test="yewuId != null">`yewu_id` = #{yewuId}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="typeName != null">`type_name` = #{typeName}, </if>
+			<if test="print != null">`print` = #{print},</if>
+			<if test="payDate != null">`pay_date` = #{payDate},</if>
+			<if test="remark != null">`remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="update" parameterType="com.bootdo.wuye.domain.WuyefeiDO">
+		update wuyefei 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+            <if test="startYear != null">`start_year` = #{startYear},</if>
+            <if test="endYear != null">`end_year` = #{endYear},</if>
+			<if test="startDate != null">`start_date` = #{startDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="unpay != null">`unpay` = #{unpay}, </if>
+			<if test="payed != null">`payed` = #{payed},</if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateAmortize" parameterType="com.bootdo.wuye.domain.WuyeAmortize">
+		update wuyefei_amortize
+		<set>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="roomId != null">`room_id` = #{roomId}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="wuyefeiId != null">`wuyefei_id` = #{wuyefeiId}, </if>
+			<if test="month != null">`month` = #{month}, </if>
+			<if test="ying != null">`ying` = #{ying}, </if>
+			<if test="unpay != null">`unpay` = #{unpay}, </if>
+			<if test="payed != null">`payed` = #{payed}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateDetailPay" >
+		UPDATE wuyefei_detail
+		SET payed= payed+#{payed},
+		unpay= #{payed}+yingpay,
+		state= if((SELECT COUNT(*) FROM wuyefei_detail WHERE wuyefei_id=#{value} AND state='0')=0,"1","0"),
+		money_ying= (SELECT SUM(wd.`yingpay`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} ),
+		money_unpay= (SELECT SUM(wd.`unpay`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} ),
+		money_payed= (SELECT SUM(wd.`payed`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} )
+		where room_code=#{roomCode} and building_id=#{buildingId} and wuyefei_id=#{wuyefeiId}
+	</update>
+	<update id="updateCount" >
+		UPDATE wuyefei
+			SET unpay= (SELECT COUNT(*) FROM wuyefei_detail WHERE wuyefei_id=#{value} AND state='0'),
+			payed= (SELECT COUNT(*) FROM wuyefei_detail WHERE wuyefei_id=#{value} AND state='1'),
+			state= if((SELECT COUNT(*) FROM wuyefei_detail WHERE wuyefei_id=#{value} AND state='0')=0,"1","0"),
+			money_ying= (SELECT SUM(wd.`yingpay`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} ),
+			money_unpay= (SELECT SUM(wd.`unpay`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} ),
+			money_payed= (SELECT SUM(wd.`payed`) FROM wuyefei_detail wd WHERE wd.`wuyefei_id`= #{value} )
+		where id = #{value}
+	</update>
+	<update id="updateDetail" parameterType="com.bootdo.wuye.domain.WuyefeiDetailDO">
+		update wuyefei_detail
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="startYear != null">`start_year` = #{startYear}, </if>
+			<if test="endYear != null">`end_year` = #{endYear}, </if>
+			<if test="startDate != null">`start_date` = #{startDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="unpay != null">`unpay` = #{unpay}, </if>
+			<if test="payed != null">`payed` = #{payed}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="roomCode != null">`room_code` = #{roomCode}, </if>
+			<if test="yingpay != null">`yingpay` = #{yingpay}, </if>
+			<if test="wuyefeiId != null">`wuyefei_id` = #{wuyefeiId}, </if>
+			<if test="zhekou != null">`zhekou` = #{zhekou},</if>
+			<if test="months != null">`months` = #{months},</if>
+			<if test="type != null">`type` = #{type}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<delete id="remove">
+		delete from wuyefei where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from wuyefei where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<delete id="removeDetail">
+		delete from wuyefei_detail where id=#{value}
+	</delete>
+	<delete id="removeDetailById">
+		delete from wuyefei_detail where wuyefei_id=#{id}
+	</delete>
+	<delete id="removeExport">
+		delete from export_wuye where dept_id=#{value}
+	</delete>
+	<delete id="removeAmortize">
+		delete from wuyefei_amortize where wuyefei_id=#{wuyefeiId}
+		<if test="roomId != null">
+			and room_id = #{roomId}
+		</if>
+	</delete>
+</mapper>

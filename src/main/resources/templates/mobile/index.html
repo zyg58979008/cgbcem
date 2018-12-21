@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body  class="with-heading-top with-heading-bottom">
+<header class="heading primary affix dock-top">
+    <div class="avatar"><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title "><strong>巡检任务</strong></div>
+</header>
+
+<input type="hidden" id="menus" th:value="${PlanOperationDO}">
+<!--<input type="hidden" id="menus" th:value="${menus}">-->
+<div class="section container"  style="margin-top: 10px;">
+    <div class="list with-divider" id="list">
+
+    </div>
+    </div>
+</div>
+<div id="target1" class="affix dock-bottom modal hidden"style="height: auto">
+    <div class="heading">
+        <div class="title"><strong>选择巡检人员</strong></div>
+        <nav class="nav"><a data-dismiss="display"><i class="icon-remove muted"></i></a></nav>
+    </div>
+    <div class="content article box">
+        <div class="row">
+            <div class="select multiple cell-8 ">
+                <input type="text" name="stuno" id="stuno" >
+                <input type="hidden" id="users" th:value="${usersDO}">
+                <select name="gifts" id="gifts" multiple="">
+
+                </select>
+            </div>
+            <div class="cell-4"><a href="javascript:;" onclick="ok()" class="btn primary">确定</a></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/doc.min.js"></script>
+<script>
+
+    var prefix = "/mobile"
+    var menus=eval("("+$("#menus").val()+")");
+   if(menus.length==0){
+       var html1='<div class="item multi-lines shadow-2 rounded-lg" >'
+               +'<div class="title">当前没有巡检任务</div>'
+
+               +'</div>';
+       $("#list").append(html1);
+   }
+   for(var i=0;i<menus.length;i++){
+       //var lable='<span class="label primary rounded">待巡检</span>';
+         var state=menus[i].planState;
+           if(state==0)
+           {
+               var html='<div class="item multi-lines shadow-2 rounded-lg" id="'+menus[i].id+'" >'
+                       +'<div class="title">'+menus[i].planArea+'</div>'
+                       + '<span class="label warning rounded">待领取</span>'
+                       +'<a  class="btn green" onclick="test(\''+menus[i].id+'\')">领取任务</a>'
+                       +'</div>';
+           }else{
+               var html='<div class="item multi-lines shadow-2 rounded-lg" id="'+menus[i].id+'" >'
+                       +'<div class="title">'+menus[i].planArea+'</div>'
+                       +'<span class="label primary rounded">待巡检</span>'
+                       +'<a id="q" class="btn primary rounded"onclick="xj(\''+menus[i].id+'\')">巡检作业</a>'
+                       +'</div>';
+           }
+            $("#list").append(html);
+        };
+
+    var users=eval("("+$("#users").val()+")");
+    for(var i=0;i<users.length;i++){
+            var html1='<option value="'+users[i].id+'">'+users[i].name+'</option>';
+        $("#gifts").append(html1);
+    };
+
+    function test(v){
+        layer.open({
+            type: 2,
+            title: '选择巡检人员',
+            maxmin: true,
+            shadeClose: false, // 点击遮罩关闭层
+            area: ['280px', '300px'],
+            content: prefix + '/indexAdd/' + v // iframe的url
+        });
+    }
+
+
+
+    function xj(a) {
+
+       window.location.href="/mobile/ditu/" +a;
+
+    }
+    function ttt() {
+        window.location.reload()
+    }
+
+
+
+
+</script>
+</body>
+</html>

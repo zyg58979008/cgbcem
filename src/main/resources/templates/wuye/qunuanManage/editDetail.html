@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<link href="/css/layui.css" rel="stylesheet">
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm"  autocomplete="off">
+						<input id="id" name="id" th:value="${qunuanDetailDO.id}"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">取暖费：</label>
+							<div class="col-sm-3">
+								<input id="qunuanYing" name="qunuanYing" class="form-control" type="text"
+									   th:value="${qunuanDetailDO.qunuanYing}">
+							</div>
+							<label class="col-sm-3 control-label">停暖费：</label>
+							<div class="col-sm-3">
+								<input id="tingnuanYing" name="tingnuanYing" class="form-control" type="text"
+									   th:value="${qunuanDetailDO.tingnuanYing}">
+							</div>
+						</div>
+						<div class="row" style="margin-top: 30px;">
+							<button  type="button" style="margin-left: 350px;" onclick="save()"
+									 class="layui-btn">
+								确定
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/wuye/qunuanManage/editDetail.js">
+</script>
+</body>
+</html>

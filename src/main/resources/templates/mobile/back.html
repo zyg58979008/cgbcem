@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+</head>
+<body class="with-heading-top with-heading-bottom" style="background-color: white">
+<header class="heading primary affix dock-top">
+    <div class="avatar" ><a href="/mobile/first"><i class="icon-arrow-left"></i></a></div>
+    <div class="title" ><strong >退库操作</strong></div>
+</header>
+<div class="section container " style="padding-bottom: 5px;">
+
+    <div class="color-grey" style="margin: 20px 10px 10px 10px;">
+        <div class="title"><strong>退库操作</strong></div>
+    </div>
+    <div class="control">
+        <label>设备名称:</label>
+        <input id="name" type="text" class="input">
+    </div>
+    <div class="control">
+        <label>设备品牌:</label>
+        <input id="pinpai" type="text" class="input">
+    </div>
+    <div class="control">
+        <label>设备型号:</label>
+        <input id="xinghao" type="text" class="input">
+    </div>
+    <div class="control flex">
+        <label>操作人:</label>
+        <input id="person" type="text" class="input" style="width: 35px">
+        <label style="margin: 0 8px 0 10px;">退库时间:</label>
+        <input id="time" type="text" class="input" style="width: 60px">
+    </div>
+    <div class="cell-2">
+        <textarea class="textarea" name="desc" id="miaoshu" rows="3" placeholder="备注" style="height: 100px"></textarea>
+    </div>
+    <div id="d1" class="affix dock-bottom modal hidden" style="height: 200px">
+        <div class="title text-center" style="background-color: white;color: black; margin: 20px 10px 10px 10px;">
+            <a class="avatar circle" style="height: 100px;width: 100px"><img src="/img/right.jpg" height="20px" alt=""></a>
+        </div>
+        <div  class="heading affix dock-bottom">
+            <div class="title text-center" style="background-color: white;color: black" onclick="react()">
+                <a><i class="icon-repeat"></i></a>
+                继续退库
+            </div>
+            <div class="title text-center" style="background-color: white;color: black" onclick="save()">
+                <a><i class="icon-reply"></i></a>
+                返回首页
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom">
+    <div class="title text-center" style="background-color: white;color: black" onclick="aa()">
+        <a>
+            <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: -1px 0 0 5px;">
+        </a>
+        设备扫码
+    </div>
+    <div class="title text-center" style="background-color: white;color: black" data-display data-backdrop="true" data-target="#d1" data-placement="bottom">
+        <a><i class="icon-check"></i></a>
+        确认退库
+    </div>
+
+</footer>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/mzui.min.js"></script>
+<!--
+<script src="/js/plugins/layer/layer.js"></script>
+-->
+<script>
+    function getAddress(addressId){
+        var address = $("#"+addressId+"").text();
+        $("#inAddress").attr("value",address);
+    }
+    var num=0;
+    function aa(i) {
+        var now=new Date();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var sec = now.getSeconds();
+        var min =now.getMinutes();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (day >= 1 && day <= 9) {
+            day = "0" + day;
+        }
+        if (min >= 1 && min <= 9) {
+            min = "0" + min;
+        }
+        if (sec >= 0 && sec <= 9) {
+            sec = "0" + sec;
+        }
+        /* var html='<p align="center" style="font-size:14px;">'+message.data+'</p>'; */
+        var date =now.getFullYear()+"年"+month+"月"+day+"日";
+        $("#name").attr("value","打印机");
+        $("#pinpai").attr("value","佳能");
+        $("#xinghao").attr("value","CD01201804135468");
+        $("#person").attr("value","管理员");
+        $("#time").attr("value",date);
+    }
+    function save() {
+        window.location.href="/mobile/first";
+    }
+    function react() {
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

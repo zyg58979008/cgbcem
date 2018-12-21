@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.business.dao.ActivityPayListDao">
+
+	<select id="get" resultType="com.bootdo.business.domain.ActivityPayListDO">
+		select `id`,`dept_id`,`dept_name`,`activity_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`shop_id`,`shop_code`,`floor`,`type_name`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`print`,`name`,`date`,`pay_date`,`oid`,`type`,`remarks` from business_activity_pay_list where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.business.domain.ActivityPayListDO">
+		select `id`,`dept_id`,`dept_name`,`activity_name`,`state`,`create_by`,`create_date`,`building_id`,`building_name`,`shop_id`,`shop_code`,`floor`,`type_name`,`s_type`,`s_type_name`,`code`,`price`,`pay_type`,`receipt_by`,`pay_by`,`brand_receipt_by`,`card_no`,`bank`,`chongxiao_code`,`area`,`yewu_id`,`brand`,`print`,`name`,`date`,`pay_date`,`oid`,`type` from business_activity_pay_list
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  		  <if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+		  		  <if test="activityName != null and activityName != ''"> and activity_name = #{activityName} </if>
+		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+		  		  <if test="shopId != null and shopId != ''"> and shop_id = #{shopId} </if>
+		  		  <if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+		  		  <if test="floor != null and floor != ''"> and floor = #{floor} </if>
+		  		  <if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+		  		  <if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+		  		  <if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+		  		  <if test="code != null and code != ''"> and code = #{code} </if>
+		  		  <if test="price != null and price != ''"> and price = #{price} </if>
+		  		  <if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+		  		  <if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+		  		  <if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+		  		  <if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+		  		  <if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+		  		  <if test="bank != null and bank != ''"> and bank = #{bank} </if>
+		  		  <if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+		  		  <if test="area != null and area != ''"> and area = #{area} </if>
+		  		  <if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and brand like CONCAT('%',#{brand},'%') </if>
+		  		  <if test="print != null and print != ''"> and print = #{print} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="date != null and date != ''"> and date = #{date} </if>
+		  		  <if test="payDate != null and payDate != ''"> and pay_date = #{payDate} </if>
+		  		  <if test="oid != null and oid != ''"> and oid = #{oid} </if>
+		  		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from business_activity_pay_list
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+			<if test="deptName != null and deptName != ''"> and dept_name = #{deptName} </if>
+			<if test="activityName != null and activityName != ''"> and activity_name = #{activityName} </if>
+			<if test="state != null and state != ''"> and state = #{state} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="buildingName != null and buildingName != ''"> and building_name = #{buildingName} </if>
+			<if test="shopId != null and shopId != ''"> and shop_id = #{shopId} </if>
+			<if test="shopCode != null and shopCode != ''"> and shop_code = #{shopCode} </if>
+			<if test="floor != null and floor != ''"> and floor = #{floor} </if>
+			<if test="typeName != null and typeName != ''"> and type_name = #{typeName} </if>
+			<if test="sType != null and sType != ''"> and s_type = #{sType} </if>
+			<if test="sTypeName != null and sTypeName != ''"> and s_type_name = #{sTypeName} </if>
+			<if test="code != null and code != ''"> and code = #{code} </if>
+			<if test="price != null and price != ''"> and price = #{price} </if>
+			<if test="payType != null and payType != ''"> and pay_type = #{payType} </if>
+			<if test="receiptBy != null and receiptBy != ''"> and receipt_by = #{receiptBy} </if>
+			<if test="payBy != null and payBy != ''"> and pay_by = #{payBy} </if>
+			<if test="brandReceiptBy != null and brandReceiptBy != ''"> and brand_receipt_by = #{brandReceiptBy} </if>
+			<if test="cardNo != null and cardNo != ''"> and card_no = #{cardNo} </if>
+			<if test="bank != null and bank != ''"> and bank = #{bank} </if>
+			<if test="chongxiaoCode != null and chongxiaoCode != ''"> and chongxiao_code = #{chongxiaoCode} </if>
+			<if test="area != null and area != ''"> and area = #{area} </if>
+			<if test="yewuId != null and yewuId != ''"> and yewu_id = #{yewuId} </if>
+			<if test="brand != null and brand != ''"> and brand = #{brand} </if>
+			<if test="print != null and print != ''"> and print = #{print} </if>
+			<if test="name != null and name != ''"> and name = #{name} </if>
+			<if test="date != null and date != ''"> and date = #{date} </if>
+			<if test="payDate != null and payDate != ''"> and pay_date = #{payDate} </if>
+			<if test="oid != null and oid != ''"> and oid = #{oid} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.business.domain.ActivityPayListDO" useGeneratedKeys="true" keyProperty="id">
+		insert into business_activity_pay_list
+		(
+			`dept_id`, 
+			`dept_name`, 
+			`activity_name`, 
+			`state`, 
+			`create_by`, 
+			`create_date`, 
+			`building_id`, 
+			`building_name`, 
+			`shop_id`, 
+			`shop_code`, 
+			`floor`, 
+			`type_name`, 
+			`s_type`, 
+			`s_type_name`, 
+			`code`, 
+			`price`, 
+			`pay_type`, 
+			`receipt_by`, 
+			`pay_by`, 
+			`brand_receipt_by`, 
+			`card_no`, 
+			`bank`, 
+			`chongxiao_code`, 
+			`area`, 
+			`yewu_id`, 
+			`brand`, 
+			`print`, 
+			`name`, 
+			`date`, 
+			`pay_date`, 
+			`oid`, 
+			`type`,
+			`building_id`
+		)
+		values
+		(
+			#{deptId}, 
+			#{deptName}, 
+			#{activityName}, 
+			#{state}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{buildingId}, 
+			#{buildingName}, 
+			#{shopId}, 
+			#{shopCode}, 
+			#{floor}, 
+			#{typeName}, 
+			#{sType}, 
+			#{sTypeName}, 
+			#{code}, 
+			#{price}, 
+			#{payType}, 
+			#{receiptBy}, 
+			#{payBy}, 
+			#{brandReceiptBy}, 
+			#{cardNo}, 
+			#{bank}, 
+			#{chongxiaoCode}, 
+			#{area}, 
+			#{yewuId}, 
+			#{brand}, 
+			#{print}, 
+			#{name}, 
+			#{date}, 
+			#{payDate}, 
+			#{oid}, 
+			#{type},
+
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.business.domain.ActivityPayListDO">
+		update business_activity_pay_list 
+		<set>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="deptName != null">`dept_name` = #{deptName}, </if>
+			<if test="activityName != null">`activity_name` = #{activityName}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="buildingId != null">`building_id` = #{buildingId}, </if>
+			<if test="buildingName != null">`building_name` = #{buildingName}, </if>
+			<if test="shopId != null">`shop_id` = #{shopId}, </if>
+			<if test="shopCode != null">`shop_code` = #{shopCode}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="typeName != null">`type_name` = #{typeName}, </if>
+			<if test="sType != null">`s_type` = #{sType}, </if>
+			<if test="sTypeName != null">`s_type_name` = #{sTypeName}, </if>
+			<if test="code != null">`code` = #{code}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="receiptBy != null">`receipt_by` = #{receiptBy}, </if>
+			<if test="payBy != null">`pay_by` = #{payBy}, </if>
+			<if test="brandReceiptBy != null">`brand_receipt_by` = #{brandReceiptBy}, </if>
+			<if test="cardNo != null">`card_no` = #{cardNo}, </if>
+			<if test="bank != null">`bank` = #{bank}, </if>
+			<if test="chongxiaoCode != null">`chongxiao_code` = #{chongxiaoCode}, </if>
+			<if test="area != null">`area` = #{area}, </if>
+			<if test="yewuId != null">`yewu_id` = #{yewuId}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="print != null">`print` = #{print}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="date != null">`date` = #{date}, </if>
+			<if test="payDate != null">`pay_date` = #{payDate}, </if>
+			<if test="oid != null">`oid` = #{oid}, </if>
+			<if test="type != null">`type` = #{type}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from business_activity_pay_list where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from business_activity_pay_list where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

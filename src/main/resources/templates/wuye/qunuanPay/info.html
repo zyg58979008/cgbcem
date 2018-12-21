@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.input-group{
+		display: block;
+	}
+	.label {
+		width: auto;
+		float: left;
+		padding:11px 10px;
+	}
+	table tr td {
+		white-space:nowrap
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+	<input type="hidden" id="qunuanfeiId" th:value="${id}">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择楼宇</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<input id="roomCode" type="text" class="layui-input"
+						   placeholder="房屋编号" style="width: 150px;float: left">
+					<select data-placeholder="--选择交款类型--" id="type" style="width: 150px;float: left"
+							class="layui-input chosen-select" tabindex="2" required>
+						<option value="">--选择交款类型--</option>
+						<option value="1">--取暖费--</option>
+						<option value="2">--停暖费--</option>
+					</select>
+					<button class="btn btn-success" style="float: left" onclick="reLoad()">查询</button>
+					<button class="btn btn-primary" style="float: left" onclick="c()">清空</button>
+					<table id="exampleTable" data-mobile-responsive="false">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script type="text/javascript" src="/js/appjs/wuye/qunuanPay/info.js"></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<style>
+    .font16 {
+        font-size:16px;
+        font-weight:bold;
+    }
+    .font18 {
+        font-size:18px;
+    }
+    .font22 {
+        font-size:28px;
+        font-weight:bold;
+    }
+    .font20 {
+        font-size:20px;
+    }
+    p{
+        margin:0;
+        padding:0
+    }
+</style>
+<body style="height: 500px;">
+<input type="hidden" id="id" th:value="${pl.id}" >
+<div style="width:880px;height:336px;border:2px solid;margin: 20px 0 0 20px;">
+    <div style="margin:5px 55px 0 0;height:25px;">
+        <span style="float:left;margin-left: 5px;" class="font16" th:text="'打印次数：'+${pl.print}"></span>
+        <span style="float:right" class="font16" th:text="'收款方式：'+${pl.typeName}"></span>
+    </div>
+    <table style="margin:0 40px 5px 85px;height:32px;">
+        <tr>
+            <td width="38%">
+                <span class="font18">项目名称：</span>
+                <span class="font18" style="text-decoration:underline;" th:text="${pl.deptName}"></span>
+            </td>
+            <td width="37%">
+                <span class="font18" style="text-decoration:underline;"th:text="${year}"></span>
+                <span class="font18" >年</span>
+                <span class="font18" style="text-decoration:underline;"th:text="${month}"></span>
+                <span class="font18">月</span>
+                <span class="font18" style="text-decoration:underline;"th:text="${day}"></span>
+                <span class="font18">日</span>
+            </td>
+            <td width="25%">
+                <span class="font18"  th:text="'No.&nbsp;'+${pl.code}"></span>
+            </td>
+        </tr>
+    </table>
+
+    <div style="width:824px;height:265px;float:left;margin-left:1px;">
+        <div style="width:100%;height:165px;float:left;">
+            <div style="width:15%;height:165px;float:left;">
+                <div class="font22" style="margin:20px 0 0 30px;">收</div>
+
+                <div class="font22" style="margin:40px 0 0 30px;">据</div>
+            </div>
+            <div style="width:85%;height:165px;float:left;">
+                <div style="margin-top:12px;" class="font18">
+                    <span>今收到</span>
+                    <span style="text-decoration:underline;"th:text="'&nbsp;&nbsp;&nbsp;&nbsp;'+${ct.brand}+'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+                    <span>（品牌名称）</span>
+                    <span style="text-decoration:underline;"th:text="'&nbsp;&nbsp;'+${ct.contractor}+'&nbsp;&nbsp;'"></span>
+                    <span>（签约人）</span>
+                </div>
+                <div style="margin-top:12px;" class="font18">
+                    <span>交&emsp;来</span>
+                    <span style="text-decoration:underline;"th:text="'&nbsp;&nbsp;'+${pl.sTypeName}+'&emsp;&emsp;&emsp;&emsp;'+${date}"></span>
+                </div>
+                <div style="margin-top:12px;" class="font18">
+                    <span>人民币（大写）</span>
+                    <span style="text-decoration:underline;" id="rmb"></span>
+                    <span style="float:right;margin-right:80px;">
+						<span style="margin-left:40px;">￥：</span>
+						<span style="text-decoration:underline;" id="price" th:text="${pl.price}"></span>
+					</span>
+                </div>
+                <div style="margin-top:12px;" class="font18">
+                    <span>备&emsp;注</span>
+                    <span style="text-decoration:underline;" th:text="${pl.remarks}"></span>
+                </div>
+            </div>
+            <div style="width:100%;height:100px;float:left;font-size:15px;">
+                <div style="width:50%;float:left">
+                    <div style="margin-left:60px;margin-top:20px;">收款单位</div>
+                    <div style="margin-left:60px;">
+                        公&emsp;&emsp;章
+                    </div>
+                </div>
+                <div style="width:50%;float:left">
+                    <div style="width:50%;float:left;margin-top:41px;" th:text="'收款人：'+${pl.receiptBy}">
+                    </div>
+                    <div style="width:50%;float:left;margin-top:41px;">
+                        交款人：
+                    </div>
+                </div>
+                <div style="width:100%;float:left">
+                    <div style="margin-left:60px;margin-top:18px;">此品牌收款人信息  收款人 ：<span style="text-decoration:underline;" th:text="${ct.payee}"></span>
+                           卡号：<span style="text-decoration:underline;" th:text="${ct.account}"></span>
+                               开户行：<span style="text-decoration:underline;" th:text="${bankPtype}">
+                    </span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width:44px;height:265px;float:left;margin-right:1px;font-size:13px;" >
+        <div style="margin-left:14px;font-weight:bold;margin-top:-40px;">
+            <p>一</p><p>式</p><p>三</p><p style="margin-bottom:4px;">联</p>
+            <p>白</p><p>联</p><p>记</p><p style="margin-bottom:4px;">账</p>
+            <p>粉</p><p>联</p><p>收</p><p style="margin-bottom:4px;">据</p>
+            <p>黄</p><p>联</p><p>存</p><p>根</p>
+        </div>
+    </div>
+</div>
+    <button onclick="p()"id="btn" class="btn btn-success" style="margin-left: 420px;margin-top: 20px;">打印</button>
+</body>
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script>
+    var obj=parent.obj;
+    var price=parseFloat($("#price").text());
+    if(price<0){
+        price=convertCurrency(price*-1);
+        $("#rmb").text('负'+price);
+    }else {
+        price=convertCurrency(price);
+        $("#rmb").text(price);
+    }
+    function p() {
+        $("#btn").hide();
+        $.ajax({
+            type : "GET",
+            url : "/business/contract/printCount/"+$("#id").val(),
+            success : function() {
+                window.print();
+            }
+        });
+    }
+    //代码如下所示：
+    function convertCurrency(money) {
+        //汉字的数字
+        var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
+        //基本单位
+        var cnIntRadice = new Array('', '拾', '佰', '仟');
+        //对应整数部分扩展单位
+        var cnIntUnits = new Array('', '万', '亿', '兆');
+        //对应小数部分单位
+        var cnDecUnits = new Array('角', '分', '毫', '厘');
+        //整数金额时后面跟的字符
+        var cnInteger = '整';
+        //整型完以后的单位
+        var cnIntLast = '元';
+        //最大处理的数字
+        var maxNum = 999999999999999.9999;
+        //金额整数部分
+        var integerNum;
+        //金额小数部分
+        var decimalNum;
+        //输出的中文金额字符串
+        var chineseStr = '';
+        //分离金额后用的数组，预定义
+        var parts;
+        if (money == '') { return ''; }
+        money = parseFloat(money);
+        if (money >= maxNum) {
+            //超出最大处理数字
+            return '';
+        }
+        if (money == 0) {
+            chineseStr = cnNums[0] + cnIntLast + cnInteger;
+            return chineseStr;
+        }
+        //转换为字符串
+        money = money.toString();
+        if (money.indexOf('.') == -1) {
+            integerNum = money;
+            decimalNum = '';
+        } else {
+            parts = money.split('.');
+            integerNum = parts[0];
+            decimalNum = parts[1].substr(0, 4);
+        }
+        //获取整型部分转换
+        if (parseInt(integerNum, 10) > 0) {
+            var zeroCount = 0;
+            var IntLen = integerNum.length;
+            for (var i = 0; i < IntLen; i++) {
+                var n = integerNum.substr(i, 1);
+                var p = IntLen - i - 1;
+                var q = p / 4;
+                var m = p % 4;
+                if (n == '0') {
+                    zeroCount++;
+                } else {
+                    if (zeroCount > 0) {
+                        chineseStr += cnNums[0];
+                    }
+                    //归零
+                    zeroCount = 0;
+                    chineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+                }
+                if (m == 0 && zeroCount < 4) {
+                    chineseStr += cnIntUnits[q];
+                }
+            }
+            chineseStr += cnIntLast;
+        }
+        //小数部分
+        if (decimalNum != '') {
+            var decLen = decimalNum.length;
+            for (var i = 0; i < decLen; i++) {
+                var n = decimalNum.substr(i, 1);
+                if (n != '0') {
+                    chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+                }
+            }
+        }
+        if (chineseStr == '') {
+            chineseStr += cnNums[0] + cnIntLast + cnInteger;
+        } else if (decimalNum == '') {
+            chineseStr += cnInteger;
+        }
+        return chineseStr;
+    }
+</script>
+</html>

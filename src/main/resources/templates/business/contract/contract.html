@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+    .layui-btn {
+        display: inline-block;
+        vertical-align: middle;
+        height: 34px;
+        line-height: 34px;
+        padding: 0 15px;
+        background-color: #1ab394;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="ibox ibox-body">
+                <div class="ibox-title">
+                    <h5>选择楼宇</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="jstree"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <div class="fixed-table-toolbar">
+                        <div class="row">
+                            <div class="form-group">
+                            <input type="text" class="laydate-icon layer-date form-control" id="contractEndDate" name="contractEndDate"  placeholder="请选择结束时间"
+                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;width: 150px;float: left" readonly="readonly"/>
+                            <input type="text" class="laydate-icon layer-date form-control" id="contractStartDate" name="contractStartDate"  placeholder="请选择开始时间"
+                                   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;width: 150px;float: left" readonly="readonly"/>
+                            <input type="text" id="contractor" name="contractor" class=" form-control" style="width: 150px;float: left"  placeholder="签约人姓名"
+                            />
+                            <input type="text" id="floor" name="floor" class=" form-control" style="width: 150px;float: left" placeholder="楼层"
+                            />
+                            <input type="text" id="brand" name="brand" class=" form-control" style="width: 150px;float: left" placeholder="品牌"
+                            />
+                            <input type="text" id="shopCode" name="shopCode" class=" form-control" style="width: 150px;float: left" placeholder="商铺编码"
+                            />
+                        <button class="btn btn-success" onclick="reLoad()" style="float: left">查询</button>
+                                </div>
+                        </div>
+                        <div class="row" style="margin-top:20px;">
+                            <div class="form-group">
+                        <form id="importForm" action='' method='post'/>
+                        <div class="columns pull-left">
+                            <button shiro:hasPermission="business:contract:download" type="button" class="btn  btn-primary" onclick="download()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>下载模板
+                            </button>
+                            <button shiro:hasPermission="business:contract:add"  type="button" class="btn  btn-primary" style="margin-top: 10px;"
+                                    onclick="add()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>添加
+                            </button>
+                            <button shiro:hasPermission="business:contract:upload" type="button" id="upload"
+                                    class="layui-btn" >
+                                <i class="fa fa-cloud hidden" aria-hidden="true"></i>批量上传
+                            </button>
+                            <button type="button" id="download" style="float: left;margin-right: 100px;" id="btn_download" class="btn btn-primary" onClick ="$('#exampleTable').tableExport({ type: 'excel', escape: 'false' ,fileName:'商铺合同管理'})">数据导出</button>
+                           <!-- <button  shiro:hasPermission="business:contract:downloadall" type="button" class="btn  btn-success"
+                                     onclick="downloadall()">
+                                <i class="fa fa-edit" aria-hidden="true"></i>批量导出
+                            </button>-->
+                            <!--<button shiro:hasPermission="system:contract:batchRemove" type="button" class="btn  btn-danger"
+                                    onclick="batchRemove()">
+                                <i class="fa fa-trash" aria-hidden="true"></i>删除
+                            </button>-->
+                        </div>
+                        </form>
+                    </div>
+                        </div>
+                </div>
+                <table id="exampleTable" data-mobile-responsive="true" data-height="450">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+        var s_download_h = 'hidden';
+        var s_renew_h = 'hidden';
+        var s_contractadd_h = 'hidden';
+        var s_contractChechang_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:edit">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:remove">
+    <script type="text/javascript">
+        var s_remove_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:plus">
+    <script type="text/javascript">
+        var s_renew_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:download">
+    <script type="text/javascript">
+        var s_download_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:contractadd">
+    <script type="text/javascript">
+        var s_contractadd_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="business:contract:contractChechangConfirm">
+    <script type="text/javascript">
+        var s_contractChechang_h = '';
+    </script>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<style>
+    table tr td {
+        white-space:nowrap
+    }
+</style>
+<script src="/js/plugins/bootstrap-table/bootstrap-table-fixed-columns.js"></script>
+<script src="/js/plugins/bootstrap-table/tableExport.js"></script>
+<script type="text/javascript" src="/js/appjs/business/contract/contract.js?randomId=<%=Math.random()%>"></script>
+<script src="/js/layui.js"></script>
+<script src="/js/vue.min.js"></script>
+<script>
+    layui.use('upload', function () {
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload', //绑定元素
+            url: prefix+'/upload', //上传接口
+            size: 1000,
+            accept: 'file',
+            done: function (r) {
+                layer.msg(r.msg);
+                $('#exampleTable').bootstrapTable('refresh');
+            },
+            error: function (r) {
+                layer.msg(r.msg);
+            }
+        });
+    });
+</script>
+</body>
+</html>

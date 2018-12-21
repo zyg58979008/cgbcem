@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head >
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <style>
+       .form-group{
+           margin-top:8px;
+           margin-left:50px;
+           vertical-align:middle;
+           font-size: large;
+       }
+
+
+    </style>
+</head>
+
+<body class=" gray-bg">
+<div class="section container " id="a3">
+    <div class="box">
+        <form class="box" id="list" >
+            <input type="hidden" id="id" th:value="${id}">
+            <input type="hidden" id="users" th:value="${usersDO}">
+        </form>
+    </div>
+<div class="box">
+    <div class="heading flex-center">
+        <a href="javascript:;" onclick="saveusers()" class="btn primary  flex-center">保存</a>
+    </div>
+</div>
+    </div>
+
+<!-- MZUI 的 JavaScript 插件依赖 jQuery，请使用 jQuery 最新版本 -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- 引入 MZUI 的 JS 文件 -->
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/doc.min.js"></script>
+<script>
+    var users=eval("("+$("#users").val()+")");
+    for(var i=0;i<users.length;i++){
+            var html='<div class="form-group" >'
+                    +'<div class="checkbox has-success">'
+                    +'<label>'
+                    +'<input type="checkbox" id="checkboxSuccess" name="users" value="'+users[i].name+'">'
+                    +'<span style="vertical-align:middle;" >'+users[i].name+'</span>'
+                    +'</label>'
+                    +'</div>'
+                    +'</div>';
+
+        $("#list").append(html);
+    };
+function saveusers() {
+    var users = "";
+    $("input:checkbox[name='users']:checked").each(function() {
+        users += $(this).val() + " ";
+    });
+    var plan=$('#id').val();
+    if(users.length==0||users==""){
+        alert("请选择巡检人员！")
+        return;
+    }
+    $.ajax({
+        cache : true,
+        type : "POST",
+        url : "/mobile/updateState",
+        data :{id:plan,users:users},// 你的formid
+        async : false,
+        success : function(data) {
+            if (data.code == 0) {
+                parent.layer.msg("操作成功");
+
+                var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                parent.layer.close(index);
+                window.parent.ttt();//
+            }
+
+        }
+    });
+
+
+
+}
+</script>
+</body>
+</html>

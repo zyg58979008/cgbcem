@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm" autocomplete="off">
+						<input id="id" name="id" th:value="${fangbenDO.id}"
+							   class="hidden">
+						<input id="date" name="date" th:value="${date}"
+							   class="hidden">
+						<input id="payType" name="payType" th:value="${fangbenDO.payType}"
+							   class="hidden">
+						<input id="weixiuUnpay" name="weixiuUnpay" th:value="${fangbenDO.weixiuUnpay}"
+							   class="hidden">
+						<input id="jiaoyiUnpay" name="jiaoyiUnpay" th:value="${fangbenDO.jiaoyiUnpay}"
+							   class="hidden">
+						<input id="fangbenUnpay" name="fangbenUnpay" th:value="${fangbenDO.fangbenUnpay}"
+							   class="hidden">
+						<input id="qishuiUnpay" name="qishuiUnpay" th:value="${fangbenDO.qishuiUnpay}"
+							   class="hidden">
+						<input id="daibanUnpay" name="daibanUnpay" th:value="${fangbenDO.daibanUnpay}"
+							   class="hidden">
+
+						<input id="qkjiaoyi" name="qkjiaoyi" th:value="${fangbenDO.qkjiaoyi}"
+							   class="hidden">
+						<input id="qkFangben" name="qkFangben" th:value="${fangbenDO.qkFangben}"
+							   class="hidden">
+						<input id="qkQishui" name="qkQishui" th:value="${fangbenDO.qkQishui}"
+							   class="hidden">
+						<input id="qkDaiban" name="qkDaiban" th:value="${fangbenDO.qkDaiban}"
+							   class="hidden">
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款方式：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="shouType1">
+								<input type="hidden" id="shouTypeName">
+								<select data-placeholder="--选择收款方式--" name="shouType" id="shouType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择收款方式--</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">交来：</label>
+							<div class="col-sm-8">
+								<input type="hidden" id="jiaoType1">
+								<input type="hidden" id="jiaoTypeName">
+								<select data-placeholder="--选择交来方式--" name="jiaoType" id="jiaoType"
+										class="form-control chosen-select" tabindex="2">
+									<option value="">--选择交来方式--</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">未缴金额：</label>
+							<div class="col-sm-8">
+								<input id="unpay" name="unpay" class="form-control" value="0"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">缴费金额：</label>
+							<div class="col-sm-8">
+								<input id="price" name="price" class="form-control" onFocus="checkPrice()"
+									   type="text"   onkeyup="num(this)">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款人：</label>
+							<div class="col-sm-8">
+								<input id="receiptBy" name="receiptBy" th:value="${name}" class="form-control"
+									   type="text" disabled>
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">收款日期：</label>
+							<div class="col-sm-8">
+								<input type="text" class="layui-input" id="payDate"  name="payDate" placeholder="yyyy年MM月dd日">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">备注：</label>
+							<div class="col-sm-8">
+								<input type="text" class="layui-input" id="remark"  name="remark">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="save()" class="btn btn-primary">提交</button>
+								<button type="button" onclick="pay()"   class="btn btn-warning" style="margin-left: 50px;">全额</button>
+								<button type="button" onclick="p()" id="print"   class="btn btn-success" style="margin-left: 50px;">打印</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/appjs/wuye/fangbenPay/shou.js">
+</script>
+<script>
+	laydate.render({
+		elem: '#payDate'
+		,format: 'yyyy-MM-dd'
+	});
+	var date=$("#date").val();
+	if(date!=''){
+		$("#payDate").val(dateFormat(date,"yyyy-MM-dd"));
+	}
+	function dateFormat(date, format) {
+
+		date = new Date(date);
+
+		var o = {
+			'M+' : date.getMonth() + 1, //month
+			'd+' : date.getDate(), //day
+			'H+' : date.getHours(), //hour
+			'm+' : date.getMinutes(), //minute
+			's+' : date.getSeconds(), //second
+			'q+' : Math.floor((date.getMonth() + 3) / 3), //quarter
+			'S' : date.getMilliseconds() //millisecond
+		};
+
+		if (/(y+)/.test(format))
+			format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+
+		for (var k in o)
+			if (new RegExp('(' + k + ')').test(format))
+				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+
+		return format;
+	}
+</script>
+</body>
+</html>

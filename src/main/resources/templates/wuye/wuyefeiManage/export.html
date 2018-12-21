@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<style>
+    .layui-btn {
+        display: inline-block;
+        vertical-align: middle;
+        height: 34px;
+        line-height: 34px;
+        padding: 0 15px;
+        background-color: #1ab394;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content " id="app">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <form class="form-horizontal m-t" id="signupForm" method="post" autocomplete="off">
+                        <input id="id" type="hidden" name="id" th:value="${id}">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">科目编码：</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${exportDO?.code}"class="layui-input" id="code" name="code" >
+                            </div>
+                            <label class="col-sm-3 control-label">科目名称：</label>
+                            <div class="col-sm-3">
+                                <input type="text" th:value="${exportDO?.name}"class="layui-input" id="name" name="name">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <button  type="button" style="margin-left: 350px;" id="exportXls"
+                                 class="layui-btn">
+                            <i class="fa fa-plus" aria-hidden="true"></i>下载凭证
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script src="/js/layui.js"></script>
+<script>
+    //导出模板
+    $("#exportXls").on("click", function () {
+        var code=$("#code").val();
+        if(!code||code==''){
+            layer.msg('请输入科目编码');
+            return;
+        }
+        var name=$("#name").val();
+        if(!name||name==''){
+            layer.msg('请输入科目名称');
+            return;
+        }
+        var url = "/wuye/wuyefeiManage/exportXls";
+        //更改form的action
+        $("#signupForm").attr("action", url);
+        //触发submit事件，提交表单
+        $("#signupForm").submit();
+    });
+</script>
+</body>
+</html>

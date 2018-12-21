@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/weui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/jquery-weui.css" rel="stylesheet">
+</head>
+<style>
+    .cell-top{
+       margin-top: 2px;
+        font-size: 15px;
+    }
+</style>
+<body class="with-heading-bottom" >
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="list">
+        <div class="item">
+            上线设备：
+        </div>
+        <div class="item">
+            <div class="row">
+                <div class="cell">
+                    <input name="username" type="text" class="input" placeholder="">
+                </div>
+                <div class="cell-1">
+                    <a>
+                        <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: 1px 0 0 5px;">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            故障描述：
+        </div>
+        <div class="item">
+            <div class="row">
+                <div class="cell">
+                    <textarea class="textarea" name="desc" id="miaoshu" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            处理结果：
+        </div>
+        <div class="item">
+            <div class="row">
+                <textarea class="textarea" name="desc" id="jieguo" rows="3"></textarea>
+            </div>
+        </div>
+
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom" id="footer">
+                <div class="title text-center"  onclick="ok()">
+                    保存
+                </div>
+
+</footer>
+<script src="/js/plugins/weui/jquery-2.1.4.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/weui/jquery-weui.js"></script>
+<script src="/js/plugins/weui/fastclick.js"></script>
+<script>
+    $(function() {
+        FastClick.attach(document.body);
+    });
+</script>
+<script>
+
+    function ok() {
+
+        parent.queding();
+        parent.close1();
+    }
+
+</script>
+</body>
+</html>

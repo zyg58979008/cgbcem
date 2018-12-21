@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-3">
+			<div class="ibox ibox-body">
+				<div class="ibox-title">
+					<h5>选择分类</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="jstree_demo_div"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<button shiro:hasPermission="stock:query:add" type="button" class="btn  btn-primary" onclick="add()">
+								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							</button>
+							<button shiro:hasPermission="stock:query:batchRemove" type="button" class="btn  btn-danger"
+								onclick="batchRemove()">
+								<i class="fa fa-trash" aria-hidden="true"></i>删除
+							</button>
+						</div>
+						<<div class="columns pull-right">
+						<button class="btn btn-success" onclick="reLoad()">查询</button>
+					</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px">
+							<input id="name" name="name"  class="form-control" type="text" placeholder="设备名称">
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px">
+							<input id="brand" name="brand"  class="form-control" type="text" placeholder="设备品牌">
+						</div>
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px">
+							<input id="deptId" name="deptId" class="hidden"> <input
+								id="deptName" name="deptName" class="form-control" type="text"
+								style="cursor: pointer;background-color: white" onclick="openDept()"
+								readonly="readonly" placeholder="所属机构">
+						</div>
+
+						<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px">
+							<select data-placeholder="--库房类型--" name="deptId1" id="deptId1"
+									class="form-control chosen-select" tabindex="2" required>
+								<option value="">--选择库房类型--</option>
+								<option value="全部">--全部--</option>
+								<option value="已申请">--已申请--</option>
+								<option value="完成">--完成--</option>
+								<option value="网点确认">--网点确认--</option>
+							</select>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:query:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:query:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="stock:query:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/stock/query/query.js"></script>
+</body>
+</html>

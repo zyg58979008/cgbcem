@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <input type="hidden" id="name" th:value="${name}">
+    <input type="hidden" id="deptId" th:value="${deptId}">
+    <input type="hidden" id="storeroomId" th:value="${storeroomId}">
+    <input type="hidden" id="userId" th:value="${userId}">
+    <input type="hidden" id="type" th:value="${type}">
+    <input type="hidden" id="brand" th:value="${brand}">
+    <input type="hidden" id="model" th:value="${model}">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <table id="exampleTable" data-mobile-responsive="true">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/equipment/stockQuery/detail.js">
+</script>
+</body>
+</html>

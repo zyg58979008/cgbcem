@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta   http-equiv= "Pragma"   content= "no-cache" />
+<meta   http-equiv= "Cache-Control"   content= "no-cache" />
+<meta   http-equiv= "Expires"   content= "0" />
+<head th:include="include :: header">
+</head>
+<style>
+	.view {
+		height: 0;
+		overflow:hidden;
+		margin-bottom: 0;
+	}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="buildingId" name="buildingId"
+							   class="hidden">
+						<input id="roomType" name="roomType"
+							   class="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">编码前缀：</label>
+							<div class="col-sm-3">
+								<input id="code" name="code" class="form-control" type="text" onkeyup="this.value=this.value.replace(/^ +| +$/g,'')">
+							</div>
+							<label class="col-sm-3 control-label">编码位数：</label>
+							<div class="col-sm-3">
+								<input id="codeNum" name="code" class="form-control" type="text" onkeyup="this.value=this.value.replace(/^ +| +$/g,'')">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label" id="labelUnit"></label>
+							<div class="col-sm-3">
+								<input id="startUnit" name="startUnit" class="form-control"
+									   type="number">
+							</div>
+							<label class="col-sm-3 control-label">结束单元:</label>
+							<div class="col-sm-3">
+								<input id="endUnit" name="endUnit" class="form-control"
+									   type="number">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">开始楼层：</label>
+							<div class="col-sm-3">
+								<input id="startFloor" name="startFloor" class="form-control"
+									   type="number">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">结束楼层：</label>
+							<div class="col-sm-3">
+								<input id="endFloor" name="endFloor" class="form-control"
+									   type="number">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">建筑面积：</label>
+							<div class="col-sm-8">
+								<input id="buildingArea" name="buildingArea" class="form-control"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+						</div>
+						<div class="form-group buildingDiv">
+							<label class="col-sm-3 control-label">使用面积：</label>
+							<div class="col-sm-8">
+								<input id="floorArea" name="floorArea" class="form-control"
+									   type="text" onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="button" onclick="save()" class="btn btn-primary">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/realty/room/batchAdd.js">
+</script>
+</body>
+</html>

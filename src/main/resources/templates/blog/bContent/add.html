@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content">
+		<div class="row">
+
+				<div class="col-sm-3">
+					<div class="ibox ibox-body">
+						<div class="ibox-title">
+							<h5>选择网点</h5>
+						</div>
+						<div class="ibox-content">
+							<div id="jstree_demo_div"></div>
+						</div>
+					</div>
+				</div>
+			<div class="col-sm-9">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="col-sm-12"align="center">
+							<h3>巡检工作报告</h3>
+						</div>
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="cid" name="cid" type="hidden">
+							<!--<div class="form-group">
+								<label class="col-sm-1 control-label">巡检地区：</label>
+								<div class="col-sm-3">
+									<input id="title" name="title" th:value="丰宁县" class="form-control" readonlytype="text">
+								</div>
+								<label class="col-sm-1 control-label">作者：</label>
+								<div class="col-sm-3">
+									<input id="author" name="author" class="form-control"th:value="张三"read
+										type="text">
+								</div>
+							</div>-->
+							<div class="form-group">
+							<div class="ibox-content"style="height: 300px">
+								<input id="content1" name="content" type="hidden"> <label
+									class="col-sm-1 control-label"></label>
+								<div class="col-sm-11"style="text-indent: 2em;font-size:16px">
+									<p>1.共点检<a  style="color: #FF0000">丰宁县</a>支行及分社营业网点<a  style="color: #FF0000">37</a>处。对发电机、UPS、业务终端、打印机及配电系统进行巡检。统一规划修改柜台业务终端系统主机名称。记录UPS工作参数。核对更新业务设备台帐。</p>
+									<p>2.此次巡检对<a  style="color: #FF0000">31</a>处营业网点共<a  style="color: #FF0000">81</a>台业务终端、24台办公网主机进行杀毒软件升级。对杀毒软件升级后提示中病毒的四岔口支行、鱼儿山支行、凤山支行、8分理9台业务终端进行查杀病毒处理。白塔支行1台业务终端因设备老旧、系统反映慢更新杀毒超时，建议更换终端处理。刘营支行、波罗诺支行2台业务终端因旧版本杀毒无法卸载，导致无法更新，建议重新安装6.0版本杀毒软件后在卸载安装新版本。</p>
+									<p>3.测试<a  style="color: #FF0000">28</a>处营业网点办公网是否联通，检查ip地址配置是否正确。对3分理、4分理、6分理、7分理、8分理、9分理、石人沟支行7处营业网点查找校对办公网端口，布放网线。白塔支行因即将搬家未布放办公网；1分理因柜台无业空闲业务端口，需重新布放机房至业务柜台网线联网办公网主机。</p>
+									<p>4.终端设备总体运行状态良好。部分终端已使用年限较长且配置低、硬盘较小，处理业务时缓慢，建议更换新终端。巡检时发现大阁支行、白塔支行、两间房支行存在一体机设备3台，告知用户按总行要求需拿回科技部更换为分体终端。
+									</p>
+								</div>
+							</div></div>
+							<div class="form-group">
+								<input id="content" name="content" type="hidden"> <label
+									class="col-sm-1 control-label">备注：</label>
+								<div class="col-sm-11">
+									<div class="ibox-content no-padding">
+										<div id="content_sn" class="summernote"></div>
+									</div>
+								</div>
+							</div>
+							<!--<div class="form-group">
+								<label class="col-sm-1 control-label">类型：</label>
+								<div class="col-sm-11">
+									<input id="categories" name="categories" class="form-control" type="text">
+								</div>
+							</div>-->
+					<!--		<div class="form-group">
+								<label class="col-sm-2 control-label">开启评论：</label>
+								<div class="switch onoffswitch col-sm-1">
+									<div class="onoffswitch">
+										<input id="allowComment" name="allowComment" checked=""
+											type="checkbox" value="1" class="onoffswitch-checkbox"
+											id="example1"> <label class="onoffswitch-label"
+											for="example1"> <span class="onoffswitch-inner"></span>
+											<span class="onoffswitch-switch"></span>
+										</label>
+									</div>
+								</div>
+
+								<label class="col-sm-2 control-label">允许订阅：</label>
+								<div class="switch onoffswitch col-sm-2">
+									<div class="onoffswitch">
+										<input id="allowFeed" name="allowFeed" type="checkbox"
+											value="1" class="onoffswitch-checkbox" id="example3">
+										<label class="onoffswitch-label" for="example3"> <span
+											class="onoffswitch-inner"></span> <span
+											class="onoffswitch-switch"></span>
+										</label>
+									</div>
+								</div>
+								<input id="status" name="status" type="hidden">
+							</div>-->
+							<div class="text-right form-group">
+								<a class="btn btn-default waves-effect waves-light"
+									onclick="returnList()">返回列表</a>
+								<button type="button"
+									class="btn btn-primary waves-effect waves-light" type="submit">保存总结</button>
+								<button type="button"
+									class="btn btn-warning waves-effect waves-light"
+									onclick="save(0)">存为草稿</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+
+
+	<script type="text/javascript" src="/js/appjs/blog/bContent/add.js">
+
+	</script>
+</body>
+</html>

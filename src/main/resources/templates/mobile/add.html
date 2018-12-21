@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>巡检管理系统</title>
+
+    <!-- MZUI CSS 文件 -->
+    <link href="/css/mzui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/weui.min.css" rel="stylesheet">
+    <link href="/css/plugins/weui/jquery-weui.css" rel="stylesheet">
+</head>
+<style>
+    .cell-top{
+       margin-top: 2px;
+        font-size: 15px;
+    }
+</style>
+<body class="with-heading-bottom" ontouchstart>
+<div class="section container " style="padding-bottom: 5px;">
+    <div class="heading color-grey">
+        <div class="title"><strong>设备信息</strong></div>
+    </div>
+    <div class="box">
+        <div class="row">
+            <div class="cell-4 cell-top">
+                设备编码：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input rounded-lg" placeholder="">
+            </div>
+            <div class="cell-1 cell-top">
+                <a>
+                    <img src="/img/sao.png" style="width: 18px;height: 18px; padding: 0;margin: 1px 0 0 5px;">
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                设备名称：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input rounded-lg" placeholder="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                设备分类：
+            </div>
+            <div class="cell">
+                <input id="deptId" name="deptId" class="hidden"> <input
+                    id="deptName" name="deptName" class="input rounded-lg" type="text"
+                    style="cursor: pointer;" onclick="openDept()"
+                    placeholder="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                设备品牌：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input rounded-lg" placeholder="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                设备型号：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input rounded-lg" placeholder="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                使用年限：
+            </div>
+            <div class="cell">
+                <input name="username" type="text" class="input rounded-lg" placeholder="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-4 cell-top">
+                上线日期：
+            </div>
+            <div class="cell">
+                <input type="text" class="weui-input input rounded-lg" id="date2" />
+            </div>
+        </div>
+
+    </div>
+</div>
+<footer class="heading primary affix dock-bottom" id="footer">
+                <div class="title text-center"  onclick="ok()">
+                    保存
+                </div>
+
+</footer>
+<script src="/js/plugins/weui/jquery-2.1.4.js"></script>
+<script src="/js/mzui.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/weui/jquery-weui.js"></script>
+<script src="/js/plugins/weui/fastclick.js"></script>
+<script>
+    $(function() {
+        FastClick.attach(document.body);
+    });
+</script>
+<script>
+    var footer=$("#footer").outerHeight(true);
+    addCSS('.weui-picker-modal { bottom: '+footer+'px; ');
+    function addCSS(cssText){
+        var style = document.createElement('style'),  //创建一个style元素
+                head = document.head || document.getElementsByTagName('head')[0]; //获取head元素
+        style.type = 'text/css'; //这里必须显示设置style元素的type属性为text/css，否则在ie中不起作用
+        if(style.styleSheet){ //IE
+            var func = function(){
+                try{ //防止IE中stylesheet数量超过限制而发生错误
+                    style.styleSheet.cssText = cssText;
+                }catch(e){
+
+                }
+            }
+            //如果当前styleSheet还不能用，则放到异步中则行
+            if(style.styleSheet.disabled){
+                setTimeout(func,10);
+            }else{
+                func();
+            }
+        }else{ //w3c
+            //w3c浏览器中只要创建文本节点插入到style元素中就行了
+            var textNode = document.createTextNode(cssText);
+            style.appendChild(textNode);
+        }
+        head.appendChild(style); //把创建的style元素插入到head中
+    }
+
+    $("#date2").calendar({
+        dateFormat: 'yyyy年mm月dd日' // 自定义格式的时候，不能通过 input 的value属性赋值 '2016年12月12日' 来定义初始值，这样会导致无法解析初始值而报错。只能通过js中设置 value 的形式来赋值，并且需要按标准形式赋值（yyyy-mm-dd 或者时间戳)
+    });
+    var num=0;
+    var my;
+    function aa(i) {
+        if(i==1){
+            var html="<div class=\"item multi-lines shadow-2 rounded-lg\" id='line"+i+"'>"+
+                    "                    <div class=\"content\">"+
+                    "                        <div class=\"title\">打印机-佳能-LBP2900+</div>"+
+                    "                        <div class=\"subtitle\">CD01201804135468</div>"+
+                    "                    </div>"+
+                    "                    <a class=\"btn primary rounded-lg\" onclick='del("+i+")'>删除</a>"+
+                    "                </div>";
+            $("#list").append(html);
+            num++;
+        }
+        if(i==2){
+            var aaa = function(){
+                my = layer.open({
+                    type:2,
+                    title:"设备列表",
+                    area : [ '300px', '450px' ],
+                    content:"/mobile/list",
+                    maxmin: true
+                })
+                layer.full(my);
+            }
+            aaa();
+        }
+        if(i==3){
+            window.location.href="/mobile/mantenance";
+        }
+    }
+    function del(i) {
+        $("#line"+i).remove();
+    }
+    function del1(i) {
+        $("#lines"+i).remove();
+    }
+    function ok() {
+        parent.close();
+    }
+    var openDept = function(){
+        var index = layer.open({
+            type:2,
+            title:"选择分类",
+            area : [ '300px', '450px' ],
+            content:"/mobile/classTreeView",
+            maxmin: true
+        })
+        layer.full(index);
+    }
+    function loadDept( deptId,deptName){
+        $("#deptId").val(deptId);
+        $("#deptName").val(deptName);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<head th:include="include :: header"></head>
+<link href="/css/layui.css" rel="stylesheet">
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="roomId" name="roomId" th:value="${contract?.roomId}" type="hidden">
+                        <input id="id" name="id" th:value="${contract?.id}" type="hidden">
+                        <input id="buildingArea" name="buildingArea" th:value="${contract?.buildingArea}" type="hidden">
+                        <input id="depositPayed"  th:value="${contract?.depositPayed}" type="hidden">
+                        <input id="renchouPayed"  th:value="${contract?.renchouPayed}" type="hidden">
+                        <input id="yishou1"  th:value="${contract?.yishou}" type="hidden">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">购房者信息</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">姓名：</label>
+                                    <div class="col-sm-4">
+                                        <input id="name" name="name" th:value="${contract?.name}"
+                                               class="form-control" type="text">
+                                    </div>
+                                    <label class="col-sm-3 control-label">证件号码：</label>
+                                    <div class="col-sm-4">
+                                        <input id="idCard" name="idCard" th:value="${contract?.idCard}"
+                                               class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">电话号码：</label>
+                                    <div class="col-sm-4">
+                                        <input id="phone" name="phone" th:value="${contract?.phone}"
+                                               class="form-control" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">合同信息</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--<div class="form-group">
+                                    <label class="col-sm-3 control-label">合同状态：</label>
+                                    <div class="col-sm-4">
+                                        <input type="hidden" id="state1" th:value="${contract?.state}">
+                                        <select data-placeholder="&#45;&#45;选择合同状态&#45;&#45;"  name="state" id="state"
+                                                class="form-control chosen-select" tabindex="2">
+                                            <option value="">&#45;&#45;选择合同状态&#45;&#45;</option>
+                                        </select>
+                                    </div>
+                                </div>-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">合同编码：</label>
+                                    <div class="col-sm-4">
+                                        <input  th:value="${contract?.code}" id="code" name="code"
+                                               class="form-control" type="text">
+                                    </div>
+                                    <label class="col-sm-3 control-label">转让类型：</label>
+                                    <div class="col-sm-4">
+                                        <input type="hidden" id="sellType1" th:value="${contract?.sellType}">
+                                        <select data-placeholder="--选择转让类型--"  name="sellType" id="sellType"
+                                                class="form-control chosen-select" tabindex="2">
+                                            <option value="">--选择转让类型--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">单价：</label>
+                                    <div class="col-sm-4">
+                                        <input id="price" name="price" th:value="${contract?.price}"
+                                               onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+                                               class="form-control" type="text">
+                                    </div>
+                                    <label class="col-sm-3 control-label">付款方式：</label>
+                                    <div class="col-sm-4">
+                                        <input type="hidden" id="payType1" th:value="${contract?.payType}">
+                                        <select data-placeholder="--选择付款方式--"  name="payType" id="payType"
+                                                class="form-control chosen-select" tabindex="2">
+                                            <option value="">--选择付款方式--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">首付款：</label>
+                                    <div class="col-sm-4">
+                                        <input id="firstPay" name="firstPay" th:value="${contract?.firstPay}"
+                                               onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+                                               class="form-control" type="num">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">退补面积：</label>
+                                    <div class="col-sm-4">
+                                        <input id="balanceArea" name="balanceArea" th:value="${contract?.balanceArea}"
+                                               class="form-control" type="number">
+                                    </div>
+                                    <label class="col-sm-3 control-label">退补金额：</label>
+                                    <div class="col-sm-4">
+                                        <input id="balancePrice" name="balancePrice" th:value="${contract?.balancePrice}"
+                                               class="form-control" type="number">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">置业顾问：</label>
+                                    <div class="col-sm-4">
+                                        <input id="sellBy" name="sellBy" th:value="${contract?.sellBy}"
+                                               class="form-control" type="text">
+                                    </div>
+                                    <label class="col-sm-3 control-label">转让日期：</label>
+                                    <div class="col-sm-4">
+                                        <input type="hidden" id="s" th:value="${contract.sellDate}">
+                                        <input id="sellDate" name="sellDate"
+                                               placeholder="yyyy年MM月dd日"
+                                               class="layui-input" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">备注：</label>
+                                    <div class="col-sm-9">
+                                        <input id="remark" name="remark" th:value="${contract?.remark}"
+                                               class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <!--<div class="form-group" >&lt;!&ndash;shiro:hasPermission="realty:contract:yishou"&ndash;&gt;
+                                    <label class="col-sm-3 control-label">修改价税合计：</label>
+                                    <div class="col-sm-4">
+                                        <input id="totalPrice" name="totalPrice1" value="0"
+                                               onkeyup= "this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+                                               class="form-control" type="num">
+                                    </div>
+
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">渠道</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">部门：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="bumen"class="form-control"  id="bumen" th:value="${contract?.bumen}">
+                                    </div>
+                                    <label class="col-sm-3 control-label">人员：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="renyuan" class="form-control" id="renyuan" th:value="${contract?.renyuan}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">类型：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="leixing"class="form-control"  id="leixing" th:value="${contract?.leixing}">
+                                    </div>
+                                    <label class="col-sm-3 control-label">归属：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="guishu"class="form-control"  id="guishu" th:value="${contract?.guishu}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">备注：</label>
+                                    <div class="col-sm-9">
+                                        <input id="beizhu" name="beizhu" th:value="${contract?.beizhu}"
+                                               class="form-control" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-5">
+                                <button type="button" onclick="update()" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<div>
+    <script type="text/javascript">
+        var s_yishou_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="realty:contract:yishou">
+    <script type="text/javascript">
+        s_yishou_h = '';
+    </script>
+</div>
+<script src="/js/lay/laydate/laydate.js"></script>
+<script type="text/javascript" src="/js/appjs/realty/contract/edit.js">
+</script>
+<script>
+    laydate.render({
+        elem: '#sellDate'
+        ,format: 'yyyy-MM-dd'
+    });
+    var s=$("#s").val();
+    if(s&&s!='')
+    $("#sellDate").val(dateFormat(s,"yyyy-MM-dd"));
+
+    function dateFormat(date, format) {
+
+        date = new Date(date);
+
+        var o = {
+            'M+' : date.getMonth() + 1, //month
+            'd+' : date.getDate(), //day
+            'H+' : date.getHours(), //hour
+            'm+' : date.getMinutes(), //minute
+            's+' : date.getSeconds(), //second
+            'q+' : Math.floor((date.getMonth() + 3) / 3), //quarter
+            'S' : date.getMilliseconds() //millisecond
+        };
+
+        if (/(y+)/.test(format))
+            format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+
+        for (var k in o)
+            if (new RegExp('(' + k + ')').test(format))
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+
+        return format;
+    }
+</script>
+</body>
+</html>

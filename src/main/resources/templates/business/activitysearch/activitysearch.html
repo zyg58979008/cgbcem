@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="col-sm-12">
+		<div class="b"><div class="c">商家数量</div><p>1</p></div>
+		<div class="b"><div class="c">应收金额</div><p>10000</p></div>
+		<div class="b"><div class="c">已收金额</div><p>5000</p></div>
+		<div class="b"><div class="c">未收金额</div><p>5000</p></div>
+	</div>
+	<div class="col-sm-12">
+		<div class="ibox">
+			<div class="ibox-body">
+				<div class="fixed-table-toolbar">
+					<button type="button" class="btn   btn-success" style="margin-top: 20px;"
+							onclick="batchRemove()">
+						<i class="fa btn-edit" aria-hidden="true"></i>批量导出
+					</button>
+					<div class="columns pull-right">
+						<button class="btn btn-success" onclick="reLoad()" style="margin-top: 10px;">查询</button>
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px">
+						<input type="text" class="laydate-icon layer-date form-control" id="createDate1" name="createDate" th:value="${createDate}==null?null:${#dates.format(createDate,'yyyy-MM-dd')}" placeholder="活动时间"
+							   onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" style="background-color: #fff;margin-bottom: 10px;" readonly="readonly"/>
+
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-right: 10px; margin-top:10px;">
+						<input id="searchName" type="text" class="form-control" style="margin-top: 10px;"
+							   placeholder="活动名称">
+					</div>
+					<div class="columns pull-right col-md-2 nopadding" style="margin-top:10px;margin-right: 10px">
+						<input id="searchNamea" type="text" class="form-control" style="margin-top: 10px;"
+							   placeholder="品牌">
+					</div>
+
+				</div>
+
+				<table id="dataTable" data-mobile-responsive="true">
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+	<script type="text/javascript">
+		var s_edit_h = 'hidden';
+		var s_remove_h = 'hidden';
+		var s_resetPwd_h = 'hidden';
+	</script>
+	<style>
+		table tr td {
+			white-space:nowrap
+		}
+		.keep-open {
+			float: right !important;
+			right: 0;
+		}
+		.b{
+			background: white;
+			border: #dbdbdb 1px solid;
+			width: 180px;
+			float: left;
+			margin: 10px;
+		}
+		.c {
+			margin: 10px 0 0 10px;
+		}
+		.b p {
+			font-size: 26px;
+			margin: 5px 10px;
+			color: black;
+			font-weight: bolder;
+			line-height: 40px;
+			padding-top: 10px;
+		}
+	</style>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/business/activitysearch/activitysearch.js"></script>
+</body>
+</html>

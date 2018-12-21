@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<input type="hidden" id="deptId" th:value="${deptId}">
+					<div class="columns pull-right">
+						<button class="btn btn-success" onclick="reLoad()">查询</button>
+					</div>
+					<div class="columns pull-right col-md-2 nopadding"style="margin-right: 10px">
+						<input id="name" type="text" class="form-control"
+							   placeholder="设备名称">
+					</div>
+					<div class="columns pull-right col-md-2 nopadding"style="margin-right: 10px">
+						<input id="model" type="text" class="form-control"
+							   placeholder="设备型号">
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/equipment/print/equipmentInfo.js"></script>
+</body>
+</html>

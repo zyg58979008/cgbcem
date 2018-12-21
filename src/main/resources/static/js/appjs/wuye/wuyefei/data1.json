@@ -1,0 +1,27 @@
+[
+	{
+	"buildingId": "1",
+	"buildingName": "1",
+	"num": "1200"
+}, {
+	"buildingId": "2",
+	"buildingName": "2",
+	"num": "1200"
+}, {
+	"buildingId": "3",
+	"buildingName": "3",
+	"num": "1300"
+}, {
+	"buildingId": "4",
+	"buildingName": "4",
+	"num": "1300"
+}, {
+	"buildingId": "5",
+	"buildingName": "5",
+	"num": "1400"
+}, {
+	"buildingId": "6",
+	"buildingName": "6",
+	"num": "1400"
+}
+]
