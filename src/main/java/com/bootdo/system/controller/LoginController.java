@@ -132,6 +132,6 @@ public class LoginController extends BaseController {
 		return R.ok();
 	}
 	public  static void  main(String[] a){
-		System.out.println(MD5Utils.encrypt("ad", "111111"));
+		System.out.println(MD5Utils.encrypt("15076374623", "111111"));
 	}
 }
